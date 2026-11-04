@@ -191,29 +191,6 @@ def collect_dendy(url, today_year):
         }
     """
 
-    # Match the public site's Apollo query shape. Supplying only movieId to
-    # datesWithShowing can return an empty list even when public sessions exist.
-    showings_query = """
-        query (
-          $date: String, $ids: [ID], $movieId: ID, $movieIds: [ID],
-          $titleClassId: ID, $titleClassIds: [ID], $siteIds: [ID],
-          $everyShowingBadgeIds: [ID], $anyShowingBadgeIds: [ID],
-          $resultVersion: String
-        ) {
-          showingsForDate(
-            date: $date, ids: $ids, movieId: $movieId, movieIds: $movieIds,
-            titleClassId: $titleClassId, titleClassIds: $titleClassIds,
-            siteIds: $siteIds, everyShowingBadgeIds: $everyShowingBadgeIds,
-            anyShowingBadgeIds: $anyShowingBadgeIds, resultVersion: $resultVersion
-          ) {
-            data {
-              id time published private
-              movie { id name urlSlug releaseDate synopsis posterImage }
-            }
-          }
-        }
-    """
-
     for movie_url, page_info in movie_pages.items():
         try:
             detail_soup = get_soup(movie_url)
@@ -233,113 +210,92 @@ def collect_dendy(url, today_year):
         events = [node for node in nodes if "ScreeningEvent" in node_types(node)]
         graphql_movie = None
 
-        # Query the Dendy API before filtering by release year. The API itself
-        # supplies releaseDate, so an external Wikidata lookup is unnecessary.
+        # Ask Dendy's public GraphQL API for the movie record and its
+        # public screening dates. This is the minimal data needed by the app.
+        graphql_movie = None
+        public_dates = []
         try:
             slug = movie_url.rstrip("/").split("/")[-1]
-            response = requests.post(
+            lookup_payload = {
+                "query": """
+                    query ($urlSlug: String!, $siteIds: [ID]) {
+                      findMovieBySlug(urlSlug: $urlSlug, siteIds: $siteIds) {
+                        id name releaseDate
+                      }
+                    }
+                """,
+                "variables": {"urlSlug": slug, "siteIds": []},
+                "extensions": {
+                    "clientLibrary": {
+                        "name": "@apollo/client",
+                        "version": "4.0.9",
+                    }
+                },
+            }
+            lookup_response = requests.post(
                 graphql_url,
                 headers={**gql_headers, "Referer": movie_url},
-                json={"query": movie_query, "variables": {"urlSlug": slug, "siteIds": []}},
+                json=lookup_payload,
                 timeout=TIMEOUT,
             )
-            response.raise_for_status()
-            graphql_movie = response.json().get("data", {}).get("findMovieBySlug")
-            if graphql_movie:
-                title = str(graphql_movie.get("name") or title).strip()
-                if not description:
-                    description = BeautifulSoup(
-                        str(graphql_movie.get("synopsis") or ""), "html.parser"
-                    ).get_text(" ", strip=True)
-                movie_id = str(graphql_movie.get("id") or "")
-                if movie_id:
-                    dates_response = requests.post(
-                        graphql_url,
-                        headers={**gql_headers, "Referer": movie_url},
-                        json={
-                            "query": movie_dates_query,
-                            "variables": {"id": movie_id},
-                            "extensions": {
-                                "clientLibrary": {
-                                    "name": "@apollo/client",
-                                    "version": "4.0.9",
-                                }
-                            },
-                        },
-                        timeout=TIMEOUT,
-                    )
-                    dates_response.raise_for_status()
-                    dates_payload = dates_response.json()
-                    if dates_payload.get("errors"):
-                        print("Dendy movie-date query errors", title,
-                              str(dates_payload["errors"])[:300])
-                    else:
-                        movie_dates = dates_payload.get("data", {}).get("movie") or {}
-                        public_dates = movie_dates.get("datesWithPublicShowing") or []
-                        print("Dendy movie-date query", title,
-                              "release", movie_dates.get("releaseDate"),
-                              "dates", public_dates)
+            lookup_response.raise_for_status()
+            lookup_json = lookup_response.json()
+            graphql_movie = lookup_json.get("data", {}).get("findMovieBySlug")
+            if lookup_json.get("errors"):
+                raise ValueError("findMovieBySlug: " + str(lookup_json["errors"])[:500])
+            if not graphql_movie:
+                print("Dendy movie lookup returned no movie", title, str(lookup_json)[:500])
+                continue
 
-                    # A null date asks Dendy's own endpoint for all public
-                    # upcoming showings for this film for all public
-                    # upcoming showings for this film, as observed in its site.
-                    showing_variables = {
-                        "date": None,
-                        "ids": [],
-                        "movieId": movie_id,
-                        "movieIds": [],
-                        "titleClassId": None,
-                        "titleClassIds": None,
-                        "siteIds": [],
-                        "anyShowingBadgeIds": None,
-                        "everyShowingBadgeIds": [None],
-                        "resultVersion": None,
+            movie_id = str(graphql_movie.get("id") or "")
+            dates_payload = {
+                "query": """
+                    query ($id: ID!) {
+                      movie(id: $id) {
+                        id
+                        name
+                        releaseDate
+                        datesWithPublicShowing
+                      }
                     }
-                    showing_response = requests.post(
-                        graphql_url,
-                        headers={**gql_headers, "Referer": movie_url},
-                        json={"query": showings_query, "variables": showing_variables},
-                        timeout=TIMEOUT,
-                    )
-                    showing_response.raise_for_status()
-                    showing_payload = showing_response.json()
-                    if showing_payload.get("errors"):
-                        raise ValueError(str(showing_payload["errors"])[:300])
-                    rows = showing_payload.get("data", {}).get(
-                        "showingsForDate", {}
-                    ).get("data", [])
-                    if not rows:
-                        print("Dendy GraphQL empty showings", title,
-                              "dates", graphql_movie.get("datesWithPublicShowing"),
-                              "errors", showing_payload.get("errors"))
-                    api_events = []
-                    for showing in rows:
-                        showing_movie = showing.get("movie") or {}
-                        if str(showing_movie.get("id")) != movie_id:
-                            continue
-                        if not showing.get("published") or showing.get("private"):
-                            continue
-                        start_value = showing.get("time")
-                        showing_id = str(showing.get("id") or "")
-                        if not start_value or not showing_id:
-                            continue
-                        try:
-                            local_start = datetime.fromisoformat(
-                                str(start_value).replace("Z", "+00:00")
-                            ).astimezone(ZoneInfo("Australia/Sydney"))
-                        except ValueError:
-                            continue
-                        if local_start <= now:
-                            continue
-                        api_events.append({
-                            "name": title,
-                            "startDate": local_start.isoformat(),
-                            "url": f"https://canberra.dendy.com.au/checkout/showing/{showing_id}",
-                        })
-                    events.extend(api_events)
-                    print("Dendy GraphQL showings", title, len(api_events))
+                """,
+                "variables": {"id": movie_id},
+                "extensions": {
+                    "clientLibrary": {
+                        "name": "@apollo/client",
+                        "version": "4.0.9",
+                    }
+                },
+            }
+            dates_response = requests.post(
+                graphql_url,
+                headers={**gql_headers, "Referer": movie_url},
+                json=dates_payload,
+                timeout=TIMEOUT,
+            )
+            dates_response.raise_for_status()
+            dates_json = dates_response.json()
+            if dates_json.get("errors"):
+                raise ValueError("movie(id) query: " + str(dates_json["errors"])[:700])
+            movie_record = dates_json.get("data", {}).get("movie") or {}
+            public_dates = movie_record.get("datesWithPublicShowing") or []
+            release_date = movie_record.get("releaseDate") or graphql_movie.get("releaseDate")
+            if release_date:
+                graphql_movie["releaseDate"] = release_date
+
+            if "love-actually" in slug:
+                print("DENDY LOVE ACTUALLY DIRECT TEST",
+                      "lookup_status", lookup_response.status_code,
+                      "movie_id", movie_id,
+                      "dates_status", dates_response.status_code,
+                      "release", release_date,
+                      "public_dates", public_dates,
+                      "raw", json.dumps(dates_json, ensure_ascii=False)[:1800])
+            else:
+                print("Dendy public dates", title, public_dates)
         except (requests.RequestException, ValueError, KeyError, TypeError) as exc:
-            print("WARN Dendy GraphQL showtimes", title, str(exc)[:220])
+            print("WARN Dendy public dates", title, str(exc)[:700])
+            continue
 
         year, year_description = year_from_text(movie)
         if year is None and graphql_movie:
@@ -350,59 +306,25 @@ def collect_dendy(url, today_year):
         if year is None or today_year - year < 10:
             continue
 
-        for event in events:
-            start_value = event.get("startDate")
-            if not start_value:
-                continue
+        for screening_date in public_dates:
             try:
-                event_start = datetime.fromisoformat(
-                    str(start_value).replace("Z", "+00:00")
-                )
-                if event_start <= now:
-                    continue
+                parsed_date = datetime.strptime(str(screening_date), "%Y-%m-%d").date()
             except ValueError:
                 continue
-            event_title = str(event.get("name") or title).strip()
-            showing_url = event.get("url", "")
+            if parsed_date < now.date():
+                continue
             found.append({
                 "film_id": re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"),
-                "title": title or event_title,
+                "title": title,
                 "year": year,
                 "cinema": "Dendy Canberra",
-                "start": start_value,
-                "description": description or year_description,
-                "ticket_url": showing_url,
-                "poster_url": movie.get("image") or movie.get("thumbnailUrl") or "",
+                "start": parsed_date.isoformat() + "T00:00:00",
+                "description": "",
+                "ticket_url": "",
+                "poster_url": "",
             })
 
-    # Temporary focused probe: capture the exact public GraphQL request the
-    # Dendy film page makes for its screening dates. This lets us reproduce
-    # the smallest possible date-only query without relying on DOM scraping.
-    probe_url = next((u for u in movie_pages if "love-actually" in u), None)
-    if probe_url:
-        try:
-            with sync_playwright() as playwright:
-                browser = playwright.chromium.launch(headless=True)
-                probe = browser.new_page()
-                def log_request(request):
-                    if "/graphql" in request.url and request.method == "POST":
-                        print("DENDY DATE PROBE REQUEST", (request.post_data or "")[:14000])
-                def log_response(response):
-                    if "/graphql" in response.url and response.request.method == "POST":
-                        try:
-                            payload = response.json()
-                            raw = json.dumps(payload, ensure_ascii=False)
-                            if "datesWithPublicShowing" in raw or "datesWithShowing" in raw:
-                                print("DENDY DATE PROBE RESPONSE", raw[:14000])
-                        except Exception:
-                            pass
-                probe.on("request", log_request)
-                probe.on("response", log_response)
-                probe.goto(probe_url, wait_until="domcontentloaded", timeout=30000)
-                probe.wait_for_timeout(5000)
-                browser.close()
-        except Exception as exc:
-            print("WARN Dendy date probe", str(exc)[:250])
+
 
     print("Dendy film pages discovered:", len(movie_pages))
     return found
