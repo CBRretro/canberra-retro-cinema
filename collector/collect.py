@@ -265,14 +265,18 @@ def collect_anu(today):
 
 
 def main():
-    url="https://canberra.dendy.com.au/graphql"
-    headers={**HEADERS,"Content-Type":"application/json","Origin":"https://canberra.dendy.com.au","Referer":"https://canberra.dendy.com.au/coming-soon/"}
-    for query in ['{ __schema { types { name } } }','{ __type(name: "Movie") { name fields { name type { name kind ofType { name kind } } } } }']:
+    for title in ["Rocky","The Maltese Falcon","8½","Citizen Kane","Love Actually"]:
         try:
-            response=requests.post(url,headers=headers,json={"query":query},timeout=TIMEOUT)
-            print("DENDY_GRAPHQL",response.status_code,response.headers.get("content-type"),response.text[:2500].replace("\\n"," "))
-        except requests.RequestException as exc:
-            print("DENDY_GRAPHQL_ERROR",str(exc)[:250])
+            response=requests.get("https://www.wikidata.org/w/api.php",params={"action":"wbsearchentities","search":title,"language":"en","format":"json","type":"item"},headers=HEADERS,timeout=TIMEOUT)
+            data=response.json()
+            print("WIKIDATA_SEARCH",title,[(x.get("id"),x.get("label"),x.get("description")) for x in data.get("search",[])[:5]])
+            for item in data.get("search",[])[:3]:
+                entity=requests.get(f"https://www.wikidata.org/wiki/Special:EntityData/{item['id']}.json",headers=HEADERS,timeout=TIMEOUT).json()["entities"][item["id"]]
+                p31=[x["mainsnak"].get("datavalue",{}).get("value",{}).get("id") for x in entity.get("claims",{}).get("P31",[])]
+                p577=[x["mainsnak"].get("datavalue",{}).get("value",{}).get("time") for x in entity.get("claims",{}).get("P577",[])]
+                print("WIKIDATA_ENTITY",title,item.get("id"),entity.get("labels",{}).get("en",{}).get("value"),p31,p577)
+        except Exception as exc:
+            print("WIKIDATA_ERROR",title,str(exc)[:200])
 
 if __name__ == "__main__":
     main()
