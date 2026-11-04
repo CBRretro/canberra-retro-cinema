@@ -180,6 +180,19 @@ def collect_anu(today):
 
 
 def main():
+    # TEMP: inspect Dendy Canberra's public session data.
+    probe_url = "https://canberra.dendy.com.au/now-showing/"
+    try:
+        response = requests.get(probe_url, headers=HEADERS, timeout=TIMEOUT)
+        html = response.text
+        print("DENDY_PROBE", response.status_code, response.headers.get("content-type"), len(html), response.url)
+        for term in ["Sense and Sensibility", "The Devils", "2001: A Space Odyssey", "showtimes", "session", "application/ld+json", "__NEXT_DATA__", "api/"]:
+            pos = html.lower().find(term.lower())
+            print("DENDY_TERM", term, pos, html[max(0,pos-160):pos+450].replace("\\n", " ") if pos >= 0 else "")
+        soup = BeautifulSoup(html, "html.parser")
+        print("DENDY_SCRIPTS", [tag.get("src") for tag in soup.find_all("script") if tag.get("src")][-25:])
+    except requests.RequestException as exc:
+        print("DENDY_PROBE_ERROR", str(exc)[:250])
     today = datetime.now(timezone.utc).date()
     rows = []
     status = []
