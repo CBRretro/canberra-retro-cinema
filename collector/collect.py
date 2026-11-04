@@ -84,10 +84,9 @@ def collect_jsonld(cinema, url, today_year):
 
 
 def collect_dendy(url, today_year):
-    """Collect Dendy Canberra screenings from Now Showing and Coming Soon."""
+    """Collect Dendy Canberra screenings from both programme pages via its GraphQL API."""
     coming_soon_url = "https://canberra.dendy.com.au/coming-soon/"
     now = datetime.now(timezone.utc)
-    year_cache = {}
 
     def walk_nodes(obj):
         if isinstance(obj, dict):
@@ -127,88 +126,72 @@ def collect_dendy(url, today_year):
         match = re.search(r"(19\d{2}|20\d{2})", str(published))
         return (int(match.group(1)) if match else None), description
 
-    def wikidata_year(title):
-        key = title.casefold().strip()
-        if key in year_cache:
-            return year_cache[key]
-        year_cache[key] = None
-        try:
-            response = requests.get(
-                "https://www.wikidata.org/w/api.php",
-                params={
-                    "action": "wbsearchentities",
-                    "search": title,
-                    "language": "en",
-                    "format": "json",
-                    "type": "item",
-                },
-                headers=HEADERS,
-                timeout=TIMEOUT,
-            )
-            response.raise_for_status()
-            results = response.json().get("search", [])
-            candidates = []
-            for item in results[:10]:
-                if item.get("label", "").casefold().strip() != key:
-                    continue
-                description = str(item.get("description", "")).casefold()
-                if "film" not in description and "movie" not in description:
-                    continue
-                entity_response = requests.get(
-                    f"https://www.wikidata.org/wiki/Special:EntityData/{item['id']}.json",
-                    headers=HEADERS,
-                    timeout=TIMEOUT,
-                )
-                entity_response.raise_for_status()
-                entity = entity_response.json()["entities"][item["id"]]
-                claims = entity.get("claims", {})
-                instance_ids = {
-                    claim.get("mainsnak", {}).get("datavalue", {}).get("value", {}).get("id")
-                    for claim in claims.get("P31", [])
-                }
-                dates = []
-                for claim in claims.get("P577", []):
-                    value = claim.get("mainsnak", {}).get("datavalue", {}).get("value", {})
-                    date_text = value.get("time", "") if isinstance(value, dict) else ""
-                    match = re.search(r"[+-](19\d{2}|20\d{2})-", date_text)
-                    if match:
-                        dates.append(int(match.group(1)))
-                if dates:
-                    candidates.append((0 if "Q11424" in instance_ids else 1, min(dates)))
-            if candidates:
-                candidates.sort()
-                year_cache[key] = candidates[0][1]
-        except (requests.RequestException, ValueError, KeyError, TypeError) as exc:
-            print("WARN Dendy release-year lookup", title, str(exc)[:140])
-        return year_cache[key]
-
     now_soup = get_soup(url)
     movie_pages = {}
+
+    def add_movie_links(soup, coming_soon):
+        for anchor in soup.find_all("a", href=True):
+            movie_url = urljoin(url, anchor["href"]).split("#", 1)[0]
+            if "/movie/" not in movie_url or "canberra.dendy.com.au" not in movie_url:
+                continue
+            movie_url = movie_url.rstrip("/") + "/"
+            if movie_url not in movie_pages:
+                movie_pages[movie_url] = {
+                    "label": anchor.get_text(" ", strip=True),
+                    "movie": {},
+                    "coming_soon": coming_soon,
+                }
+            elif coming_soon:
+                movie_pages[movie_url]["coming_soon"] = True
+
     for movie in jsonld_nodes(now_soup):
         if "Movie" not in node_types(movie):
             continue
         movie_url = movie.get("sameAs") or str(movie.get("@id", "")).split("#", 1)[0]
         if movie_url:
-            movie_pages[movie_url] = {"label": movie.get("name", ""), "movie": movie, "coming_soon": False}
+            movie_pages[movie_url.rstrip("/") + "/"] = {
+                "label": movie.get("name", ""),
+                "movie": movie,
+                "coming_soon": False,
+            }
+    add_movie_links(now_soup, False)
 
     try:
         coming_soup = get_soup(coming_soon_url)
-        for anchor in coming_soup.find_all("a", href=True):
-            movie_url = urljoin(coming_soon_url, anchor["href"]).split("#", 1)[0]
-            if "/movie/" not in movie_url or "canberra.dendy.com.au" not in movie_url:
-                continue
-            if movie_url not in movie_pages:
-                movie_pages[movie_url] = {"label": anchor.get_text(" ", strip=True), "movie": {}, "coming_soon": True}
-            else:
-                movie_pages[movie_url]["coming_soon"] = True
+        add_movie_links(coming_soup, True)
     except requests.RequestException as exc:
         print("WARN Dendy Coming Soon page", str(exc)[:180])
 
     found = []
-    playwright_manager = sync_playwright().start()
-    browser = playwright_manager.chromium.launch(headless=True)
-    rendered = browser.new_page()
-    rendered.route("**/*", lambda route: route.abort() if route.request.resource_type in ["image", "font", "media"] else route.continue_())
+    graphql_url = "https://canberra.dendy.com.au/graphql"
+    gql_headers = {
+        **HEADERS,
+        "Content-Type": "application/json",
+        "Origin": "https://canberra.dendy.com.au",
+    }
+    movie_query = """
+        query ($urlSlug: String!, $siteIds: [ID]) {
+          findMovieBySlug(urlSlug: $urlSlug, siteIds: $siteIds) {
+            id name urlSlug releaseDate synopsis posterImage
+          }
+        }
+    """
+    dates_query = """
+        query ($movieId: ID) {
+          datesWithShowing(movieId: $movieId) { value }
+        }
+    """
+    showings_query = """
+        query ($date: String, $movieId: ID) {
+          showingsForDate(date: $date, movieId: $movieId) {
+            data {
+              id time published private
+              movie { id name urlSlug releaseDate synopsis posterImage }
+            }
+          }
+        }
+    """
+
     for movie_url, page_info in movie_pages.items():
         try:
             detail_soup = get_soup(movie_url)
@@ -218,70 +201,44 @@ def collect_dendy(url, today_year):
 
         nodes = jsonld_nodes(detail_soup)
         movie = next((node for node in nodes if "Movie" in node_types(node)), page_info["movie"])
-
         title = str(movie.get("name") or page_info["label"]).strip()
         if not title:
-            continue
-        year, description = year_from_text(movie)
-        if year is None and page_info.get("coming_soon"):
-            year = wikidata_year(title)
-        if year is None or today_year - year < 10:
-            continue
+            title = movie_url.rstrip("/").split("/")[-1].replace("-", " ").title()
 
-        # Dendy's showtime widget uses a public GraphQL endpoint. Query the
-        # film's published screening dates, then retrieve showings for each date.
+        description = BeautifulSoup(
+            str(movie.get("description") or ""), "html.parser"
+        ).get_text(" ", strip=True)
         events = [node for node in nodes if "ScreeningEvent" in node_types(node)]
-        if not events and page_info.get("coming_soon"):
-            try:
-                slug = movie_url.rstrip("/").split("/")[-1]
-                graphql_url = "https://canberra.dendy.com.au/graphql"
-                gql_headers = {
-                    **HEADERS,
-                    "Content-Type": "application/json",
-                    "Referer": movie_url,
-                    "Origin": "https://canberra.dendy.com.au",
-                }
-                movie_query = """
-                    query ($urlSlug: String!, $siteIds: [ID]) {
-                      findMovieBySlug(urlSlug: $urlSlug, siteIds: $siteIds) {
-                        id name urlSlug releaseDate synopsis posterImage
-                      }
-                    }
-                """
-                movie_response = requests.post(
-                    graphql_url,
-                    headers=gql_headers,
-                    json={"query": movie_query, "variables": {"urlSlug": slug, "siteIds": []}},
-                    timeout=TIMEOUT,
-                )
-                movie_response.raise_for_status()
-                movie_data = movie_response.json().get("data", {}).get("findMovieBySlug")
-                if movie_data:
-                    movie_id = str(movie_data["id"])
-                    movie_title = str(movie_data.get("name") or title).strip()
-                    if movie_title:
-                        title = movie_title
-                    if not description:
-                        description = BeautifulSoup(
-                            str(movie_data.get("synopsis") or ""), "html.parser"
-                        ).get_text(" ", strip=True)
-                    poster_id = movie_data.get("posterImage")
-                    if poster_id and not movie.get("image"):
-                        movie["image"] = poster_id
+        graphql_movie = None
 
-                    dates_query = """
-                        query ($movieId: ID) {
-                          datesWithShowing(movieId: $movieId) { value }
-                        }
-                    """
-                    dates_response = requests.post(
+        # Query the Dendy API before filtering by release year. The API itself
+        # supplies releaseDate, so an external Wikidata lookup is unnecessary.
+        try:
+            slug = movie_url.rstrip("/").split("/")[-1]
+            response = requests.post(
+                graphql_url,
+                headers={**gql_headers, "Referer": movie_url},
+                json={"query": movie_query, "variables": {"urlSlug": slug, "siteIds": []}},
+                timeout=TIMEOUT,
+            )
+            response.raise_for_status()
+            graphql_movie = response.json().get("data", {}).get("findMovieBySlug")
+            if graphql_movie:
+                title = str(graphql_movie.get("name") or title).strip()
+                if not description:
+                    description = BeautifulSoup(
+                        str(graphql_movie.get("synopsis") or ""), "html.parser"
+                    ).get_text(" ", strip=True)
+                movie_id = str(graphql_movie.get("id") or "")
+                if movie_id:
+                    date_response = requests.post(
                         graphql_url,
-                        headers=gql_headers,
+                        headers={**gql_headers, "Referer": movie_url},
                         json={"query": dates_query, "variables": {"movieId": movie_id}},
                         timeout=TIMEOUT,
                     )
-                    dates_response.raise_for_status()
-                    date_value = dates_response.json().get("data", {}).get(
+                    date_response.raise_for_status()
+                    date_value = date_response.json().get("data", {}).get(
                         "datesWithShowing", {}
                     ).get("value", "[]")
                     try:
@@ -289,38 +246,30 @@ def collect_dendy(url, today_year):
                     except (json.JSONDecodeError, TypeError):
                         showing_dates = []
 
-                    showings_query = """
-                        query ($date: String, $movieId: ID) {
-                          showingsForDate(date: $date, movieId: $movieId) {
-                            data {
-                              id time published private
-                              movie { id name urlSlug releaseDate synopsis posterImage }
-                            }
-                          }
-                        }
-                    """
-                    for showing_date in showing_dates:
-                        showings_response = requests.post(
+                    api_events = []
+                    for showing_date in showing_dates or []:
+                        showing_response = requests.post(
                             graphql_url,
-                            headers=gql_headers,
+                            headers={**gql_headers, "Referer": movie_url},
                             json={
                                 "query": showings_query,
                                 "variables": {"date": showing_date, "movieId": movie_id},
                             },
                             timeout=TIMEOUT,
                         )
-                        showings_response.raise_for_status()
-                        showing_rows = showings_response.json().get(
-                            "data", {}
-                        ).get("showingsForDate", {}).get("data", [])
-                        for showing in showing_rows:
+                        showing_response.raise_for_status()
+                        rows = showing_response.json().get("data", {}).get(
+                            "showingsForDate", {}
+                        ).get("data", [])
+                        for showing in rows:
                             showing_movie = showing.get("movie") or {}
                             if str(showing_movie.get("id")) != movie_id:
                                 continue
                             if not showing.get("published") or showing.get("private"):
                                 continue
                             start_value = showing.get("time")
-                            if not start_value:
+                            showing_id = str(showing.get("id") or "")
+                            if not start_value or not showing_id:
                                 continue
                             try:
                                 local_start = datetime.fromisoformat(
@@ -330,41 +279,51 @@ def collect_dendy(url, today_year):
                                 continue
                             if local_start <= now:
                                 continue
-                            showing_id = str(showing.get("id") or "")
-                            if not showing_id:
-                                continue
-                            events.append({
+                            api_events.append({
                                 "name": title,
                                 "startDate": local_start.isoformat(),
                                 "url": f"https://canberra.dendy.com.au/checkout/showing/{showing_id}",
                             })
-                    print("Dendy GraphQL showings", title, len(events))
-            except (requests.RequestException, ValueError, KeyError, TypeError) as exc:
-                print("WARN Dendy GraphQL showtimes", title, str(exc)[:220])
+                    events.extend(api_events)
+                    print("Dendy GraphQL showings", title, len(api_events))
+        except (requests.RequestException, ValueError, KeyError, TypeError) as exc:
+            print("WARN Dendy GraphQL showtimes", title, str(exc)[:220])
+
+        year, year_description = year_from_text(movie)
+        if year is None and graphql_movie:
+            year, _ = year_from_text({
+                "releaseDate": graphql_movie.get("releaseDate"),
+                "description": graphql_movie.get("synopsis") or "",
+            })
+        if year is None or today_year - year < 10:
+            continue
+
         for event in events:
-            start = event.get("startDate")
-            if not start:
+            start_value = event.get("startDate")
+            if not start_value:
                 continue
             try:
-                if datetime.fromisoformat(str(start).replace("Z", "+00:00")) <= now:
+                event_start = datetime.fromisoformat(
+                    str(start_value).replace("Z", "+00:00")
+                )
+                if event_start <= now:
                     continue
             except ValueError:
                 continue
-
             event_title = str(event.get("name") or title).strip()
+            showing_url = event.get("url", "")
             found.append({
                 "film_id": re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"),
-                "title": title,
+                "title": title or event_title,
                 "year": year,
                 "cinema": "Dendy Canberra",
-                "start": start,
-                "description": description,
-                "ticket_url": event.get("url", ""),
+                "start": start_value,
+                "description": description or year_description,
+                "ticket_url": showing_url,
                 "poster_url": movie.get("image") or movie.get("thumbnailUrl") or "",
             })
 
-    browser.close()
-    playwright_manager.stop()
+    print("Dendy film pages discovered:", len(movie_pages))
     return found
 
 def collect_anu(today):
