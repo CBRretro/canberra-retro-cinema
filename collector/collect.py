@@ -270,9 +270,11 @@ def collect_dendy(url, today_year):
                         })"""
                 )
                 if diagnostic:
-                    rendered.off("request", log_dendy_request)
-                    rendered.off("response", log_dendy_response)
+                    rendered.remove_listener("request", log_dendy_request)
+                    rendered.remove_listener("response", log_dendy_response)
                 print("Dendy rendered showtimes", title, len(anchors))
+                if diagnostic:
+                    print("DENDY LOVE ACTUALLY LINKS", json.dumps(anchors, ensure_ascii=False)[:12000])
                 month_pattern = (
                     r"(January|February|March|April|May|June|July|August|September|October|November|December)"
                 )
