@@ -234,6 +234,26 @@ def collect_dendy(url, today_year):
         events = [node for node in nodes if "ScreeningEvent" in node_types(node)]
         if not events and page_info.get("coming_soon"):
             try:
+                diagnostic = title.casefold() == "love actually"
+
+                def log_dendy_request(request):
+                    if request.resource_type in ("xhr", "fetch"):
+                        print("DENDY DIAGNOSTIC REQUEST", request.method, request.url[:500])
+
+                def log_dendy_response(response):
+                    if response.request.resource_type not in ("xhr", "fetch"):
+                        return
+                    content_type = response.headers.get("content-type", "")
+                    print("DENDY DIAGNOSTIC RESPONSE", response.status, response.url[:500], content_type)
+                    if "json" in content_type.lower() or "api" in response.url.lower():
+                        try:
+                            print("DENDY DIAGNOSTIC BODY", response.text()[:5000])
+                        except Exception:
+                            pass
+
+                if diagnostic:
+                    rendered.on("request", log_dendy_request)
+                    rendered.on("response", log_dendy_response)
                 rendered.goto(movie_url, wait_until="domcontentloaded", timeout=20000)
                 try:
                     rendered.wait_for_selector('a[href*="/checkout/showing/"]', timeout=7000)
@@ -249,6 +269,9 @@ def collect_dendy(url, today_year):
                             return {href: a.href, text: (a.innerText || "").trim(), contexts};
                         })"""
                 )
+                if diagnostic:
+                    rendered.off("request", log_dendy_request)
+                    rendered.off("response", log_dendy_response)
                 print("Dendy rendered showtimes", title, len(anchors))
                 month_pattern = (
                     r"(January|February|March|April|May|June|July|August|September|October|November|December)"
