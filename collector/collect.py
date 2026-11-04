@@ -265,27 +265,19 @@ def collect_anu(today):
 
 
 def main():
-    for slug in ["rocky", "the-maltese-falcon", "eyes-wide-shut", "8", "citizen-kane"]:
-        url = "https://canberra.dendy.com.au/movie/" + slug + "/"
-        soup = get_soup(url)
-        html = str(soup)
-        print("YEAR_PROBE",slug,"bytes",len(html))
-        for term in ["1976","1941","1999","1963","year","releaseYear","productionYear","datePublished","releaseDate","movieYear","filmYear","tmdb"]:
-            hits=[m.start() for m in re.finditer(re.escape(term),html,re.I)][:3]
+    base="https://canberra.dendy.com.au/"
+    for path in ["/js/app.ab2bee7e.js","/js/vendor.e760ab47.js"]:
+        url=urljoin(base,path)
+        response=requests.get(url,headers=HEADERS,timeout=TIMEOUT)
+        js=response.text
+        print("DENDY_BUNDLE",path,response.status_code,len(js))
+        for term in ["graphql","/api/","releaseYear","productionYear","tmdb","screenings","showings","movieId","filmId","datePublished","year"]:
+            hits=[m.start() for m in re.finditer(re.escape(term),js,re.I)][:5]
             if hits:
                 p=hits[0]
-                print("YEAR_HIT",slug,term,hits,html[max(0,p-180):p+450].replace("\\n"," "))
-        for tag in soup.find_all("meta"):
-            k=tag.get("property") or tag.get("name") or tag.get("itemprop")
-            v=tag.get("content")
-            if k and v and any(t in (k+" "+v).lower() for t in ["year","release","1976","1941","1999","1963"]):
-                print("YEAR_META",slug,k,v[:500])
-        for tag in soup.find_all("script"):
-            src=tag.get("src")
-            raw=tag.string or tag.get_text()
-            if src: print("YEAR_SCRIPT_SRC",slug,src)
-            if raw and len(raw)>500 and any(t in raw.lower() for t in ["releaseyear","productionyear","film_year","movieyear","1976","1941","1999","1963"]):
-                print("YEAR_SCRIPT_INLINE",slug,len(raw),raw[:1800].replace("\\n"," "))
+                print("BUNDLE_HIT",path,term,hits,js[max(0,p-220):p+600])
+        endpoints=re.findall(r'["\']([^"\']*(?:graphql|/api/|showing|screening)[^"\']*)["\']',js,re.I)
+        print("BUNDLE_ENDPOINTS",path,endpoints[:100])
 
 if __name__ == "__main__":
     main()
