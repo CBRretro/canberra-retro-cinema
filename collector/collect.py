@@ -265,54 +265,34 @@ def collect_anu(today):
 
 
 def main():
-    today = datetime.now(timezone.utc).date()
-    rows = []
-    status = []
-
-    for cinema, url in SOURCES:
+    url = "https://canberra.dendy.com.au/coming-soon/"
+    soup = get_soup(url)
+    print("DENDY_COMING_PAGE", len(str(soup)), "title", soup.title.get_text(" ", strip=True) if soup.title else "")
+    nodes = []
+    for n, tag in enumerate(soup.select('script[type="application/ld+json"]')):
+        raw = tag.string or tag.get_text()
         try:
-            if cinema == "Dendy Canberra":
-                found = collect_dendy(url, today.year)
-            else:
-                found = collect_jsonld(cinema, url, today.year)
-            rows.extend(found)
-            status.append({
-                "cinema": cinema,
-                "status": "ok" if found else "no supported events found",
-                "count": len(found),
-            })
-        except requests.RequestException as exc:
-            status.append({
-                "cinema": cinema,
-                "status": "fetch error",
-                "detail": str(exc)[:200],
-            })
-            print("WARN", cinema, exc)
-
-    try:
-        anu_rows, anu_status = collect_anu(today)
-        rows.extend(anu_rows)
-        status.append(anu_status)
-    except requests.RequestException as exc:
-        status.append({
-            "cinema": "ANU Film Group",
-            "status": "fetch error",
-            "count": 0,
-            "programme_url": ANU_PROGRAMME,
-            "detail": str(exc)[:200],
-        })
-        print("WARN ANU Film Group", exc)
-
-    unique = {(row["film_id"], row["cinema"], row["start"]): row for row in rows}
-    output = {
-        "updated_at": datetime.now(timezone.utc).isoformat(),
-        "sessions": sorted(unique.values(), key=lambda row: row["start"]),
-        "sources": status,
-    }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("Candidate sessions:", len(unique))
-    print("Dendy sessions:", sum(1 for row in unique.values() if row["cinema"] == "Dendy Canberra"))
+            data = json.loads(raw)
+        except Exception as exc:
+            print("COMING_BAD_JSONLD", n, str(exc)[:100])
+            continue
+        def walk(obj):
+            if isinstance(obj, dict):
+                yield obj
+                for v in obj.values(): yield from walk(v)
+            elif isinstance(obj, list):
+                for v in obj: yield from walk(v)
+        items = list(walk(data))
+        nodes.extend(items)
+        print("COMING_JSONLD", n, len(items), [(x.get("@type"),x.get("name"),x.get("url"),x.get("@id")) for x in items if x.get("@type") in ("Movie","ItemList","ListItem","Event")][:30])
+    links = []
+    for a in soup.find_all("a", href=True):
+        href = urljoin(url, a["href"])
+        label = a.get_text(" ", strip=True)
+        if "/movie/" in href or "/film/" in href:
+            links.append((label,href))
+    print("COMING_FILM_LINKS", len(links), links[:100])
+    print("COMING_MOVIE_NODES", sum(1 for x in nodes if "Movie" in ([x.get("@type")] if isinstance(x.get("@type"),str) else x.get("@type",[]))))
 
 if __name__ == "__main__":
     main()
