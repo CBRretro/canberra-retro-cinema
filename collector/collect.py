@@ -180,19 +180,6 @@ def collect_anu(today):
 
 
 def main():
-    # TEMP NFSA feed diagnostics; remove after one run.
-    for probe_url in [
-        "https://www.nfsa.gov.au/whats-on/calendar?category=event-category-films",
-        "https://www.nfsa.gov.au/rss",
-        "https://www.nfsa.gov.au/whats-on/calendar?category=event-category-films&_format=json",
-        "https://www.nfsa.gov.au/whats-on/calendar?_format=json",
-    ]:
-        try:
-            response = requests.get(probe_url, headers=HEADERS, timeout=TIMEOUT)
-            print("NFSA_PROBE", probe_url, response.status_code, response.headers.get("content-type"), len(response.content), response.url)
-            print("NFSA_SAMPLE", response.text[:500].replace("\\n", " "))
-        except requests.RequestException as exc:
-            print("NFSA_PROBE_ERROR", probe_url, str(exc)[:200])
     today = datetime.now(timezone.utc).date()
     rows = []
     status = []
