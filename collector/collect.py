@@ -187,7 +187,7 @@ def collect_dendy(url, today_year):
             continue
         movie_url = movie.get("sameAs") or str(movie.get("@id", "")).split("#", 1)[0]
         if movie_url:
-            movie_pages[movie_url] = {"label": movie.get("name", ""), "movie": movie}
+            movie_pages[movie_url] = {"label": movie.get("name", ""), "movie": movie, "coming_soon": False}
 
     try:
         coming_soup = get_soup(coming_soon_url)
@@ -196,7 +196,9 @@ def collect_dendy(url, today_year):
             if "/movie/" not in movie_url or "canberra.dendy.com.au" not in movie_url:
                 continue
             if movie_url not in movie_pages:
-                movie_pages[movie_url] = {"label": anchor.get_text(" ", strip=True), "movie": {}}
+                movie_pages[movie_url] = {"label": anchor.get_text(" ", strip=True), "movie": {}, "coming_soon": True}
+            else:
+                movie_pages[movie_url]["coming_soon"] = True
     except requests.RequestException as exc:
         print("WARN Dendy Coming Soon page", str(exc)[:180])
 
@@ -218,7 +220,7 @@ def collect_dendy(url, today_year):
         if not title:
             continue
         year, description = year_from_text(movie)
-        if year is None:
+        if year is None and page_info.get("coming_soon"):
             year = wikidata_year(title)
         if year is None or today_year - year < 10:
             continue
