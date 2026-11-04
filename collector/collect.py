@@ -73,7 +73,7 @@ def collect_jsonld(cinema, url, today_year):
                 "year": year,
                 "cinema": cinema,
                 "start": start,
-                "description": event.get("description", ""),
+                "description": "" if cinema == "NFSA Arc Cinema" else event.get("description", ""),
                 "ticket_url": event.get("url", ""),
                 "poster_url": "",
             })
