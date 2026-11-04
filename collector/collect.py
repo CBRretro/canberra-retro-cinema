@@ -9,6 +9,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urljoin
+from zoneinfo import ZoneInfo
 
 import requests
 from bs4 import BeautifulSoup
@@ -212,9 +213,6 @@ def collect_dendy(url, today_year):
 
         nodes = jsonld_nodes(detail_soup)
         movie = next((node for node in nodes if "Movie" in node_types(node)), page_info["movie"])
-        events = [node for node in nodes if "ScreeningEvent" in node_types(node)]
-        if not events:
-            continue
 
         title = str(movie.get("name") or page_info["label"]).strip()
         if not title:
@@ -224,6 +222,51 @@ def collect_dendy(url, today_year):
             year = wikidata_year(title)
         if year is None or today_year - year < 10:
             continue
+
+        # Dendy's individual film pages display showtimes as checkout links.
+        # These are not consistently exposed as JSON-LD ScreeningEvent nodes,
+        # so read the visible date/time text and retain each link as its ticket URL.
+        events = [node for node in nodes if "ScreeningEvent" in node_types(node)]
+        if not events:
+            page_text = detail_soup.get_text(" ", strip=True)
+            page_dates = re.findall(r"\\b(20\\d{2})-(\\d{2})-(\\d{2})\\b", page_text)
+            page_years = [int(match[0]) for match in page_dates]
+            default_year = page_years[0] if page_years else today_year
+            local_tz = ZoneInfo("Australia/Sydney")
+            for anchor in detail_soup.find_all("a", href=True):
+                href = anchor["href"]
+                if "/checkout/showing/" not in href:
+                    continue
+                label = anchor.get_text(" ", strip=True)
+                match = re.search(
+                    r"([A-Za-z]+\\s+\\d{1,2}),?\\s+(\\d{1,2}:\\d{2}\\s*[AP]M)",
+                    label,
+                    re.IGNORECASE,
+                )
+                if not match:
+                    continue
+                date_label, time_label = match.groups()
+                parsed = None
+                candidate_years = sorted(set(page_years + [default_year, today_year, today_year + 1]))
+                for candidate_year in candidate_years:
+                    try:
+                        date_part = datetime.strptime(
+                            f"{date_label} {candidate_year}", "%B %d %Y"
+                        ).date()
+                        time_part = datetime.strptime(time_label.upper().replace(" ", ""), "%I:%M%p").time()
+                        candidate = datetime.combine(date_part, time_part, tzinfo=local_tz)
+                    except ValueError:
+                        continue
+                    if candidate > now:
+                        parsed = candidate
+                        break
+                if parsed is None:
+                    continue
+                events.append({
+                    "name": title,
+                    "startDate": parsed.isoformat(),
+                    "url": urljoin(movie_url, href),
+                })
 
         for event in events:
             start = event.get("startDate")
@@ -237,8 +280,8 @@ def collect_dendy(url, today_year):
 
             event_title = str(event.get("name") or title).strip()
             found.append({
-                "film_id": re.sub(r"[^a-z0-9]+", "-", event_title.lower()).strip("-"),
-                "title": event_title,
+                "film_id": re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"),
+                "title": title,
                 "year": year,
                 "cinema": "Dendy Canberra",
                 "start": start,
