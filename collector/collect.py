@@ -82,48 +82,33 @@ def collect_jsonld(cinema, url, today_year):
 
 
 def collect_dendy(url, today_year):
-    """Collect Dendy Canberra ScreeningEvents linked to film records."""
+    """Collect future Dendy Canberra screenings from linked film pages."""
     soup = get_soup(url)
-    nodes = []
+    movies = {}
+
+    def walk_nodes(obj):
+        if isinstance(obj, dict):
+            yield obj
+            for value in obj.values():
+                yield from walk_nodes(value)
+        elif isinstance(obj, list):
+            for value in obj:
+                yield from walk_nodes(value)
+
     for tag in soup.select('script[type="application/ld+json"]'):
         try:
             data = json.loads(tag.string or tag.get_text())
         except (json.JSONDecodeError, TypeError):
             continue
-
-        def walk_nodes(obj):
-            if isinstance(obj, dict):
-                yield obj
-                for value in obj.values():
-                    yield from walk_nodes(value)
-            elif isinstance(obj, list):
-                for value in obj:
-                    yield from walk_nodes(value)
-
-        nodes.extend(walk_nodes(data))
-
-    movies = {}
-    for node in nodes:
-        typ = node.get("@type", [])
-        typ = [typ] if isinstance(typ, str) else typ
-        if "Movie" in typ and node.get("@id"):
-            movies[node["@id"]] = node
+        for node in walk_nodes(data):
+            typ = node.get("@type", [])
+            typ = [typ] if isinstance(typ, str) else typ
+            if "Movie" in typ and node.get("@id"):
+                movies[node["@id"]] = node
 
     found = []
-    for event in nodes:
-        typ = event.get("@type", [])
-        typ = [typ] if isinstance(typ, str) else typ
-        if "ScreeningEvent" not in typ:
-            continue
-
-        title = str(event.get("name", "")).strip()
-        start = event.get("startDate")
-        work = event.get("workPresented", {})
-        movie_id = work.get("@id") if isinstance(work, dict) else work
-        movie = movies.get(movie_id, {})
-        if not title or not start or not movie:
-            continue
-
+    now = datetime.now(timezone.utc)
+    for movie in movies.values():
         raw_description = str(movie.get("description", ""))
         description = BeautifulSoup(raw_description, "html.parser").get_text(" ", strip=True)
         year_match = re.search(r"\((19\d{2}|20\d{2})\)", description)
@@ -137,19 +122,48 @@ def collect_dendy(url, today_year):
         if today_year - year < 10:
             continue
 
-        found.append({
-            "film_id": re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"),
-            "title": title,
-            "year": year,
-            "cinema": "Dendy Canberra",
-            "start": start,
-            "description": description,
-            "ticket_url": event.get("url", ""),
-            "poster_url": movie.get("image") or movie.get("thumbnailUrl") or "",
-        })
+        movie_url = movie.get("sameAs") or str(movie.get("@id", "")).split("#", 1)[0]
+        if not movie_url:
+            continue
+        try:
+            detail_soup = get_soup(movie_url)
+        except requests.RequestException as exc:
+            print("WARN Dendy film page", movie_url, str(exc)[:150])
+            continue
+
+        for tag in detail_soup.select('script[type="application/ld+json"]'):
+            try:
+                data = json.loads(tag.string or tag.get_text())
+            except (json.JSONDecodeError, TypeError):
+                continue
+            for event in walk_nodes(data):
+                typ = event.get("@type", [])
+                typ = [typ] if isinstance(typ, str) else typ
+                if "ScreeningEvent" not in typ:
+                    continue
+
+                title = str(event.get("name", movie.get("name", ""))).strip()
+                start = event.get("startDate")
+                if not title or not start:
+                    continue
+                try:
+                    if datetime.fromisoformat(str(start).replace("Z", "+00:00")) <= now:
+                        continue
+                except ValueError:
+                    continue
+
+                found.append({
+                    "film_id": re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"),
+                    "title": title,
+                    "year": year,
+                    "cinema": "Dendy Canberra",
+                    "start": start,
+                    "description": description,
+                    "ticket_url": event.get("url", ""),
+                    "poster_url": movie.get("image") or movie.get("thumbnailUrl") or "",
+                })
 
     return found
-
 
 def collect_anu(today):
     """Read ANU programme links and parse every film on each screening page."""
