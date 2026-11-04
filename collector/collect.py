@@ -266,18 +266,12 @@ def collect_anu(today):
 
 def main():
     base="https://canberra.dendy.com.au/"
-    for path in ["/js/app.ab2bee7e.js","/js/vendor.e760ab47.js"]:
-        url=urljoin(base,path)
-        response=requests.get(url,headers=HEADERS,timeout=TIMEOUT)
-        js=response.text
-        print("DENDY_BUNDLE",path,response.status_code,len(js))
-        for term in ["graphql","/api/","releaseYear","productionYear","tmdb","screenings","showings","movieId","filmId","datePublished","year"]:
-            hits=[m.start() for m in re.finditer(re.escape(term),js,re.I)][:5]
-            if hits:
-                p=hits[0]
-                print("BUNDLE_HIT",path,term,hits,js[max(0,p-220):p+600])
-        endpoints=re.findall(r'["\']([^"\']*(?:graphql|/api/|showing|screening)[^"\']*)["\']',js,re.I)
-        print("BUNDLE_ENDPOINTS",path,endpoints[:100])
+    js=requests.get(urljoin(base,"/js/app.ab2bee7e.js"),headers=HEADERS,timeout=TIMEOUT).text
+    for term in ["tmdbId","graphqlUrl","graphqlEndpoint","/graphql","graphqlPath","createHttpLink","HttpLink","apiUrl","apiURL"]:
+        hits=[m.start() for m in re.finditer(re.escape(term),js,re.I)][:12]
+        print("APP_TERM",term,hits)
+        for p in hits[:4]:
+            print("APP_CONTEXT",term,js[max(0,p-280):p+650])
 
 if __name__ == "__main__":
     main()
