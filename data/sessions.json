@@ -1,5 +1,21 @@
 {
-  "updated_at": null,
+  "updated_at": "2026-11-04T11:38:17.699329+00:00",
   "sessions": [],
-  "sources": [{"cinema":"Dendy Canberra","status":"pending"},{"cinema":"Palace Electric","status":"pending"},{"cinema":"NFSA Arc Cinema","status":"pending"}]
-}
+  "sources": [
+    {
+      "cinema": "Dendy Canberra",
+      "status": "no supported events found",
+      "count": 0
+    },
+    {
+      "cinema": "Palace Electric",
+      "status": "no supported events found",
+      "count": 0
+    },
+    {
+      "cinema": "NFSA Arc Cinema",
+      "status": "fetch error",
+      "detail": "403 Client Error: Forbidden for url: https://www.nfsa.gov.au/"
+    }
+  ]
+}\n
