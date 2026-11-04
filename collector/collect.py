@@ -33,6 +33,6 @@ def main():
    rows.extend(found);status.append({'cinema':cinema,'status':'ok' if found else 'no supported events found','count':len(found)})
   except Exception as ex:status.append({'cinema':cinema,'status':'fetch error','detail':str(ex)[:200]});print('WARN',cinema,ex)
  unique={(x['film_id'],x['cinema'],x['start']):x for x in rows}
- OUT.write_text(json.dumps({'updated_at':datetime.now(timezone.utc).isoformat(),'sessions':sorted(unique.values(),key=lambda x:x['start']),'sources':status},indent=2)+'\\n')
+ OUT.write_text(json.dumps({'updated_at':datetime.now(timezone.utc).isoformat(),'sessions':sorted(unique.values(),key=lambda x:x['start']),'sources':status},indent=2))
  print('Candidate sessions:',len(unique))
 if __name__=='__main__':main()
