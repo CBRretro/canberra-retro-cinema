@@ -180,19 +180,6 @@ def collect_anu(today):
 
 
 def main():
-    # TEMP: inspect public Flicks page structure for machine-readable cinema sessions.
-    probe_url = "https://www.flicks.com.au/cinema/national-film-and-sound-archive-arc/?view=all-movies"
-    try:
-        response = requests.get(probe_url, headers=HEADERS, timeout=TIMEOUT)
-        html = response.text
-        print("FLICKS_PROBE", response.status_code, len(html))
-        for term in ["__NEXT_DATA__", "__NUXT__", "showtimes", "showtime", "cinemaId", "cinema_id", "Dead Calm", "Grease: Sing-Along", "Never Let Me Go", "Strange Days", "The Big Blue"]:
-            pos = html.lower().find(term.lower())
-            print("FLICKS_TERM", term, pos, html[max(0,pos-180):pos+420].replace("\\n", " ") if pos >= 0 else "")
-        soup = BeautifulSoup(html, "html.parser")
-        print("FLICKS_SCRIPTS", [tag.get("src") for tag in soup.find_all("script") if tag.get("src")][-20:])
-    except requests.RequestException as exc:
-        print("FLICKS_PROBE_ERROR", str(exc)[:250])
     today = datetime.now(timezone.utc).date()
     rows = []
     status = []
