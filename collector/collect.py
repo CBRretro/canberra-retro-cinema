@@ -177,6 +177,20 @@ def collect_dendy(url, today_year):
           }
         }
     """
+    # The film page's follow-up query resolves the Movie by ID and exposes
+    # datesWithPublicShowing. This is the date-only data the simplified app needs.
+    movie_dates_query = """
+        query ($id: ID!) {
+          movie(id: $id) {
+            id
+            name
+            releaseDate
+            datesWithShowing
+            datesWithPublicShowing
+          }
+        }
+    """
+
     # Match the public site's Apollo query shape. Supplying only movieId to
     # datesWithShowing can return an empty list even when public sessions exist.
     showings_query = """
@@ -239,7 +253,35 @@ def collect_dendy(url, today_year):
                     ).get_text(" ", strip=True)
                 movie_id = str(graphql_movie.get("id") or "")
                 if movie_id:
+                    dates_response = requests.post(
+                        graphql_url,
+                        headers={**gql_headers, "Referer": movie_url},
+                        json={
+                            "query": movie_dates_query,
+                            "variables": {"id": movie_id},
+                            "extensions": {
+                                "clientLibrary": {
+                                    "name": "@apollo/client",
+                                    "version": "4.0.9",
+                                }
+                            },
+                        },
+                        timeout=TIMEOUT,
+                    )
+                    dates_response.raise_for_status()
+                    dates_payload = dates_response.json()
+                    if dates_payload.get("errors"):
+                        print("Dendy movie-date query errors", title,
+                              str(dates_payload["errors"])[:300])
+                    else:
+                        movie_dates = dates_payload.get("data", {}).get("movie") or {}
+                        public_dates = movie_dates.get("datesWithPublicShowing") or []
+                        print("Dendy movie-date query", title,
+                              "release", movie_dates.get("releaseDate"),
+                              "dates", public_dates)
+
                     # A null date asks Dendy's own endpoint for all public
+                    # upcoming showings for this film for all public
                     # upcoming showings for this film, as observed in its site.
                     showing_variables = {
                         "date": None,
