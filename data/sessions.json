@@ -1,6 +1,36 @@
 {
-  "updated_at": "2026-11-04T12:15:25.086176+00:00",
+  "updated_at": "2026-11-04T12:22:52.310957+00:00",
   "sessions": [
+    {
+      "film_id": "sense-and-sensibility",
+      "title": "Sense and Sensibility",
+      "year": 1995,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-05T10:15:00+11:00",
+      "description": "A charming, witty, and deeply relatable story of love and sisterhood.",
+      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/sense-and-sensibility/997959/",
+      "poster_url": "https://indy-systems.imgix.net/p3awjncm5vj4p91be64q3v0znp05?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
+    },
+    {
+      "film_id": "sense-and-sensibility",
+      "title": "Sense and Sensibility",
+      "year": 1995,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-05T13:00:00+11:00",
+      "description": "A charming, witty, and deeply relatable story of love and sisterhood.",
+      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/sense-and-sensibility/997960/",
+      "poster_url": "https://indy-systems.imgix.net/p3awjncm5vj4p91be64q3v0znp05?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
+    },
+    {
+      "film_id": "sense-and-sensibility",
+      "title": "Sense and Sensibility",
+      "year": 1995,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-05T15:45:00+11:00",
+      "description": "A charming, witty, and deeply relatable story of love and sisterhood.",
+      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/sense-and-sensibility/997961/",
+      "poster_url": "https://indy-systems.imgix.net/p3awjncm5vj4p91be64q3v0znp05?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
+    },
     {
       "film_id": "the-devils",
       "title": "The Devils",
@@ -12,6 +42,16 @@
       "poster_url": "https://indy-systems.imgix.net/rcze4nfwv7aermprg6gj6qfg3z6p?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
     },
     {
+      "film_id": "sense-and-sensibility",
+      "title": "Sense and Sensibility",
+      "year": 1995,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-05T18:30:00+11:00",
+      "description": "A charming, witty, and deeply relatable story of love and sisterhood.",
+      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/sense-and-sensibility/997962/",
+      "poster_url": "https://indy-systems.imgix.net/p3awjncm5vj4p91be64q3v0znp05?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
+    },
+    {
       "film_id": "the-devils",
       "title": "The Devils",
       "year": 1971,
@@ -20,6 +60,46 @@
       "description": "To the great delight of film lovers, we bring you the restored, uncut version of The Devils (1971) for the first time on cinema screens. The most scandalous film by Ken Russell, a notorious filmmaker who is well known for his provocative style. A dramatized historical account of the rise and fall of Urbain Grandier, a 17th-century Roman Catholic priest accused of witchcraft following the supposed possessions in Loudun, France; it also focuses on Sister \nJeanne des Anges, a sexually repressed nun who inadvertently incites the\n accusations.",
       "ticket_url": "https://canberra.dendy.com.au/checkout/showing/the-devils/997958/",
       "poster_url": "https://indy-systems.imgix.net/rcze4nfwv7aermprg6gj6qfg3z6p?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
+    },
+    {
+      "film_id": "sense-and-sensibility",
+      "title": "Sense and Sensibility",
+      "year": 1995,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-06T10:15:00+11:00",
+      "description": "A charming, witty, and deeply relatable story of love and sisterhood.",
+      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/sense-and-sensibility/998014/",
+      "poster_url": "https://indy-systems.imgix.net/p3awjncm5vj4p91be64q3v0znp05?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
+    },
+    {
+      "film_id": "sense-and-sensibility",
+      "title": "Sense and Sensibility",
+      "year": 1995,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-06T13:00:00+11:00",
+      "description": "A charming, witty, and deeply relatable story of love and sisterhood.",
+      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/sense-and-sensibility/998015/",
+      "poster_url": "https://indy-systems.imgix.net/p3awjncm5vj4p91be64q3v0znp05?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
+    },
+    {
+      "film_id": "sense-and-sensibility",
+      "title": "Sense and Sensibility",
+      "year": 1995,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-06T15:45:00+11:00",
+      "description": "A charming, witty, and deeply relatable story of love and sisterhood.",
+      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/sense-and-sensibility/998016/",
+      "poster_url": "https://indy-systems.imgix.net/p3awjncm5vj4p91be64q3v0znp05?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
+    },
+    {
+      "film_id": "sense-and-sensibility",
+      "title": "Sense and Sensibility",
+      "year": 1995,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-06T18:30:00+11:00",
+      "description": "A charming, witty, and deeply relatable story of love and sisterhood.",
+      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/sense-and-sensibility/998017/",
+      "poster_url": "https://indy-systems.imgix.net/p3awjncm5vj4p91be64q3v0znp05?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
     },
     {
       "film_id": "the-devils",
@@ -76,7 +156,7 @@
     {
       "cinema": "Dendy Canberra",
       "status": "ok",
-      "count": 3
+      "count": 11
     },
     {
       "cinema": "Palace Electric",
