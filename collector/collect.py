@@ -99,8 +99,13 @@ def collect_anu(today):
         try:
             soup = get_soup(url)
             page_text = soup.get_text(" ", strip=True)
-            title_node = soup.find(["h2", "h3"])
+            # The page heading is h2 ("Film Screening ..."); the film title is h3.
+            title_node = soup.find("h3")
             title = title_node.get_text(" ", strip=True) if title_node else ""
+            if not title:
+                poster_alt = soup.find("img", alt=re.compile(r"Poster for ", re.IGNORECASE))
+                if poster_alt:
+                    title = re.sub(r"^Poster for\\s+", "", poster_alt.get("alt", ""), flags=re.IGNORECASE).strip()
             year_match = re.search(r"\bYear\s+(19\d{2}|20\d{2})\b", page_text)
             date_match = re.search(
                 r"Film Screening\s+(\d{1,2})(?:st|nd|rd|th)\s+([A-Za-z]+),\s+(\d{4})",
