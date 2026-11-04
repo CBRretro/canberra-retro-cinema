@@ -180,27 +180,33 @@ def collect_anu(today):
 
 
 def main():
-    # TEMP: locate embedded Dendy showing records and the GraphQL request endpoint.
-    base = "https://canberra.dendy.com.au/"
-    try:
-        response = requests.get(base + "now-showing/", headers=HEADERS, timeout=TIMEOUT)
-        html = response.text
-        for term in ["startDate", "showingIds", "movieIds", "showings", "showing", "graphql", "__APOLLO_STATE__", "__INITIAL_STATE__", "window.__"]:
-            pos = html.lower().find(term.lower())
-            print("DENDY_HTML_CONTEXT", term, pos, html[max(0,pos-250):pos+1000].replace("\\n", " ") if pos >= 0 else "")
-        soup = BeautifulSoup(html, "html.parser")
-        for n, tag in enumerate(soup.find_all("script")):
-            raw = tag.string or tag.get_text()
-            if raw and len(raw) > 1000:
-                print("DENDY_INLINE_SCRIPT", n, tag.get("type"), len(raw), raw[:2500].replace("\\n", " "))
-        for src in [tag.get("src") for tag in soup.find_all("script") if tag.get("src") and "app." in tag.get("src")]:
-            js = requests.get(urljoin(base, src), headers=HEADERS, timeout=TIMEOUT).text
-            print("DENDY_JS_ENDPOINTS", re.findall(r'["\']([^"\']*(?:graphql|/api/)[^"\']*)["\']', js, re.I)[:80])
-            for term in ["graphqlEndpoint", "graphqlUrl", "graphql", "fetch(", "axios.post", "client.query"]:
-                p = js.lower().find(term.lower())
-                print("DENDY_JS_CONTEXT", term, p, js[max(0,p-300):p+900] if p >= 0 else "")
-    except requests.RequestException as exc:
-        print("DENDY_PROBE_ERROR", str(exc)[:250])
+    # TEMP: inspect Dendy film metadata, including release-year fields.
+    for url in [
+        "https://canberra.dendy.com.au/now-showing/",
+        "https://canberra.dendy.com.au/movie/the-devils/",
+    ]:
+        try:
+            response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
+            soup = BeautifulSoup(response.text, "html.parser")
+            print("DENDY_PAGE", url, response.status_code, len(response.text))
+            for tag in soup.select('script[type="application/ld+json"]'):
+                try:
+                    data = json.loads(tag.string or tag.get_text())
+                except Exception:
+                    continue
+                def walk(obj):
+                    if isinstance(obj, dict):
+                        yield obj
+                        for value in obj.values(): yield from walk(value)
+                    elif isinstance(obj, list):
+                        for value in obj: yield from walk(value)
+                for obj in walk(data):
+                    typ = obj.get("@type", [])
+                    if isinstance(typ, str): typ = [typ]
+                    if "Movie" in typ or "ScreeningEvent" in typ:
+                        print("DENDY_SCHEMA_RECORD", {k: obj.get(k) for k in ["@type","@id","name","datePublished","dateCreated","dateModified","releaseDate","productionDate","startDate","url","sameAs","workPresented","image","thumbnailUrl"]})
+        except requests.RequestException as exc:
+            print("DENDY_PROBE_ERROR", url, str(exc)[:250])
     today = datetime.now(timezone.utc).date()
     rows = []
     status = []
