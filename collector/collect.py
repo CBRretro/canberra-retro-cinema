@@ -176,14 +176,21 @@ def collect_dendy(url, today_year):
           }
         }
     """
-    dates_query = """
-        query ($movieId: ID) {
-          datesWithShowing(movieId: $movieId) { value }
-        }
-    """
+    # Match the public site's Apollo query shape. Supplying only movieId to
+    # datesWithShowing can return an empty list even when public sessions exist.
     showings_query = """
-        query ($date: String, $movieId: ID) {
-          showingsForDate(date: $date, movieId: $movieId) {
+        query (
+          $date: String, $ids: [ID], $movieId: ID, $movieIds: [ID],
+          $titleClassId: ID, $titleClassIds: [ID], $siteIds: [ID],
+          $everyShowingBadgeIds: [ID], $anyShowingBadgeIds: [ID],
+          $resultVersion: String
+        ) {
+          showingsForDate(
+            date: $date, ids: $ids, movieId: $movieId, movieIds: $movieIds,
+            titleClassId: $titleClassId, titleClassIds: $titleClassIds,
+            siteIds: $siteIds, everyShowingBadgeIds: $everyShowingBadgeIds,
+            anyShowingBadgeIds: $anyShowingBadgeIds, resultVersion: $resultVersion
+          ) {
             data {
               id time published private
               movie { id name urlSlug releaseDate synopsis posterImage }
@@ -231,59 +238,57 @@ def collect_dendy(url, today_year):
                     ).get_text(" ", strip=True)
                 movie_id = str(graphql_movie.get("id") or "")
                 if movie_id:
-                    date_response = requests.post(
+                    # A null date asks Dendy's own endpoint for all public
+                    # upcoming showings for this film, as observed in its site.
+                    showing_variables = {
+                        "date": None,
+                        "ids": [],
+                        "movieId": movie_id,
+                        "movieIds": [],
+                        "titleClassId": None,
+                        "titleClassIds": None,
+                        "siteIds": [],
+                        "anyShowingBadgeIds": None,
+                        "everyShowingBadgeIds": [],
+                        "resultVersion": None,
+                    }
+                    showing_response = requests.post(
                         graphql_url,
                         headers={**gql_headers, "Referer": movie_url},
-                        json={"query": dates_query, "variables": {"movieId": movie_id}},
+                        json={"query": showings_query, "variables": showing_variables},
                         timeout=TIMEOUT,
                     )
-                    date_response.raise_for_status()
-                    date_value = date_response.json().get("data", {}).get(
-                        "datesWithShowing", {}
-                    ).get("value", "[]")
-                    try:
-                        showing_dates = json.loads(date_value) if isinstance(date_value, str) else date_value
-                    except (json.JSONDecodeError, TypeError):
-                        showing_dates = []
-
+                    showing_response.raise_for_status()
+                    showing_payload = showing_response.json()
+                    if showing_payload.get("errors"):
+                        raise ValueError(str(showing_payload["errors"])[:300])
+                    rows = showing_payload.get("data", {}).get(
+                        "showingsForDate", {}
+                    ).get("data", [])
                     api_events = []
-                    for showing_date in showing_dates or []:
-                        showing_response = requests.post(
-                            graphql_url,
-                            headers={**gql_headers, "Referer": movie_url},
-                            json={
-                                "query": showings_query,
-                                "variables": {"date": showing_date, "movieId": movie_id},
-                            },
-                            timeout=TIMEOUT,
-                        )
-                        showing_response.raise_for_status()
-                        rows = showing_response.json().get("data", {}).get(
-                            "showingsForDate", {}
-                        ).get("data", [])
-                        for showing in rows:
-                            showing_movie = showing.get("movie") or {}
-                            if str(showing_movie.get("id")) != movie_id:
-                                continue
-                            if not showing.get("published") or showing.get("private"):
-                                continue
-                            start_value = showing.get("time")
-                            showing_id = str(showing.get("id") or "")
-                            if not start_value or not showing_id:
-                                continue
-                            try:
-                                local_start = datetime.fromisoformat(
-                                    str(start_value).replace("Z", "+00:00")
-                                ).astimezone(ZoneInfo("Australia/Sydney"))
-                            except ValueError:
-                                continue
-                            if local_start <= now:
-                                continue
-                            api_events.append({
-                                "name": title,
-                                "startDate": local_start.isoformat(),
-                                "url": f"https://canberra.dendy.com.au/checkout/showing/{showing_id}",
-                            })
+                    for showing in rows:
+                        showing_movie = showing.get("movie") or {}
+                        if str(showing_movie.get("id")) != movie_id:
+                            continue
+                        if not showing.get("published") or showing.get("private"):
+                            continue
+                        start_value = showing.get("time")
+                        showing_id = str(showing.get("id") or "")
+                        if not start_value or not showing_id:
+                            continue
+                        try:
+                            local_start = datetime.fromisoformat(
+                                str(start_value).replace("Z", "+00:00")
+                            ).astimezone(ZoneInfo("Australia/Sydney"))
+                        except ValueError:
+                            continue
+                        if local_start <= now:
+                            continue
+                        api_events.append({
+                            "name": title,
+                            "startDate": local_start.isoformat(),
+                            "url": f"https://canberra.dendy.com.au/checkout/showing/{showing_id}",
+                        })
                     events.extend(api_events)
                     print("Dendy GraphQL showings", title, len(api_events))
         except (requests.RequestException, ValueError, KeyError, TypeError) as exc:
