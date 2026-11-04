@@ -265,34 +265,35 @@ def collect_anu(today):
 
 
 def main():
-    url = "https://canberra.dendy.com.au/coming-soon/"
-    soup = get_soup(url)
-    print("DENDY_COMING_PAGE", len(str(soup)), "title", soup.title.get_text(" ", strip=True) if soup.title else "")
-    nodes = []
-    for n, tag in enumerate(soup.select('script[type="application/ld+json"]')):
-        raw = tag.string or tag.get_text()
+    base = "https://canberra.dendy.com.au/"
+    slugs = ["the-maltese-falcon", "eyes-wide-shut", "8", "rocky", "citizen-kane", "love-actually---20th-anniversary"]
+    for slug in slugs:
+        url = urljoin(base, "movie/" + slug + "/")
         try:
-            data = json.loads(raw)
-        except Exception as exc:
-            print("COMING_BAD_JSONLD", n, str(exc)[:100])
-            continue
-        def walk(obj):
-            if isinstance(obj, dict):
-                yield obj
-                for v in obj.values(): yield from walk(v)
-            elif isinstance(obj, list):
-                for v in obj: yield from walk(v)
-        items = list(walk(data))
-        nodes.extend(items)
-        print("COMING_JSONLD", n, len(items), [(x.get("@type"),x.get("name"),x.get("url"),x.get("@id")) for x in items if x.get("@type") in ("Movie","ItemList","ListItem","Event")][:30])
-    links = []
-    for a in soup.find_all("a", href=True):
-        href = urljoin(url, a["href"])
-        label = a.get_text(" ", strip=True)
-        if "/movie/" in href or "/film/" in href:
-            links.append((label,href))
-    print("COMING_FILM_LINKS", len(links), links[:100])
-    print("COMING_MOVIE_NODES", sum(1 for x in nodes if "Movie" in ([x.get("@type")] if isinstance(x.get("@type"),str) else x.get("@type",[]))))
+            soup = get_soup(url)
+            print("COMING_DETAIL", slug, "title", soup.title.get_text(" ",strip=True) if soup.title else "", "bytes",len(str(soup)))
+            for n,tag in enumerate(soup.select('script[type="application/ld+json"]')):
+                raw=tag.string or tag.get_text()
+                try: data=json.loads(raw)
+                except Exception as exc:
+                    print("DETAIL_BAD_JSONLD",slug,n,str(exc)[:100]); continue
+                def walk(obj):
+                    if isinstance(obj,dict):
+                        yield obj
+                        for v in obj.values(): yield from walk(v)
+                    elif isinstance(obj,list):
+                        for v in obj: yield from walk(v)
+                for x in walk(data):
+                    typ=x.get("@type",[])
+                    if isinstance(typ,str): typ=[typ]
+                    if any(t in typ for t in ["Movie","ScreeningEvent","Event"]):
+                        print("DETAIL_SCHEMA",slug,{k:x.get(k) for k in ["@type","name","description","datePublished","releaseDate","startDate","url","sameAs","workPresented"]})
+            text_content=soup.get_text(" ",strip=True)
+            for term in ["Showtimes","Session Times","Dendy Canberra","2026","1973","1941","1999"]:
+                p=text_content.find(term)
+                if p>=0: print("DETAIL_TEXT",slug,term,text_content[max(0,p-120):p+450])
+        except requests.RequestException as exc:
+            print("DETAIL_ERROR",slug,str(exc)[:200])
 
 if __name__ == "__main__":
     main()
