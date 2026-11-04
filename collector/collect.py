@@ -180,19 +180,6 @@ def collect_anu(today):
 
 
 def main():
-    # TEMP: test the NFSA's official ticketing calendar from GitHub Actions.
-    for probe_url in [
-        "https://tickets.nfsa.gov.au/events",
-        "https://tickets.nfsa.gov.au/Events",
-        "https://tickets.nfsa.gov.au/",
-        "https://tickets.nfsa.gov.au/Page/Terms",
-    ]:
-        try:
-            response = requests.get(probe_url, headers=HEADERS, timeout=TIMEOUT)
-            print("NFSA_TICKETS_PROBE", probe_url, response.status_code, response.headers.get("content-type"), len(response.content), response.url)
-            print("NFSA_TICKETS_SAMPLE", response.text[:350].replace("\\n", " "))
-        except requests.RequestException as exc:
-            print("NFSA_TICKETS_ERROR", probe_url, str(exc)[:180])
     today = datetime.now(timezone.utc).date()
     rows = []
     status = []
