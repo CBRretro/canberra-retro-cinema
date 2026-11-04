@@ -1,26 +1,6 @@
 {
-  "updated_at": "2026-11-04T21:44:04.489429+00:00",
+  "updated_at": "2026-11-04T21:47:05.940849+00:00",
   "sessions": [
-    {
-      "film_id": "rocky",
-      "title": "Rocky",
-      "year": 1976,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-05T18:15:00+11:00",
-      "description": "Rocky Balboa is a Philadelphia club fighter who seems to be going nowhere. But when a stroke of fate puts him in the ring with a world heavyweight champion, Rocky knows that it's his one shot at the big time — a once-in-a-lifetime opportunity to go the distance and come out a winner!",
-      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/rocky/909179/",
-      "poster_url": "https://indy-systems.imgix.net/9tu2hb69iukis2k4exzw12tj1g0o?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
-    },
-    {
-      "film_id": "rocky",
-      "title": "Rocky",
-      "year": 1976,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-07T15:00:00+11:00",
-      "description": "Rocky Balboa is a Philadelphia club fighter who seems to be going nowhere. But when a stroke of fate puts him in the ring with a world heavyweight champion, Rocky knows that it's his one shot at the big time — a once-in-a-lifetime opportunity to go the distance and come out a winner!",
-      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/rocky/909180/",
-      "poster_url": "https://indy-systems.imgix.net/9tu2hb69iukis2k4exzw12tj1g0o?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
-    },
     {
       "film_id": "across-the-plateau",
       "title": "Across the Plateau",
@@ -65,8 +45,8 @@
   "sources": [
     {
       "cinema": "Dendy Canberra",
-      "status": "ok",
-      "count": 2
+      "status": "no supported events found",
+      "count": 0
     },
     {
       "cinema": "Palace Electric",
