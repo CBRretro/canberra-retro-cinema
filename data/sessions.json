@@ -1,6 +1,37 @@
 {
-  "updated_at": "2026-11-04T11:39:07.309887+00:00",
-  "sessions": [],
+  "updated_at": "2026-11-04T11:45:48.945375+00:00",
+  "sessions": [
+    {
+      "film_id": "film-screening-21st-november-2026",
+      "title": "Film Screening 21st November, 2026",
+      "year": 2007,
+      "cinema": "ANU Film Group",
+      "start": "2026-11-21T17:00:00",
+      "description": "This thrilling documentary chronicles a group of determined long-distance cyclists from Guangzhou, China attempting an unprecedented physical feat: traversing the vast Tibetan Plateau entirely on pushbikes. Spanning more than 3,100 kilometres, this monumental Himalayan expedition encompasses five treacherous mountain passes, freezing sub-zero temperatures, and debilitating altitude sickness. Throughout their arduous journey, the riders confront extreme exhaustion and unpredictable weather that push their ageing bodies (the oldest cyclist is 66) and mental fortitude to the absolute limits. Mechanical breakdowns and isolation also test the interpersonal dynamics and camaraderie of the group as they battle to reach their goal. Co-directed by Zhang Zeming and Paul Liu, this inspiring Australian co-production won praise from critics for its intimate portrait of extraordinary human endurance a",
+      "ticket_url": "https://www.anufg.org.au/filminfo/20261121.html#film-5679",
+      "poster_url": "https://www.anufg.org.au/uploads/film/poster/5678/6f22275c4c65a4b09868a144e76a0d94.jpg"
+    },
+    {
+      "film_id": "film-screening-28th-november-2026",
+      "title": "Film Screening 28th November, 2026",
+      "year": 1996,
+      "cinema": "ANU Film Group",
+      "start": "2026-11-28T17:00:00",
+      "description": "In a desperate attempt to get himself out of a financial jam, mild-mannered Minnesota car salesman Jerry Lundegaard (William H. Macy) hires a pair of criminal lowlifes (Peter Stormare, Steve Buscemi) to kidnap his wife and demand a ransom from her wealthy father. Or at least that’s the plan – but it’s not long before their inept bungling leaves three people dead. Soon, heavily pregnant local police chief Marge Gunderson (Frances McDormand) begins diligently investigating the murders, as Jerry hopelessly attempts to cover his tracks. Released in 1996, this quirky and hilarious crime comedy quickly became the Coen Brothers’ biggest hit to date. It went on to win two Oscars, including McDormand’s first Best Actress trophy, and has even recently spawned an acclaimed TV spin-off series set in the same continuity. So, is this macabre indie classic worth revisiting again on the big screen for i",
+      "ticket_url": "https://www.anufg.org.au/filminfo/20261128.html#film-5684",
+      "poster_url": "https://www.anufg.org.au/uploads/film/poster/5683/9f9c34cda8aefa44129a7477bf184146.jpg"
+    },
+    {
+      "film_id": "film-screening-11th-december-2026",
+      "title": "Film Screening 11th December, 2026",
+      "year": 1986,
+      "cinema": "ANU Film Group",
+      "start": "2026-12-11T19:30:00",
+      "description": "Returning home, college student Jeffrey Beaumont (Kyle MacLachlan) discovers a severed human ear discovered in an overgrown suburban field. He launches an amateur investigation alongside inquisitive teenager Sandy Williams (Laura Dern), which pulls them into a sinister criminal underworld. Their sleuthing leads them directly to troubled nightclub singer Dorothy Vallens (Isabella Rossellini), placing Jeffrey in the sights of Frank Booth (Dennis Hopper), a volatile, oxygen-inhaling psychopath who subjects Dorothy to horrific intimidation. Jeffrey soon discovers that disturbing perversions flourish beneath his quiet town's cheerful facade. Although it divided audiences upon release, this iconic psychological neo-noir by the late, great David Lynch has since come to be regarded as a masterpiece of American cult cinema as it celebrates its 40th anniversary. Never one to be outdone, Dennis Hop",
+      "ticket_url": "https://www.anufg.org.au/filminfo/20261211.html#film-5691",
+      "poster_url": "https://www.anufg.org.au/uploads/film/poster/5691/149844b42cf256a31aa0c7fe5bbf077f.jpg"
+    }
+  ],
   "sources": [
     {
       "cinema": "Dendy Canberra",
@@ -16,6 +47,14 @@
       "cinema": "NFSA Arc Cinema",
       "status": "fetch error",
       "detail": "403 Client Error: Forbidden for url: https://www.nfsa.gov.au/whats-on/arc-cinema"
+    },
+    {
+      "cinema": "ANU Film Group",
+      "status": "ok",
+      "count": 5,
+      "programme_url": "https://www.anufg.org.au/programme",
+      "film_pages_checked": 58,
+      "detail": ""
     }
   ]
 }
