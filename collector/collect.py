@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urljoin
 from zoneinfo import ZoneInfo
+from playwright.sync_api import sync_playwright
 
 import requests
 from bs4 import BeautifulSoup
@@ -223,51 +224,81 @@ def collect_dendy(url, today_year):
         if year is None or today_year - year < 10:
             continue
 
-        # Dendy's individual film pages display showtimes as checkout links.
-        # These are not consistently exposed as JSON-LD ScreeningEvent nodes,
-        # so read the visible date/time text and retain each link as its ticket URL.
+        # Dendy loads its showtime widget with JavaScript. A normal HTTP
+        # request only receives the page shell, so render qualifying Coming Soon
+        # pages in Chromium and read the actual checkout links and their date groups.
         events = [node for node in nodes if "ScreeningEvent" in node_types(node)]
-        if not events:
-            page_text = detail_soup.get_text(" ", strip=True)
-            page_dates = re.findall(r"\\b(20\\d{2})-(\\d{2})-(\\d{2})\\b", page_text)
-            page_years = [int(match[0]) for match in page_dates]
-            default_year = page_years[0] if page_years else today_year
-            local_tz = ZoneInfo("Australia/Sydney")
-            for anchor in detail_soup.find_all("a", href=True):
-                href = anchor["href"]
-                if "/checkout/showing/" not in href:
-                    continue
-                label = anchor.get_text(" ", strip=True)
-                match = re.search(
-                    r"([A-Za-z]+\\s+\\d{1,2}),?\\s+(\\d{1,2}:\\d{2}\\s*[AP]M)",
-                    label,
-                    re.IGNORECASE,
+        if not events and page_info.get("coming_soon"):
+            if "browser" not in locals():
+                pass
+            try:
+                with sync_playwright() as playwright:
+                    browser = playwright.chromium.launch(headless=True)
+                    rendered = browser.new_page()
+                    rendered.goto(movie_url, wait_until="domcontentloaded", timeout=45000)
+                    try:
+                        rendered.wait_for_selector('a[href*="/checkout/showing/"]', timeout=20000)
+                    except Exception:
+                        rendered.wait_for_timeout(4000)
+                    anchors = rendered.locator('a[href*="/checkout/showing/"]').evaluate_all(
+                        """els => els.map(a => {
+                            let n = a;
+                            const contexts = [];
+                            for (let i = 0; i < 7 && n; i++, n = n.parentElement) {
+                                contexts.push((n.innerText || "").replace(/\\\\s+/g, " ").trim().slice(0, 500));
+                            }
+                            return {href: a.href, text: (a.innerText || "").trim(), contexts};
+                        })"""
+                    )
+                    print("DEBUG DENDY RENDERED", title, json.dumps(anchors[:12], ensure_ascii=False))
+                    browser.close()
+                month_pattern = (
+                    r"(January|February|March|April|May|June|July|August|September|October|November|December)"
                 )
-                if not match:
-                    continue
-                date_label, time_label = match.groups()
-                parsed = None
-                candidate_years = sorted(set(page_years + [default_year, today_year, today_year + 1]))
-                for candidate_year in candidate_years:
+                for anchor in anchors:
+                    contexts = anchor.get("contexts", [])
+                    time_match = None
+                    date_match = None
+                    for context in contexts:
+                        if not time_match:
+                            time_match = re.search(
+                                r"\\b(\\d{1,2}:\\d{2}\\s*[AP]M|\\d{1,2}\\s*[AP]M)\\b",
+                                context,
+                                re.IGNORECASE,
+                            )
+                        if not date_match:
+                            date_match = re.search(
+                                rf"\\b{month_pattern}\\s+(\\d{{1,2}})(?:st|nd|rd|th)?[,]?\\s+(20\\d{{2}})\\b",
+                                context,
+                                re.IGNORECASE,
+                            )
+                        if date_match and time_match:
+                            break
+                    if not date_match or not time_match:
+                        continue
+                    month_name, day, session_year = date_match.groups()
                     try:
                         date_part = datetime.strptime(
-                            f"{date_label} {candidate_year}", "%B %d %Y"
+                            f"{month_name} {day} {session_year}", "%B %d %Y"
                         ).date()
-                        time_part = datetime.strptime(time_label.upper().replace(" ", ""), "%I:%M%p").time()
-                        candidate = datetime.combine(date_part, time_part, tzinfo=local_tz)
+                        time_text = re.sub(r"\\s+", "", time_match.group(1).upper())
+                        time_part = datetime.strptime(
+                            time_text, "%I:%M%p" if ":" in time_text else "%I%p"
+                        ).time()
+                        session_start = datetime.combine(
+                            date_part, time_part, tzinfo=ZoneInfo("Australia/Sydney")
+                        )
                     except ValueError:
                         continue
-                    if candidate > now:
-                        parsed = candidate
-                        break
-                if parsed is None:
-                    continue
-                events.append({
-                    "name": title,
-                    "startDate": parsed.isoformat(),
-                    "url": urljoin(movie_url, href),
-                })
-
+                    if session_start <= now:
+                        continue
+                    events.append({
+                        "name": title,
+                        "startDate": session_start.isoformat(),
+                        "url": anchor.get("href", ""),
+                    })
+            except Exception as exc:
+                print("WARN Dendy rendered showtimes", title, str(exc)[:220])
         for event in events:
             start = event.get("startDate")
             if not start:
