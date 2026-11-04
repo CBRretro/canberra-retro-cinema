@@ -173,6 +173,7 @@ def collect_dendy(url, today_year):
         query ($urlSlug: String!, $siteIds: [ID]) {
           findMovieBySlug(urlSlug: $urlSlug, siteIds: $siteIds) {
             id name urlSlug releaseDate synopsis posterImage
+            datesWithShowing datesWithPublicShowing
           }
         }
     """
@@ -249,7 +250,7 @@ def collect_dendy(url, today_year):
                         "titleClassIds": None,
                         "siteIds": [],
                         "anyShowingBadgeIds": None,
-                        "everyShowingBadgeIds": [],
+                        "everyShowingBadgeIds": [None],
                         "resultVersion": None,
                     }
                     showing_response = requests.post(
@@ -265,6 +266,10 @@ def collect_dendy(url, today_year):
                     rows = showing_payload.get("data", {}).get(
                         "showingsForDate", {}
                     ).get("data", [])
+                    if not rows:
+                        print("Dendy GraphQL empty showings", title,
+                              "dates", graphql_movie.get("datesWithPublicShowing"),
+                              "errors", showing_payload.get("errors"))
                     api_events = []
                     for showing in rows:
                         showing_movie = showing.get("movie") or {}
