@@ -82,9 +82,10 @@ def collect_jsonld(cinema, url, today_year):
 
 
 def collect_dendy(url, today_year):
-    """Collect future Dendy Canberra screenings from linked film pages."""
-    soup = get_soup(url)
-    movies = {}
+    """Collect Dendy Canberra screenings from Now Showing and Coming Soon."""
+    coming_soon_url = "https://canberra.dendy.com.au/coming-soon/"
+    now = datetime.now(timezone.utc)
+    year_cache = {}
 
     def walk_nodes(obj):
         if isinstance(obj, dict):
@@ -95,73 +96,154 @@ def collect_dendy(url, today_year):
             for value in obj:
                 yield from walk_nodes(value)
 
-    for tag in soup.select('script[type="application/ld+json"]'):
-        try:
-            data = json.loads(tag.string or tag.get_text())
-        except (json.JSONDecodeError, TypeError):
-            continue
-        for node in walk_nodes(data):
-            typ = node.get("@type", [])
-            typ = [typ] if isinstance(typ, str) else typ
-            if "Movie" in typ and node.get("@id"):
-                movies[node["@id"]] = node
-
-    found = []
-    now = datetime.now(timezone.utc)
-    for movie in movies.values():
-        raw_description = str(movie.get("description", ""))
-        description = BeautifulSoup(raw_description, "html.parser").get_text(" ", strip=True)
-        year_match = re.search(r"\((19\d{2}|20\d{2})\)", description)
-        if not year_match:
-            published = movie.get("datePublished") or movie.get("releaseDate") or ""
-            year_match = re.search(r"(19\d{2}|20\d{2})", str(published))
-        if not year_match:
-            continue
-
-        year = int(year_match.group(1))
-        if today_year - year < 10:
-            continue
-
-        movie_url = movie.get("sameAs") or str(movie.get("@id", "")).split("#", 1)[0]
-        if not movie_url:
-            continue
-        try:
-            detail_soup = get_soup(movie_url)
-        except requests.RequestException as exc:
-            print("WARN Dendy film page", movie_url, str(exc)[:150])
-            continue
-
-        for tag in detail_soup.select('script[type="application/ld+json"]'):
+    def jsonld_nodes(soup):
+        nodes = []
+        for tag in soup.select('script[type="application/ld+json"]'):
             try:
                 data = json.loads(tag.string or tag.get_text())
             except (json.JSONDecodeError, TypeError):
                 continue
-            for event in walk_nodes(data):
-                typ = event.get("@type", [])
-                typ = [typ] if isinstance(typ, str) else typ
-                if "ScreeningEvent" not in typ:
-                    continue
+            nodes.extend(walk_nodes(data))
+        return nodes
 
-                title = str(event.get("name", movie.get("name", ""))).strip()
-                start = event.get("startDate")
-                if not title or not start:
-                    continue
-                try:
-                    if datetime.fromisoformat(str(start).replace("Z", "+00:00")) <= now:
-                        continue
-                except ValueError:
-                    continue
+    def node_types(node):
+        value = node.get("@type", [])
+        return [value] if isinstance(value, str) else value
 
-                found.append({
-                    "film_id": re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"),
-                    "title": title,
-                    "year": year,
-                    "cinema": "Dendy Canberra",
-                    "start": start,
-                    "description": description,
-                    "ticket_url": event.get("url", ""),
-                    "poster_url": movie.get("image") or movie.get("thumbnailUrl") or "",
-                })
+    def year_from_text(movie):
+        description = BeautifulSoup(str(movie.get("description", "")), "html.parser").get_text(" ", strip=True)
+        match = re.search(r"\((19\d{2}|20\d{2})\)", description)
+        if not match:
+            match = re.search(
+                r"(?:first released|originally released|released|premiered)\s+(?:in\s+)?(19\d{2}|20\d{2})",
+                description,
+                re.IGNORECASE,
+            )
+        if match:
+            return int(match.group(1)), description
+        published = movie.get("datePublished") or movie.get("releaseDate") or ""
+        match = re.search(r"(19\d{2}|20\d{2})", str(published))
+        return (int(match.group(1)) if match else None), description
+
+    def wikidata_year(title):
+        key = title.casefold().strip()
+        if key in year_cache:
+            return year_cache[key]
+        year_cache[key] = None
+        try:
+            response = requests.get(
+                "https://www.wikidata.org/w/api.php",
+                params={
+                    "action": "wbsearchentities",
+                    "search": title,
+                    "language": "en",
+                    "format": "json",
+                    "type": "item",
+                },
+                headers=HEADERS,
+                timeout=TIMEOUT,
+            )
+            response.raise_for_status()
+            results = response.json().get("search", [])
+            candidates = []
+            for item in results[:10]:
+                if item.get("label", "").casefold().strip() != key:
+                    continue
+                description = str(item.get("description", "")).casefold()
+                if "film" not in description and "movie" not in description:
+                    continue
+                entity_response = requests.get(
+                    f"https://www.wikidata.org/wiki/Special:EntityData/{item['id']}.json",
+                    headers=HEADERS,
+                    timeout=TIMEOUT,
+                )
+                entity_response.raise_for_status()
+                entity = entity_response.json()["entities"][item["id"]]
+                claims = entity.get("claims", {})
+                instance_ids = {
+                    claim.get("mainsnak", {}).get("datavalue", {}).get("value", {}).get("id")
+                    for claim in claims.get("P31", [])
+                }
+                dates = []
+                for claim in claims.get("P577", []):
+                    value = claim.get("mainsnak", {}).get("datavalue", {}).get("value", {})
+                    date_text = value.get("time", "") if isinstance(value, dict) else ""
+                    match = re.search(r"[+-](19\d{2}|20\d{2})-", date_text)
+                    if match:
+                        dates.append(int(match.group(1)))
+                if dates:
+                    candidates.append((0 if "Q11424" in instance_ids else 1, min(dates)))
+            if candidates:
+                candidates.sort()
+                year_cache[key] = candidates[0][1]
+        except (requests.RequestException, ValueError, KeyError, TypeError) as exc:
+            print("WARN Dendy release-year lookup", title, str(exc)[:140])
+        return year_cache[key]
+
+    now_soup = get_soup(url)
+    movie_pages = {}
+    for movie in jsonld_nodes(now_soup):
+        if "Movie" not in node_types(movie):
+            continue
+        movie_url = movie.get("sameAs") or str(movie.get("@id", "")).split("#", 1)[0]
+        if movie_url:
+            movie_pages[movie_url] = {"label": movie.get("name", ""), "movie": movie}
+
+    try:
+        coming_soup = get_soup(coming_soon_url)
+        for anchor in coming_soup.find_all("a", href=True):
+            movie_url = urljoin(coming_soon_url, anchor["href"]).split("#", 1)[0]
+            if "/movie/" not in movie_url or "canberra.dendy.com.au" not in movie_url:
+                continue
+            if movie_url not in movie_pages:
+                movie_pages[movie_url] = {"label": anchor.get_text(" ", strip=True), "movie": {}}
+    except requests.RequestException as exc:
+        print("WARN Dendy Coming Soon page", str(exc)[:180])
+
+    found = []
+    for movie_url, page_info in movie_pages.items():
+        try:
+            detail_soup = get_soup(movie_url)
+        except requests.RequestException as exc:
+            print("WARN Dendy film page", movie_url, str(exc)[:140])
+            continue
+
+        nodes = jsonld_nodes(detail_soup)
+        movie = next((node for node in nodes if "Movie" in node_types(node)), page_info["movie"])
+        events = [node for node in nodes if "ScreeningEvent" in node_types(node)]
+        if not events:
+            continue
+
+        title = str(movie.get("name") or page_info["label"]).strip()
+        if not title:
+            continue
+        year, description = year_from_text(movie)
+        if year is None:
+            year = wikidata_year(title)
+        if year is None or today_year - year < 10:
+            continue
+
+        for event in events:
+            start = event.get("startDate")
+            if not start:
+                continue
+            try:
+                if datetime.fromisoformat(str(start).replace("Z", "+00:00")) <= now:
+                    continue
+            except ValueError:
+                continue
+
+            event_title = str(event.get("name") or title).strip()
+            found.append({
+                "film_id": re.sub(r"[^a-z0-9]+", "-", event_title.lower()).strip("-"),
+                "title": event_title,
+                "year": year,
+                "cinema": "Dendy Canberra",
+                "start": start,
+                "description": description,
+                "ticket_url": event.get("url", ""),
+                "poster_url": movie.get("image") or movie.get("thumbnailUrl") or "",
+            })
 
     return found
 
@@ -265,18 +347,55 @@ def collect_anu(today):
 
 
 def main():
-    for title in ["Rocky","The Maltese Falcon","8½","Citizen Kane","Love Actually"]:
+    today = datetime.now(timezone.utc).date()
+    rows = []
+    status = []
+
+    for cinema, url in SOURCES:
         try:
-            response=requests.get("https://www.wikidata.org/w/api.php",params={"action":"wbsearchentities","search":title,"language":"en","format":"json","type":"item"},headers=HEADERS,timeout=TIMEOUT)
-            data=response.json()
-            print("WIKIDATA_SEARCH",title,[(x.get("id"),x.get("label"),x.get("description")) for x in data.get("search",[])[:5]])
-            for item in data.get("search",[])[:3]:
-                entity=requests.get(f"https://www.wikidata.org/wiki/Special:EntityData/{item['id']}.json",headers=HEADERS,timeout=TIMEOUT).json()["entities"][item["id"]]
-                p31=[x["mainsnak"].get("datavalue",{}).get("value",{}).get("id") for x in entity.get("claims",{}).get("P31",[])]
-                p577=[x["mainsnak"].get("datavalue",{}).get("value",{}).get("time") for x in entity.get("claims",{}).get("P577",[])]
-                print("WIKIDATA_ENTITY",title,item.get("id"),entity.get("labels",{}).get("en",{}).get("value"),p31,p577)
-        except Exception as exc:
-            print("WIKIDATA_ERROR",title,str(exc)[:200])
+            if cinema == "Dendy Canberra":
+                found = collect_dendy(url, today.year)
+            else:
+                found = collect_jsonld(cinema, url, today.year)
+            rows.extend(found)
+            status.append({
+                "cinema": cinema,
+                "status": "ok" if found else "no supported events found",
+                "count": len(found),
+            })
+        except requests.RequestException as exc:
+            status.append({
+                "cinema": cinema,
+                "status": "fetch error",
+                "detail": str(exc)[:200],
+            })
+            print("WARN", cinema, exc)
+
+    try:
+        anu_rows, anu_status = collect_anu(today)
+        rows.extend(anu_rows)
+        status.append(anu_status)
+    except requests.RequestException as exc:
+        status.append({
+            "cinema": "ANU Film Group",
+            "status": "fetch error",
+            "count": 0,
+            "programme_url": ANU_PROGRAMME,
+            "detail": str(exc)[:200],
+        })
+        print("WARN ANU Film Group", exc)
+
+    unique = {(row["film_id"], row["cinema"], row["start"]): row for row in rows}
+    output = {
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "sessions": sorted(unique.values(), key=lambda row: row["start"]),
+        "sources": status,
+    }
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print("Candidate sessions:", len(unique))
+    print("Dendy sessions:", sum(1 for row in unique.values() if row["cinema"] == "Dendy Canberra"))
+
 
 if __name__ == "__main__":
     main()
