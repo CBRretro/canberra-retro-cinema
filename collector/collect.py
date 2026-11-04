@@ -5,7 +5,7 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'data'/'sessions.json'
-SOURCES=[('Dendy Canberra','https://www.dendy.com.au/'),('Palace Electric','https://www.palacecinemas.com.au/'),('NFSA Arc Cinema','https://www.nfsa.gov.au/')]
+SOURCES=[('Dendy Canberra','https://canberra.dendy.com.au/now-showing/'),('Palace Electric','https://www.palacecinemas.com.au/cinemas/palace-electric-cinema'),('NFSA Arc Cinema','https://www.nfsa.gov.au/whats-on/arc-cinema')]
 def events(obj):
  if isinstance(obj,dict):
   typ=obj.get('@type',[]);typ=[typ] if isinstance(typ,str) else typ
