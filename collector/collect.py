@@ -265,13 +265,14 @@ def collect_anu(today):
 
 
 def main():
-    base="https://canberra.dendy.com.au/"
-    js=requests.get(urljoin(base,"/js/app.ab2bee7e.js"),headers=HEADERS,timeout=TIMEOUT).text
-    for term in ["tmdbId","graphqlUrl","graphqlEndpoint","/graphql","graphqlPath","createHttpLink","HttpLink","apiUrl","apiURL"]:
-        hits=[m.start() for m in re.finditer(re.escape(term),js,re.I)][:12]
-        print("APP_TERM",term,hits)
-        for p in hits[:4]:
-            print("APP_CONTEXT",term,js[max(0,p-280):p+650])
+    url="https://canberra.dendy.com.au/graphql"
+    headers={**HEADERS,"Content-Type":"application/json","Origin":"https://canberra.dendy.com.au","Referer":"https://canberra.dendy.com.au/coming-soon/"}
+    for query in ['{ __schema { types { name } } }','{ __type(name: "Movie") { name fields { name type { name kind ofType { name kind } } } } }']:
+        try:
+            response=requests.post(url,headers=headers,json={"query":query},timeout=TIMEOUT)
+            print("DENDY_GRAPHQL",response.status_code,response.headers.get("content-type"),response.text[:2500].replace("\\n"," "))
+        except requests.RequestException as exc:
+            print("DENDY_GRAPHQL_ERROR",str(exc)[:250])
 
 if __name__ == "__main__":
     main()
