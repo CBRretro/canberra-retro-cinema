@@ -205,6 +205,10 @@ def collect_dendy(url, today_year):
         print("WARN Dendy Coming Soon page", str(exc)[:180])
 
     found = []
+    playwright_manager = sync_playwright().start()
+    browser = playwright_manager.chromium.launch(headless=True)
+    rendered = browser.new_page()
+    rendered.route("**/*", lambda route: route.abort() if route.request.resource_type in ["image", "font", "media"] else route.continue_())
     for movie_url, page_info in movie_pages.items():
         try:
             detail_soup = get_soup(movie_url)
@@ -230,15 +234,12 @@ def collect_dendy(url, today_year):
         events = [node for node in nodes if "ScreeningEvent" in node_types(node)]
         if not events and page_info.get("coming_soon"):
             try:
-                with sync_playwright() as playwright:
-                    browser = playwright.chromium.launch(headless=True)
-                    rendered = browser.new_page()
-                    rendered.goto(movie_url, wait_until="domcontentloaded", timeout=45000)
-                    try:
-                        rendered.wait_for_selector('a[href*="/checkout/showing/"]', timeout=20000)
-                    except Exception:
-                        rendered.wait_for_timeout(4000)
-                    anchors = rendered.locator('a[href*="/checkout/showing/"]').evaluate_all(
+                rendered.goto(movie_url, wait_until="domcontentloaded", timeout=20000)
+                try:
+                    rendered.wait_for_selector('a[href*="/checkout/showing/"]', timeout=7000)
+                except Exception:
+                    pass
+                anchors = rendered.locator('a[href*="/checkout/showing/"]').evaluate_all(
                         """els => els.map(a => {
                             let n = a;
                             const contexts = [];
@@ -247,9 +248,8 @@ def collect_dendy(url, today_year):
                             }
                             return {href: a.href, text: (a.innerText || "").trim(), contexts};
                         })"""
-                    )
-                    print("DEBUG DENDY RENDERED", title, json.dumps(anchors[:12], ensure_ascii=False))
-                    browser.close()
+                )
+                print("Dendy rendered showtimes", title, len(anchors))
                 month_pattern = (
                     r"(January|February|March|April|May|June|July|August|September|October|November|December)"
                 )
@@ -319,6 +319,8 @@ def collect_dendy(url, today_year):
                 "poster_url": movie.get("image") or movie.get("thumbnailUrl") or "",
             })
 
+    browser.close()
+    playwright_manager.stop()
     return found
 
 def collect_anu(today):
