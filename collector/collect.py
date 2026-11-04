@@ -229,8 +229,6 @@ def collect_dendy(url, today_year):
         # pages in Chromium and read the actual checkout links and their date groups.
         events = [node for node in nodes if "ScreeningEvent" in node_types(node)]
         if not events and page_info.get("coming_soon"):
-            if "browser" not in locals():
-                pass
             try:
                 with sync_playwright() as playwright:
                     browser = playwright.chromium.launch(headless=True)
@@ -245,7 +243,7 @@ def collect_dendy(url, today_year):
                             let n = a;
                             const contexts = [];
                             for (let i = 0; i < 7 && n; i++, n = n.parentElement) {
-                                contexts.push((n.innerText || "").replace(/\\\\s+/g, " ").trim().slice(0, 500));
+                                contexts.push((n.innerText || "").replace(/\\s+/g, " ").trim().slice(0, 500));
                             }
                             return {href: a.href, text: (a.innerText || "").trim(), contexts};
                         })"""
@@ -262,13 +260,13 @@ def collect_dendy(url, today_year):
                     for context in contexts:
                         if not time_match:
                             time_match = re.search(
-                                r"\\b(\\d{1,2}:\\d{2}\\s*[AP]M|\\d{1,2}\\s*[AP]M)\\b",
+                                r"\b(\d{1,2}:\d{2}\s*[AP]M|\d{1,2}\s*[AP]M)\b",
                                 context,
                                 re.IGNORECASE,
                             )
                         if not date_match:
                             date_match = re.search(
-                                rf"\\b{month_pattern}\\s+(\\d{{1,2}})(?:st|nd|rd|th)?[,]?\\s+(20\\d{{2}})\\b",
+                                rf"\b{month_pattern}\s+(\d{{1,2}})(?:st|nd|rd|th)?[,]?\s+(20\d{{2}})\b",
                                 context,
                                 re.IGNORECASE,
                             )
@@ -281,7 +279,7 @@ def collect_dendy(url, today_year):
                         date_part = datetime.strptime(
                             f"{month_name} {day} {session_year}", "%B %d %Y"
                         ).date()
-                        time_text = re.sub(r"\\s+", "", time_match.group(1).upper())
+                        time_text = re.sub(r"\s+", "", time_match.group(1).upper())
                         time_part = datetime.strptime(
                             time_text, "%I:%M%p" if ":" in time_text else "%I%p"
                         ).time()
