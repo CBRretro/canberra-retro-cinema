@@ -180,33 +180,36 @@ def collect_anu(today):
 
 
 def main():
-    # TEMP: inspect Dendy film metadata, including release-year fields.
-    for url in [
-        "https://canberra.dendy.com.au/now-showing/",
-        "https://canberra.dendy.com.au/movie/the-devils/",
-    ]:
-        try:
-            response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
-            soup = BeautifulSoup(response.text, "html.parser")
-            print("DENDY_PAGE", url, response.status_code, len(response.text))
-            for tag in soup.select('script[type="application/ld+json"]'):
-                try:
-                    data = json.loads(tag.string or tag.get_text())
-                except Exception:
-                    continue
-                def walk(obj):
-                    if isinstance(obj, dict):
-                        yield obj
-                        for value in obj.values(): yield from walk(value)
-                    elif isinstance(obj, list):
-                        for value in obj: yield from walk(value)
-                for obj in walk(data):
-                    typ = obj.get("@type", [])
-                    if isinstance(typ, str): typ = [typ]
-                    if "Movie" in typ or "ScreeningEvent" in typ:
-                        print("DENDY_SCHEMA_RECORD", {k: obj.get(k) for k in ["@type","@id","name","datePublished","dateCreated","dateModified","releaseDate","productionDate","startDate","url","sameAs","workPresented","image","thumbnailUrl"]})
-        except requests.RequestException as exc:
-            print("DENDY_PROBE_ERROR", url, str(exc)[:250])
+    # TEMP: verify whether Dendy movie detail pages expose the original release year.
+    url = "https://canberra.dendy.com.au/movie/the-devils/"
+    try:
+        response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
+        soup = BeautifulSoup(response.text, "html.parser")
+        text_content = soup.get_text(" ", strip=True)
+        print("DENDY_DETAIL", response.status_code, len(response.text), "1971_POS", response.text.find("1971"), "TEXT_1971", text_content.find("1971"))
+        for tag in soup.select('script[type="application/ld+json"]'):
+            try:
+                data = json.loads(tag.string or tag.get_text())
+            except Exception:
+                continue
+            def walk(obj):
+                if isinstance(obj, dict):
+                    yield obj
+                    for value in obj.values(): yield from walk(value)
+                elif isinstance(obj, list):
+                    for value in obj: yield from walk(value)
+            for obj in walk(data):
+                typ = obj.get("@type", [])
+                if isinstance(typ, str): typ = [typ]
+                if "Movie" in typ:
+                    print("DENDY_MOVIE_KEYS", list(obj.keys()))
+                    print("DENDY_MOVIE_DESC", str(obj.get("description",""))[:1600])
+        for tag in soup.find_all("meta"):
+            content = tag.get("content","")
+            if any(x in content.lower() for x in ["1971","release","year"]):
+                print("DENDY_META", tag.get("property") or tag.get("name"), content[:500])
+    except requests.RequestException as exc:
+        print("DENDY_PROBE_ERROR", str(exc)[:250])
     today = datetime.now(timezone.utc).date()
     rows = []
     status = []
