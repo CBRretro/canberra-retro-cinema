@@ -81,80 +81,93 @@ def collect_jsonld(cinema, url, today_year):
 
 
 def collect_anu(today):
-    """Read ANU programme links, then obtain verified metadata from each film page."""
+    """Read ANU programme links and parse every film on each screening page."""
     programme = get_soup(ANU_PROGRAMME)
-    film_links = []
+    pages = []
     for anchor in programme.select('a[href*="/filminfo/"]'):
         href = anchor.get("href", "")
         if not re.search(r"/filminfo/\d{8}\.html", href):
             continue
-        url = urljoin(ANU_PROGRAMME, href)
-        if url not in film_links:
-            film_links.append(url)
+        url = urljoin(ANU_PROGRAMME, href).split("#", 1)[0]
+        if url not in pages:
+            pages.append(url)
 
     found = []
     checked = 0
     errors = []
-    for url in film_links:
+    for page_url in pages:
         try:
-            soup = get_soup(url)
-            page_text = soup.get_text(" ", strip=True)
-            # The page heading is h2 ("Film Screening ..."); the film title is h3.
-            title_node = soup.find("h3")
-            title = title_node.get_text(" ", strip=True) if title_node else ""
-            if not title:
-                poster_alt = soup.find("img", alt=re.compile(r"Poster for ", re.IGNORECASE))
-                if poster_alt:
-                    title = re.sub(r"^Poster for\\s+", "", poster_alt.get("alt", ""), flags=re.IGNORECASE).strip()
-            year_match = re.search(r"\bYear\s+(19\d{2}|20\d{2})\b", page_text)
-            date_match = re.search(
-                r"Film Screening\s+(\d{1,2})(?:st|nd|rd|th)\s+([A-Za-z]+),\s+(\d{4})",
-                page_text,
-                re.IGNORECASE,
-            )
-            time_match = re.search(r"\b(\d{1,2}:\d{2}\s*[AP]M)\b", page_text, re.IGNORECASE)
-            if not (title and year_match and date_match):
-                errors.append("Could not read required film details: " + url)
-                continue
+            soup = get_soup(page_url)
+            headings = soup.find_all("h3")
+            for heading in headings:
+                title = heading.get_text(" ", strip=True)
+                if not title:
+                    continue
 
-            release_year = int(year_match.group(1))
-            day, month_name, year = date_match.groups()
-            try:
-                session_date = datetime.strptime(
-                    f"{day} {month_name} {year}", "%d %B %Y"
-                ).date()
-            except ValueError:
-                errors.append("Could not parse screening date: " + url)
-                continue
+                # Gather only this film's section, stopping at the next film heading.
+                section_parts = []
+                section_paragraphs = []
+                for node in heading.next_elements:
+                    if getattr(node, "name", None) == "h3":
+                        break
+                    if isinstance(node, str):
+                        value = node.strip()
+                        if value:
+                            section_parts.append(value)
+                    elif getattr(node, "name", None) == "p":
+                        value = node.get_text(" ", strip=True)
+                        if len(value) > 45:
+                            section_paragraphs.append(value)
+                section_text = " ".join(section_parts)
 
-            checked += 1
-            if session_date < today or session_date.year - release_year < 10:
-                continue
+                year_match = re.search(r"\bYear\s+(19\d{2}|20\d{2})\b", section_text)
+                date_match = re.search(
+                    r"(\d{1,2})(?:st|nd|rd|th)\s+([A-Za-z]+),?\s+(\d{4})",
+                    section_text,
+                    re.IGNORECASE,
+                )
+                time_match = re.search(r"\b(\d{1,2}:\d{2}\s*[AP]M)\b", section_text, re.IGNORECASE)
+                if not (year_match and date_match and time_match):
+                    continue
 
-            poster = ""
-            poster_node = soup.find("img", alt=re.compile("poster", re.IGNORECASE))
-            if poster_node and poster_node.get("src"):
-                poster = urljoin(url, poster_node["src"])
+                release_year = int(year_match.group(1))
+                day, month_name, year = date_match.groups()
+                try:
+                    session_date = datetime.strptime(
+                        f"{day} {month_name} {year}", "%d %B %Y"
+                    ).date()
+                except ValueError:
+                    errors.append(f"Could not parse date for {title} on {page_url}")
+                    continue
 
-            # Use the page's prose paragraphs as a concise synopsis, excluding metadata.
-            paragraphs = [p.get_text(" ", strip=True) for p in soup.find_all("p")]
-            description = " ".join(p for p in paragraphs if len(p) > 45)[:900]
+                checked += 1
+                if session_date < today or session_date.year - release_year < 10:
+                    continue
 
-            start_time = time_match.group(1).upper().replace(" ", "") if time_match else ""
-            start = session_date.isoformat() + ("T" + datetime.strptime(start_time, "%I:%M%p").strftime("%H:%M:%S") if start_time else "")
-            film_id = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
-            found.append({
-                "film_id": film_id,
-                "title": title,
-                "year": release_year,
-                "cinema": "ANU Film Group",
-                "start": start,
-                "description": description,
-                "ticket_url": url,
-                "poster_url": poster,
-            })
+                poster = ""
+                poster_node = heading.find_previous(
+                    "img", alt=re.compile(r"Poster for ", re.IGNORECASE)
+                )
+                if poster_node and poster_node.get("src"):
+                    poster = urljoin(page_url, poster_node["src"])
+
+                start_time = time_match.group(1).upper().replace(" ", "")
+                start = session_date.isoformat() + "T" + datetime.strptime(
+                    start_time, "%I:%M%p"
+                ).strftime("%H:%M:%S")
+                film_id = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+                found.append({
+                    "film_id": film_id,
+                    "title": title,
+                    "year": release_year,
+                    "cinema": "ANU Film Group",
+                    "start": start,
+                    "description": " ".join(section_paragraphs)[:900],
+                    "ticket_url": page_url,
+                    "poster_url": poster,
+                })
         except requests.RequestException as exc:
-            errors.append(f"{url}: {str(exc)[:180]}")
+            errors.append(f"{page_url}: {str(exc)[:180]}")
 
     return found, {
         "cinema": "ANU Film Group",
