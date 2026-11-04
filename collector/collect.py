@@ -80,6 +80,77 @@ def collect_jsonld(cinema, url, today_year):
     return found
 
 
+
+def collect_dendy(url, today_year):
+    """Collect Dendy Canberra ScreeningEvents linked to film records."""
+    soup = get_soup(url)
+    nodes = []
+    for tag in soup.select('script[type="application/ld+json"]'):
+        try:
+            data = json.loads(tag.string or tag.get_text())
+        except (json.JSONDecodeError, TypeError):
+            continue
+
+        def walk_nodes(obj):
+            if isinstance(obj, dict):
+                yield obj
+                for value in obj.values():
+                    yield from walk_nodes(value)
+            elif isinstance(obj, list):
+                for value in obj:
+                    yield from walk_nodes(value)
+
+        nodes.extend(walk_nodes(data))
+
+    movies = {}
+    for node in nodes:
+        typ = node.get("@type", [])
+        typ = [typ] if isinstance(typ, str) else typ
+        if "Movie" in typ and node.get("@id"):
+            movies[node["@id"]] = node
+
+    found = []
+    for event in nodes:
+        typ = event.get("@type", [])
+        typ = [typ] if isinstance(typ, str) else typ
+        if "ScreeningEvent" not in typ:
+            continue
+
+        title = str(event.get("name", "")).strip()
+        start = event.get("startDate")
+        work = event.get("workPresented", {})
+        movie_id = work.get("@id") if isinstance(work, dict) else work
+        movie = movies.get(movie_id, {})
+        if not title or not start or not movie:
+            continue
+
+        raw_description = str(movie.get("description", ""))
+        description = BeautifulSoup(raw_description, "html.parser").get_text(" ", strip=True)
+        year_match = re.search(r"\((19\d{2}|20\d{2})\)", description)
+        if not year_match:
+            published = movie.get("datePublished") or movie.get("releaseDate") or ""
+            year_match = re.search(r"(19\d{2}|20\d{2})", str(published))
+        if not year_match:
+            continue
+
+        year = int(year_match.group(1))
+        if today_year - year < 10:
+            continue
+
+        found.append({
+            "film_id": re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"),
+            "title": title,
+            "year": year,
+            "cinema": "Dendy Canberra",
+            "start": start,
+            "description": description,
+            "ticket_url": event.get("url", ""),
+            "poster_url": movie.get("image") or movie.get("thumbnailUrl") or "",
+        })
+
+    return found
+
+
 def collect_anu(today):
     """Read ANU programme links and parse every film on each screening page."""
     programme = get_soup(ANU_PROGRAMME)
@@ -180,43 +251,16 @@ def collect_anu(today):
 
 
 def main():
-    # TEMP: verify whether Dendy movie detail pages expose the original release year.
-    url = "https://canberra.dendy.com.au/movie/the-devils/"
-    try:
-        response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
-        soup = BeautifulSoup(response.text, "html.parser")
-        text_content = soup.get_text(" ", strip=True)
-        print("DENDY_DETAIL", response.status_code, len(response.text), "1971_POS", response.text.find("1971"), "TEXT_1971", text_content.find("1971"))
-        for tag in soup.select('script[type="application/ld+json"]'):
-            try:
-                data = json.loads(tag.string or tag.get_text())
-            except Exception:
-                continue
-            def walk(obj):
-                if isinstance(obj, dict):
-                    yield obj
-                    for value in obj.values(): yield from walk(value)
-                elif isinstance(obj, list):
-                    for value in obj: yield from walk(value)
-            for obj in walk(data):
-                typ = obj.get("@type", [])
-                if isinstance(typ, str): typ = [typ]
-                if "Movie" in typ:
-                    print("DENDY_MOVIE_KEYS", list(obj.keys()))
-                    print("DENDY_MOVIE_DESC", str(obj.get("description",""))[:1600])
-        for tag in soup.find_all("meta"):
-            content = tag.get("content","")
-            if any(x in content.lower() for x in ["1971","release","year"]):
-                print("DENDY_META", tag.get("property") or tag.get("name"), content[:500])
-    except requests.RequestException as exc:
-        print("DENDY_PROBE_ERROR", str(exc)[:250])
     today = datetime.now(timezone.utc).date()
     rows = []
     status = []
 
     for cinema, url in SOURCES:
         try:
-            found = collect_jsonld(cinema, url, today.year)
+            if cinema == "Dendy Canberra":
+                found = collect_dendy(url, today.year)
+            else:
+                found = collect_jsonld(cinema, url, today.year)
             rows.extend(found)
             status.append({
                 "cinema": cinema,
@@ -254,7 +298,7 @@ def main():
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print("Candidate sessions:", len(unique))
-
+    print("Dendy sessions:", sum(1 for row in unique.values() if row["cinema"] == "Dendy Canberra"))
 
 if __name__ == "__main__":
     main()
