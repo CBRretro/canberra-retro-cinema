@@ -180,6 +180,16 @@ def collect_anu(today):
 
 
 def main():
+    # TEMP: test whether Flicks exposes Arc Cinema session data in fetchable HTML.
+    probe_url = "https://www.flicks.com.au/cinema/national-film-and-sound-archive-arc/?view=all-movies"
+    try:
+        response = requests.get(probe_url, headers=HEADERS, timeout=TIMEOUT)
+        print("FLICKS_PROBE", response.status_code, response.headers.get("content-type"), len(response.content), response.url)
+        for term in ["Dead Calm", "Grease", "showtime", "Arc Cinema", "2026"]:
+            print("FLICKS_TERM", term, response.text.lower().find(term.lower()))
+        print("FLICKS_HTML_SAMPLE", response.text[:700].replace("\\n", " "))
+    except requests.RequestException as exc:
+        print("FLICKS_PROBE_ERROR", str(exc)[:250])
     today = datetime.now(timezone.utc).date()
     rows = []
     status = []
