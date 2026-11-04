@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-11-04T12:13:19.775078+00:00",
+  "updated_at": "2026-11-04T12:14:17.585062+00:00",
   "sessions": [
+    {
+      "film_id": "the-devils",
+      "title": "The Devils",
+      "year": 1971,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-04T10:15:00+11:00",
+      "description": "To the great delight of film lovers, we bring you the restored, uncut version of The Devils (1971) for the first time on cinema screens. The most scandalous film by Ken Russell, a notorious filmmaker who is well known for his provocative style. A dramatized historical account of the rise and fall of Urbain Grandier, a 17th-century Roman Catholic priest accused of witchcraft following the supposed possessions in Loudun, France; it also focuses on Sister \nJeanne des Anges, a sexually repressed nun who inadvertently incites the\n accusations.",
+      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/the-devils/991600/",
+      "poster_url": "https://indy-systems.imgix.net/rcze4nfwv7aermprg6gj6qfg3z6p?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
+    },
     {
       "film_id": "across-the-plateau",
       "title": "Across the Plateau",
@@ -45,8 +55,8 @@
   "sources": [
     {
       "cinema": "Dendy Canberra",
-      "status": "no supported events found",
-      "count": 0
+      "status": "ok",
+      "count": 1
     },
     {
       "cinema": "Palace Electric",
