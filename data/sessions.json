@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-04T11:45:48.945375+00:00",
+  "updated_at": "2026-11-04T11:47:00.508493+00:00",
   "sessions": [
     {
-      "film_id": "film-screening-21st-november-2026",
-      "title": "Film Screening 21st November, 2026",
+      "film_id": "across-the-plateau",
+      "title": "Across the Plateau",
       "year": 2007,
       "cinema": "ANU Film Group",
       "start": "2026-11-21T17:00:00",
@@ -12,8 +12,8 @@
       "poster_url": "https://www.anufg.org.au/uploads/film/poster/5678/6f22275c4c65a4b09868a144e76a0d94.jpg"
     },
     {
-      "film_id": "film-screening-28th-november-2026",
-      "title": "Film Screening 28th November, 2026",
+      "film_id": "fargo",
+      "title": "Fargo",
       "year": 1996,
       "cinema": "ANU Film Group",
       "start": "2026-11-28T17:00:00",
@@ -22,8 +22,8 @@
       "poster_url": "https://www.anufg.org.au/uploads/film/poster/5683/9f9c34cda8aefa44129a7477bf184146.jpg"
     },
     {
-      "film_id": "film-screening-11th-december-2026",
-      "title": "Film Screening 11th December, 2026",
+      "film_id": "blue-velvet",
+      "title": "Blue Velvet",
       "year": 1986,
       "cinema": "ANU Film Group",
       "start": "2026-12-11T19:30:00",
