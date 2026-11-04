@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-04T13:13:15.849674+00:00",
+  "updated_at": "2026-11-04T19:05:00.955550+00:00",
   "sessions": [
     {
       "film_id": "the-devils",
@@ -10,6 +10,16 @@
       "description": "To the great delight of film lovers, we bring you the restored, uncut version of The Devils (1971) for the first time on cinema screens. The most scandalous film by Ken Russell, a notorious filmmaker who is well known for his provocative style. A dramatized historical account of the rise and fall of Urbain Grandier, a 17th-century Roman Catholic priest accused of witchcraft following the supposed possessions in Loudun, France; it also focuses on Sister \nJeanne des Anges, a sexually repressed nun who inadvertently incites the\n accusations.",
       "ticket_url": "https://canberra.dendy.com.au/checkout/showing/the-devils/997983/",
       "poster_url": "https://indy-systems.imgix.net/rcze4nfwv7aermprg6gj6qfg3z6p?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
+    },
+    {
+      "film_id": "rocky",
+      "title": "Rocky",
+      "year": 1976,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-05T18:15:00+11:00",
+      "description": "Rocky Balboa is a Philadelphia club fighter who seems to be going nowhere. But when a stroke of fate puts him in the ring with a world heavyweight champion, Rocky knows that it's his one shot at the big time — a once-in-a-lifetime opportunity to go the distance and come out a winner!",
+      "ticket_url": "https://canberra.dendy.com.au/checkout/showing/rocky/909179/",
+      "poster_url": "https://indy-systems.imgix.net/9tu2hb69iukis2k4exzw12tj1g0o?fit=crop&w=1000&h=500&fm=jpeg&auto=format"
     },
     {
       "film_id": "the-devils",
@@ -76,7 +86,7 @@
     {
       "cinema": "Dendy Canberra",
       "status": "ok",
-      "count": 3
+      "count": 4
     },
     {
       "cinema": "Palace Electric",
