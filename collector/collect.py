@@ -180,17 +180,46 @@ def collect_anu(today):
 
 
 def main():
-    # TEMP: inspect Dendy Canberra's public session data.
-    probe_url = "https://canberra.dendy.com.au/now-showing/"
+    # TEMP: inspect Dendy's JSON-LD and client-side showtime source.
+    base = "https://canberra.dendy.com.au/"
+    probe_url = base + "now-showing/"
     try:
         response = requests.get(probe_url, headers=HEADERS, timeout=TIMEOUT)
         html = response.text
-        print("DENDY_PROBE", response.status_code, response.headers.get("content-type"), len(html), response.url)
-        for term in ["Sense and Sensibility", "The Devils", "2001: A Space Odyssey", "showtimes", "session", "application/ld+json", "__NEXT_DATA__", "api/"]:
-            pos = html.lower().find(term.lower())
-            print("DENDY_TERM", term, pos, html[max(0,pos-160):pos+450].replace("\\n", " ") if pos >= 0 else "")
         soup = BeautifulSoup(html, "html.parser")
-        print("DENDY_SCRIPTS", [tag.get("src") for tag in soup.find_all("script") if tag.get("src")][-25:])
+        print("DENDY_PROBE", response.status_code, len(html))
+        for n, tag in enumerate(soup.select('script[type="application/ld+json"]')):
+            raw = tag.string or tag.get_text()
+            try:
+                data = json.loads(raw)
+                def types(obj):
+                    if isinstance(obj, dict):
+                        t = obj.get("@type")
+                        if t: yield t
+                        for v in obj.values(): yield from types(v)
+                    elif isinstance(obj, list):
+                        for v in obj: yield from types(v)
+                print("DENDY_JSONLD", n, list(types(data))[:30], raw[:1100].replace("\\n", " "))
+            except Exception:
+                print("DENDY_JSONLD_BAD", n, raw[:400])
+        for term in ["showtimes", "showtime", "sessionTimes", "session_times", "sessions", "startDate", "screening", "movieId", "sessionDate"]:
+            positions = [m.start() for m in re.finditer(term, html, re.I)][:5]
+            print("DENDY_HTML_TERM", term, positions)
+        scripts = [tag.get("src") for tag in soup.find_all("script") if tag.get("src")]
+        for src in scripts:
+            if "app." in src or "vendor." in src:
+                js_url = urljoin(base, src)
+                try:
+                    js = requests.get(js_url, headers=HEADERS, timeout=TIMEOUT).text
+                    print("DENDY_JS", js_url, len(js))
+                    for term in ["showtimes", "showtime", "session", "api/", "graphql", "cinemaId", "movieId"]:
+                        hits = [m.start() for m in re.finditer(term, js, re.I)][:8]
+                        print("DENDY_JS_TERM", term, hits)
+                        if hits:
+                            p = hits[0]
+                            print("DENDY_JS_CONTEXT", term, js[max(0,p-200):p+500])
+                except requests.RequestException as exc:
+                    print("DENDY_JS_ERROR", js_url, str(exc)[:150])
     except requests.RequestException as exc:
         print("DENDY_PROBE_ERROR", str(exc)[:250])
     today = datetime.now(timezone.utc).date()
