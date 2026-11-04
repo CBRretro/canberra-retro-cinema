@@ -38,6 +38,8 @@ jobs:
       name: github-pages
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
