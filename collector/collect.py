@@ -237,8 +237,13 @@ def collect_dendy(url, today_year):
                 diagnostic = title.casefold() == "love actually"
 
                 def log_dendy_request(request):
-                    if request.resource_type in ("xhr", "fetch"):
+                    if request.resource_type in ("xhr", "fetch") and "canberra.dendy.com.au/graphql" in request.url:
                         print("DENDY DIAGNOSTIC REQUEST", request.method, request.url[:500])
+                        try:
+                            if request.post_data:
+                                print("DENDY DIAGNOSTIC POSTDATA", request.post_data[:16000])
+                        except Exception:
+                            pass
 
                 def log_dendy_response(response):
                     if response.request.resource_type not in ("xhr", "fetch"):
