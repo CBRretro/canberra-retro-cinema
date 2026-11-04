@@ -180,17 +180,6 @@ def collect_anu(today):
 
 
 def main():
-    # Temporary probe of the NFSA's separate ticketing calendar.
-    try:
-        probe = requests.get("https://tickets.nfsa.gov.au/events", headers=HEADERS, timeout=TIMEOUT)
-        probe_soup = BeautifulSoup(probe.text, "html.parser")
-        print("NFSA TICKETS PROBE", probe.status_code, len(probe.text), probe.url)
-        print("NFSA TICKETS TITLE", probe_soup.title.get_text(" ", strip=True) if probe_soup.title else "")
-        print("NFSA TICKETS EVENT LINKS", [(a.get_text(" ", strip=True), a.get("href")) for a in probe_soup.select('a[href*="/Events/"]')[:12]])
-        print("NFSA TICKETS SCRIPTS", [s.get("src") for s in probe_soup.find_all("script") if s.get("src")][:12])
-    except requests.RequestException as exc:
-        print("NFSA TICKETS PROBE ERROR", str(exc)[:200])
-
     today = datetime.now(timezone.utc).date()
     rows = []
     status = []
