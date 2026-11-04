@@ -333,6 +333,35 @@ def collect_dendy(url, today_year):
                 "poster_url": movie.get("image") or movie.get("thumbnailUrl") or "",
             })
 
+    # Temporary focused probe: capture the exact public GraphQL request the
+    # Dendy film page makes for its screening dates. This lets us reproduce
+    # the smallest possible date-only query without relying on DOM scraping.
+    probe_url = next((u for u in movie_pages if "love-actually" in u), None)
+    if probe_url:
+        try:
+            with sync_playwright() as playwright:
+                browser = playwright.chromium.launch(headless=True)
+                probe = browser.new_page()
+                def log_request(request):
+                    if "/graphql" in request.url and request.method == "POST":
+                        print("DENDY DATE PROBE REQUEST", (request.post_data or "")[:14000])
+                def log_response(response):
+                    if "/graphql" in response.url and response.request.method == "POST":
+                        try:
+                            payload = response.json()
+                            raw = json.dumps(payload, ensure_ascii=False)
+                            if "datesWithPublicShowing" in raw or "datesWithShowing" in raw:
+                                print("DENDY DATE PROBE RESPONSE", raw[:14000])
+                        except Exception:
+                            pass
+                probe.on("request", log_request)
+                probe.on("response", log_response)
+                probe.goto(probe_url, wait_until="domcontentloaded", timeout=30000)
+                probe.wait_for_timeout(5000)
+                browser.close()
+        except Exception as exc:
+            print("WARN Dendy date probe", str(exc)[:250])
+
     print("Dendy film pages discovered:", len(movie_pages))
     return found
 
