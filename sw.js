@@ -1,4 +1,4 @@
-const C='crc-shell-v3';
+const C='crc-shell-v4';
 const SHELL=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest'];
 
 self.addEventListener('install',e=>{
