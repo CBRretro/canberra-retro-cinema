@@ -32,9 +32,9 @@ input{width:100%;max-width:420px;border:0;border-bottom:1px solid var(--ink);bac
 .screenings-table td{padding:16px 12px 16px 0;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}
 .screenings-table td:first-child{font:600 18px 'Playfair Display';min-width:220px}
 .screenings-table td:nth-child(2){font:11px 'DM Mono';color:var(--muted);white-space:nowrap}
-.screenings-table td:nth-child(3){color:#5e5a54;min-width:145px}
-.screenings-table td:nth-child(4){font:11px 'DM Mono';white-space:normal;min-width:155px}.screening-date{white-space:nowrap;line-height:1.8}.screening-date+.screening-date{margin-top:2px}
+.screenings-table td:nth-child(3){font:11px 'DM Mono';white-space:normal;min-width:155px}
+.screenings-table td:nth-child(4){color:#5e5a54;min-width:145px}.screening-date{white-space:nowrap;line-height:1.8}.screening-date+.screening-date{margin-top:2px}
 .empty-cell{text-align:center!important;padding:38px 12px!important;color:var(--muted);font:13px 'DM Sans'!important}
 .fineprint{font-size:9px;margin-top:25px}
 footer{display:flex;justify-content:space-between;padding:22px max(22px,calc((100vw - 1050px)/2));background:var(--ink);color:#d7d0c4;font-size:9px}
-@media(max-width:650px){header{height:64px}.strap{font-size:8px}main{padding:40px 19px 60px}.hero h1{letter-spacing:-2px}.controls{display:block}.controls input{max-width:none}.venue-filter{margin-top:18px}.venue-filter select{flex:1}.section-head{margin-top:42px}.section-head h2{font-size:24px}.screenings-table td{padding:14px 10px 14px 0}.screenings-table td:first-child{min-width:165px;font-size:16px}.screenings-table td:nth-child(3){min-width:125px}footer{font-size:8px;padding:18px 19px}}
+@media(max-width:650px){header{height:64px}.strap{font-size:8px}main{padding:40px 19px 60px}.hero h1{letter-spacing:-2px}.controls{display:block}.controls input{max-width:none}.venue-filter{margin-top:18px}.venue-filter select{flex:1}.section-head{margin-top:42px}.section-head h2{font-size:24px}.screenings-table td{padding:14px 10px 14px 0}.screenings-table td:first-child{min-width:165px;font-size:16px}.screenings-table td:nth-child(4){min-width:125px}footer{font-size:8px;padding:18px 19px}}
