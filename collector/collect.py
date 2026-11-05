@@ -446,7 +446,7 @@ def collect_palace(today):
                     "Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?"
                 )
                 date_pattern = re.compile(
-                    rf"\b(\d{{1,2}})(?:st|nd|rd|th)?\s*({month_names})\b",
+                    rf"(?<!\d)(\d{{1,2}})(?:st|nd|rd|th)?\s*({month_names})\b",
                     re.IGNORECASE
                 )
                 # The cinema name appears several times on the page: in the
