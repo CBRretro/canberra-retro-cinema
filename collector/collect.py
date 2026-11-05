@@ -446,7 +446,7 @@ def collect_palace(today):
                     "Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?"
                 )
                 date_pattern = re.compile(
-                    rf"\\b(\\d{{1,2}})(?:st|nd|rd|th)?\\s*({month_names})\\b",
+                    rf"\b(\d{{1,2}})(?:st|nd|rd|th)?\s*({month_names})\b",
                     re.IGNORECASE
                 )
                 # The cinema name appears several times on the page: in the
@@ -466,7 +466,7 @@ def collect_palace(today):
                 sessions = []
                 if section_text:
                     stop = re.search(
-                        r"\\n\\s*(?:SYNOPSIS|ABOUT THE FILM|MOVIE INFORMATION)\\b",
+                        r"\n\s*(?:SYNOPSIS|ABOUT THE FILM|MOVIE INFORMATION)\b",
                         section_text, re.IGNORECASE
                     )
                     if stop:
