@@ -30,16 +30,28 @@ def inspect_page(page, label, url):
         "(els) => els.map(e => ({aria:e.getAttribute('aria-label'),value:e.value,options:Array.from(e.options).map(o=>({text:o.text,value:o.value}))}))"
     )), flush=True)
 
-    # Explicitly select Canberra in every cinema/location selector.
-    for i in range(selects.count()):
-        selector = selects.nth(i)
-        options = selector.locator("option").evaluate_all(
-            "(els) => els.map(o => ({text:o.text.trim(),value:o.value}))"
-        )
-        canberra = next((o for o in options if o["value"].lower() == "canberra" or o["text"].lower() == "canberra"), None)
-        if canberra:
-            selector.select_option(canberra["value"])
-            page.wait_for_timeout(1800)
+    # Palace renders duplicate responsive location selectors, including hidden copies.
+    # Set every matching native select through the DOM so visibility does not block the test.
+    page.locator('select[aria-label="Choose your location"]').evaluate_all("""(els) => {
+      for (const el of els) {
+        const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+        setter.call(el, 'canberra');
+        el.dispatchEvent(new Event('input', {bubbles:true}));
+        el.dispatchEvent(new Event('change', {bubbles:true}));
+      }
+    }""")
+    page.wait_for_timeout(2500)
+
+    # Once locality is Canberra, constrain the cinema selector to Palace Electric (ID 171).
+    cinema_select = page.locator("select").filter(has=page.locator('option[value="171"]'))
+    if cinema_select.count():
+        cinema_select.first.evaluate("""(el) => {
+          const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+          setter.call(el, '171');
+          el.dispatchEvent(new Event('input', {bubbles:true}));
+          el.dispatchEvent(new Event('change', {bubbles:true}));
+        }""")
+        page.wait_for_timeout(2500)
 
     try:
         page.wait_for_load_state("networkidle", timeout=8000)
