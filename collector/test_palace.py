@@ -80,6 +80,27 @@ def inspect_page(page, label, url):
     print("BODY_TEXT", page.locator("body").inner_text()[:9000], flush=True)
     page.remove_listener("response", capture)
 
+def direct_api_probe():
+    api = "https://prod-api.palace-cinemas.workers.dev"
+    print("\\n===== DIRECT PALACE API PROBE =====", flush=True)
+    for path in ["/cinemas", "/movies?locality=canberra", "/movies/now/trending?locality=canberra"]:
+        try:
+            response = requests.get(api + path, headers={"User-Agent": "Mozilla/5.0", "Origin": BASE}, timeout=30)
+            print("API", path, "STATUS", response.status_code, flush=True)
+            data = response.json()
+            if path == "/cinemas":
+                print("CANBERRA_CINEMAS", json.dumps(
+                    [x for x in data if x.get("locality") == "canberra" or str(x.get("cinemaId")) == "171"],
+                    ensure_ascii=False
+                ), flush=True)
+            elif isinstance(data, list):
+                print("API_ITEMS", path, len(data), json.dumps(data[:40], ensure_ascii=False)[:12000], flush=True)
+            else:
+                print("API_DATA", path, json.dumps(data, ensure_ascii=False)[:12000], flush=True)
+        except Exception as exc:
+            print("API_ERROR", path, repr(exc), flush=True)
+
+
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -87,6 +108,7 @@ def main():
         for label, url in PAGES:
             inspect_page(page, label, url)
         browser.close()
+    direct_api_probe()
 
 if __name__ == "__main__":
     main()
