@@ -440,41 +440,38 @@ def collect_palace(today):
                 # reliably as paragraph elements), e.g. "Monday23rd Nov".
                 body_text = page.locator("body").inner_text()
                 heading = "PALACE ELECTRIC CINEMA CANBERRA"
-                if "la-la-land" in str(movie.get("slug", "")).lower():
-                    upper_text = body_text.upper()
-                    heading_positions = [m.start() for m in re.finditer(re.escape(heading), upper_text)]
-                    print("PALACE DEBUG La La Land URL:", page.url)
-                    print("PALACE DEBUG La La Land selectors:", page.locator("select").evaluate_all(
-                        "els => els.map(e => ({label:e.getAttribute('aria-label'),value:e.value,options:Array.from(e.options).filter(o=>o.selected).map(o=>o.text)}))"
-                    ))
-                    print("PALACE DEBUG La La Land heading positions:", heading_positions)
-                    print("PALACE DEBUG La La Land body text:", repr(body_text[:10000]))
-                heading_pos = body_text.upper().rfind(heading)
-                if "la-la-land" in str(movie.get("slug", "")).lower() and heading_pos >= 0:
-                    print("PALACE DEBUG La La Land section after heading:",
-                          repr(body_text[heading_pos + len(heading):heading_pos + len(heading) + 1800]))
+                month_names = (
+                    "Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|"
+                    "May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|"
+                    "Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?"
+                )
+                date_pattern = re.compile(
+                    rf"\\b(\\d{{1,2}})(?:st|nd|rd|th)?\\s*({month_names})\\b",
+                    re.IGNORECASE
+                )
+                # The cinema name appears several times on the page: in the
+                # cinema selector, as the actual sessions heading, and in the
+                # participating-cinemas/footer lists. Do NOT use rfind().
+                # Select the occurrence immediately followed by a real date.
+                heading_positions = [
+                    match.start()
+                    for match in re.finditer(re.escape(heading), body_text, re.IGNORECASE)
+                ]
+                section_text = ""
+                for heading_pos in heading_positions:
+                    after_heading = body_text[heading_pos + len(heading):]
+                    if date_pattern.search(after_heading[:180]):
+                        section_text = after_heading
+                        break
                 sessions = []
-                if heading_pos >= 0:
-                    section_text = body_text[heading_pos + len(heading):]
+                if section_text:
                     stop = re.search(
-                        r"\n\s*(?:SYNOPSIS|ABOUT THE FILM|MOVIE INFORMATION)\b",
+                        r"\\n\\s*(?:SYNOPSIS|ABOUT THE FILM|MOVIE INFORMATION)\\b",
                         section_text, re.IGNORECASE
                     )
                     if stop:
                         section_text = section_text[:stop.start()]
-                    # Keep only the compact screening block before the synopsis,
-                    # and require a real month name (not words such as "year" or
-                    # "century" which can follow anniversary numbers elsewhere).
                     section_text = section_text[:600]
-                    month_names = (
-                        "Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|"
-                        "May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|"
-                        "Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?"
-                    )
-                    date_pattern = re.compile(
-                        rf"\b(\d{{1,2}})(?:st|nd|rd|th)?\s*({month_names})\b",
-                        re.IGNORECASE
-                    )
                     sessions = [
                         match.group(0).strip()
                         for match in date_pattern.finditer(section_text)
