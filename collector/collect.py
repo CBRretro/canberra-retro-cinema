@@ -354,10 +354,10 @@ def collect_palace(today):
 
     def release_year(movie):
         title = str(movie.get("title") or "").strip()
-        match = re.search(r"\\b(19\\d{2}|20\\d{2})\\b", title)
+        match = re.search(r"\b(19\d{2}|20\d{2})\b", title)
         if match:
             return int(match.group(1))
-        anniversary = re.search(r"\\b(\\d+)(?:st|nd|rd|th)\\s+anniversary\\b", title, re.I)
+        anniversary = re.search(r"\b(\d+)(?:st|nd|rd|th)\s+anniversary\b", title, re.I)
         if anniversary:
             return today.year - int(anniversary.group(1))
         for key in ("originalReleaseYear", "releaseYear", "year"):
@@ -370,7 +370,7 @@ def collect_palace(today):
         return known_years.get(title.lower())
 
     def session_date(label):
-        match = re.search(r"(\\d{1,2})(?:st|nd|rd|th)?\\s+([A-Za-z]{3,})", label, re.I)
+        match = re.search(r"(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]{3,})", label, re.I)
         if not match:
             return None
         day, month_text = int(match.group(1)), match.group(2)
