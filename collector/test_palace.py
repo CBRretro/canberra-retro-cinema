@@ -81,6 +81,30 @@ def inspect_page(page, label, url):
     print("BODY_TEXT", page.locator("body").inner_text()[:9000], flush=True)
     page.remove_listener("response", capture)
 
+
+def inspect_la_la_land_detail(page):
+    url = BASE + "/movies/la-la-land-10th-anniversary"
+    responses = []
+    def capture(response):
+        if "json" in response.headers.get("content-type", ""):
+            try:
+                body = response.text()[:10000]
+            except Exception as exc:
+                body = "BODY_ERROR " + str(exc)
+            responses.append({"status": response.status, "url": response.url, "body": body})
+    page.on("response", capture)
+    response = page.goto(url, wait_until="domcontentloaded", timeout=60000)
+    try:
+        page.wait_for_load_state("networkidle", timeout=15000)
+    except Exception:
+        pass
+    page.wait_for_timeout(3000)
+    print("\\n===== LA LA LAND DETAIL PAGE =====", flush=True)
+    print("DETAIL_PAGE", response.status if response else None, page.url, flush=True)
+    print("DETAIL_TEXT", page.locator("body").inner_text()[:12000], flush=True)
+    print("DETAIL_JSON_NETWORK", json.dumps(responses, ensure_ascii=False)[:30000], flush=True)
+    page.remove_listener("response", capture)
+
 def direct_api_probe():
     api = "https://prod-api.palace-cinemas.workers.dev"
     print("\\n===== DIRECT PALACE API PROBE =====", flush=True)
