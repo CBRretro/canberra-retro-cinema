@@ -500,32 +500,31 @@ def collect_palace(today):
 
 
 def collect_arc(today):
-    """Diagnose the official NFSA ticketing calendar, which exposes dated Arc events."""
-    url = "https://tickets.nfsa.gov.au/events"
-    diagnostics = {"json_responses": []}
-    with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True)
-        page = browser.new_page()
-        page.on("response", lambda response: diagnostics["json_responses"].append({
-            "url": response.url, "status": response.status,
-            "content_type": response.headers.get("content-type", "")
-        }) if "json" in response.headers.get("content-type", "").lower() else None)
-        response = page.goto(url, wait_until="domcontentloaded", timeout=60000)
+    """Probe NFSA's public event pages directly as an alternative to the blocked ticketing host."""
+    urls = [
+        "https://www.nfsa.gov.au/whats-on/arc-cinema",
+        "https://www.nfsa.gov.au/whats-on/science-art-film",
+        "https://www.nfsa.gov.au/whats-on/science-art-film-minority-report-4653",
+        "https://www.nfsa.gov.au/whats-on",
+    ]
+    results = []
+    for url in urls:
         try:
-            page.wait_for_load_state("networkidle", timeout=15000)
-        except Exception:
-            pass
-        page.wait_for_timeout(7000)
-        diagnostics["status"] = response.status if response else None
-        diagnostics["final_url"] = page.url
-        diagnostics["title"] = page.title()
-        diagnostics["body"] = page.locator("body").inner_text()[:20000]
-        diagnostics["links"] = page.locator("a[href]").evaluate_all(
-            """els => els.map(a => ({text:(a.innerText||a.getAttribute('aria-label')||'').trim(),
-            href:a.href})).filter(x => x.text || /event|screen/i.test(x.href)).slice(0,160)"""
-        )
-        print("NFSA ARC TICKETS DIAGNOSTIC", json.dumps(diagnostics, ensure_ascii=False)[:30000])
-        browser.close()
+            response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
+            soup = BeautifulSoup(response.text, "html.parser")
+            text_body = soup.get_text(" ", strip=True)
+            results.append({
+                "url": url, "status": response.status_code,
+                "final_url": response.url, "title": soup.title.get_text(" ", strip=True) if soup.title else "",
+                "minority_report_present": "Minority Report" in text_body,
+                "body_excerpt": text_body[:1600],
+                "jsonld": [tag.get_text(" ", strip=True)[:3000] for tag in soup.select('script[type="application/ld+json"]')[:3]],
+                "links": [{"text": a.get_text(" ", strip=True)[:100], "href": a.get("href")}
+                          for a in soup.select('a[href*="whats-on"]')[:40]],
+            })
+        except Exception as exc:
+            results.append({"url": url, "error": str(exc)[:300]})
+    print("NFSA PUBLIC PAGE DIAGNOSTIC", json.dumps(results, ensure_ascii=False)[:18000])
     return []
 
 def collect_anu(today):
