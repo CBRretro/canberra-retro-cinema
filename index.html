@@ -1,1 +1,54 @@
-<!doctype html><html lang="en-AU"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#191919"><title>Canberra Retro Cinema</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./styles.css"></head><body><header><a class="brand" href="./"><b>CRC</b><span><strong>CANBERRA</strong><small>RETRO CINEMA</small></span></a><span class="strap">THE CLASSICS ARE BACK</span></header><main><section class="hero"><p class="eyebrow">THE BIG SCREEN, AGAIN</p><h1>Old films.<br><em>New nights out.</em></h1><p class="intro">A rolling guide to films at least 10 years old screening around Canberra.</p><div class="rule"></div><input id="search" type="search" placeholder="Search films, cinemas…"></section><nav><button class="tab active" data-view="upcoming">Upcoming</button><button class="tab" data-view="calendar">Calendar</button><button class="tab" data-view="watchlist">Watchlist <span id="watch-count">0</span></button></nav><div class="venue-filter" aria-label="Filter by cinema"><label for="cinema-filter">CINEMA</label><select id="cinema-filter"><option value="all">All four cinemas</option><option value="Dendy Canberra">Dendy Canberra</option><option value="Palace Electric">Palace Electric</option><option value="NFSA Arc Cinema">NFSA Arc Cinema</option><option value="ANU Film Group">ANU Film Group</option></select></div><div class="section-head"><div><p class="eyebrow">THE PROGRAMME</p><h2 id="section-title">Upcoming screenings</h2></div><small id="result-count"></small></div><div id="content" aria-live="polite"><div class="empty"><b>✳</b><h3>Building the programme</h3><p>The cinema listings collector is being connected and verified. Screenings will appear here once reliable data is available.</p></div></div><p class="fineprint" id="updated">Listings have not been collected yet.</p></main><footer>CANBERRA RETRO CINEMA <span>10 YEARS OLD AND COUNTING</span></footer><script src="./app.js" defer></script><script>if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));</script></body></html>
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#191919">
+  <title>Canberra Retro Cinema</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header>
+    <a class="brand" href="./"><b>CRC</b><span><strong>CANBERRA</strong><small>RETRO CINEMA</small></span></a>
+    <span class="strap">THE CLASSICS ARE BACK</span>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">THE BIG SCREEN, AGAIN</p>
+      <h1>Old films.<br><em>New nights out.</em></h1>
+      <p class="intro">A simple guide to films at least 10 years old screening around Canberra.</p>
+      <div class="rule"></div>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search films or cinemas…" aria-label="Search films or cinemas">
+        <div class="venue-filter">
+          <label for="cinema-filter">CINEMA</label>
+          <select id="cinema-filter">
+            <option value="all">All cinemas</option>
+            <option value="Dendy Canberra">Dendy Canberra</option>
+            <option value="Palace Electric">Palace Electric</option>
+            <option value="NFSA Arc Cinema">NFSA Arc Cinema</option>
+            <option value="ANU Film Group">ANU Film Group</option>
+          </select>
+        </div>
+      </div>
+    </section>
+    <div class="section-head">
+      <div><p class="eyebrow">THE PROGRAMME</p><h2>Upcoming screenings</h2></div>
+      <small id="result-count"></small>
+    </div>
+    <div class="table-wrap">
+      <table class="screenings-table">
+        <thead><tr><th scope="col">FILM</th><th scope="col">YEAR</th><th scope="col">CINEMA</th><th scope="col">SCREENING DATE</th></tr></thead>
+        <tbody id="screenings-body">
+          <tr><td colspan="4" class="empty-cell">Loading cinema listings…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fineprint" id="updated">Listings are being loaded.</p>
+  </main>
+  <footer>CANBERRA RETRO CINEMA <span>10 YEARS OLD AND COUNTING</span></footer>
+  <script src="./app.js" defer></script>
+  <script>if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));</script>
+</body>
+</html>
