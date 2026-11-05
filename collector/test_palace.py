@@ -131,6 +131,53 @@ def direct_api_probe():
             print("API_ERROR", path, repr(exc), flush=True)
 
 
+
+def inspect_palace_candidate_pages(page):
+    api = "https://prod-api.palace-cinemas.workers.dev"
+    response = requests.get(api + "/movies?locality=canberra",
+                            headers={"User-Agent":"Mozilla/5.0","Origin":BASE}, timeout=30)
+    response.raise_for_status()
+    movies = response.json()
+    candidates = [m for m in movies
+                  if "171" in [str(x) for x in (m.get("showingAtCinemaIds") or [])]
+                  and (m.get("isRepertory") or "retrospective" in str(m.get("genreDisplayNames","")).lower())]
+    print("\\n===== PALACE CANBERRA RETRO CANDIDATES =====", flush=True)
+    print("CANDIDATE_COUNT", len(candidates), flush=True)
+    for movie in candidates:
+        print("CANDIDATE", json.dumps({k:movie.get(k) for k in
+              ["movieId","title","slug","releaseDateUtc","publishedScreeningDate","isRepertory","genreDisplayNames"]},
+              ensure_ascii=False), flush=True)
+
+    for movie in candidates[:6]:
+        slug = movie.get("slug")
+        if not slug:
+            continue
+        url = BASE + "/movies/" + slug
+        response = page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        try:
+            page.wait_for_load_state("networkidle", timeout=10000)
+        except Exception:
+            pass
+        page.wait_for_timeout(1200)
+        body = page.locator("body").inner_text()
+        print("\\nCANDIDATE_DETAIL", movie.get("title"), response.status if response else None, flush=True)
+        print("CANDIDATE_DETAIL_TEXT", body[:4500].replace("\\n"," | "), flush=True)
+        matches = page.locator("body").evaluate("""el => {
+          const out=[];
+          const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+          while(walker.nextNode()){
+            const t=walker.currentNode.textContent.trim();
+            if(/\\b(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\\b|\\b\\d{1,2}:\\d{2}\\s*(?:am|pm)\\b/i.test(t)){
+              let n=walker.currentNode.parentElement;
+              for(let i=0;i<4 && n && n.parentElement;i++) n=n.parentElement;
+              out.push({text:t,html:n?n.outerHTML.slice(0,3500):""});
+            }
+          }
+          return out.slice(0,18);
+        }""")
+        print("CANDIDATE_SESSION_NODES", json.dumps(matches, ensure_ascii=False)[:14000], flush=True)
+
+
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -138,6 +185,7 @@ def main():
         for label, url in PAGES:
             inspect_page(page, label, url)
         inspect_la_la_land_detail(page)
+        inspect_palace_candidate_pages(page)
         browser.close()
     direct_api_probe()
 
