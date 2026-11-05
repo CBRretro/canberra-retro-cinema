@@ -58,7 +58,7 @@ function render(){
   }
   body.innerHTML=rows.map(item=>{
     const dates=item.screenings.map(value=>'<div class="screening-date">'+esc(dateLabel(value))+'</div>').join('');
-    return '<tr><td>'+esc(item.title)+'</td><td>'+esc(item.year||'—')+'</td><td>'+esc(item.cinema)+'</td><td class="screening-dates">'+dates+'</td></tr>';
+    return '<tr><td>'+esc(item.title)+'</td><td>'+esc(item.year||'—')+'</td><td class="screening-dates">'+dates+'</td><td>'+esc(item.cinema)+'</td></tr>';
   }).join('');
 }
 search.addEventListener('input',render);
