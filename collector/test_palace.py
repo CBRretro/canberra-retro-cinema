@@ -137,6 +137,7 @@ def main():
         page = browser.new_page()
         for label, url in PAGES:
             inspect_page(page, label, url)
+        inspect_la_la_land_detail(page)
         browser.close()
     direct_api_probe()
 
