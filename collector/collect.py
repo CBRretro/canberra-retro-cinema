@@ -680,6 +680,45 @@ def main():
         })
         print("WARN ANU Film Group", exc)
 
+    # Temporary intermediary import: this proves that structured NFSA data
+    # prepared outside GitHub can flow through the existing collector and app.
+    # The file is explicitly provisional and must be replaced by a live feed.
+    intermediary_path = ROOT / "data" / "nfsa-intermediary.json"
+    try:
+        intermediary = json.loads(intermediary_path.read_text(encoding="utf-8"))
+        arc_rows = []
+        for item in intermediary.get("sessions", []):
+            year = item.get("year")
+            start = str(item.get("start") or "")
+            if not year or not start:
+                continue
+            if datetime.fromisoformat(start).date() < today:
+                continue
+            if today.year - int(year) < 10:
+                continue
+            arc_rows.append({
+                "film_id": re.sub(r"[^a-z0-9]+", "-", str(item["title"]).lower()).strip("-"),
+                "title": str(item["title"]),
+                "year": int(year),
+                "cinema": "NFSA Arc Cinema",
+                "start": start,
+                "description": "",
+                "ticket_url": item.get("ticket_url", "https://tickets.nfsa.gov.au/events"),
+                "poster_url": "",
+            })
+        rows.extend(arc_rows)
+        status.append({
+            "cinema": "NFSA Arc Cinema",
+            "status": "provisional intermediary import",
+            "count": len(arc_rows),
+            "detail": "Static test import; not yet an automated NFSA feed",
+        })
+        print("NFSA intermediary rows imported:", len(arc_rows))
+    except FileNotFoundError:
+        pass
+    except (ValueError, TypeError, KeyError) as exc:
+        print("WARN NFSA intermediary import:", str(exc)[:300])
+
     unique = {(row["film_id"], row["cinema"], row["start"]): row for row in rows}
     output = {
         "updated_at": datetime.now(timezone.utc).isoformat(),
