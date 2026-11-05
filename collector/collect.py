@@ -402,17 +402,19 @@ def collect_palace(today):
                     pass
                 page.wait_for_timeout(700)
                 # Only use the session block headed Palace Electric Cinema Canberra.
-                sessions = page.locator("h2 a[href='/cinemas/palace-electric-cinema']").evaluate_all("""els => {
+                sessions = page.locator("a[href='/cinemas/palace-electric-cinema']").evaluate_all("""links => {
                   const out = [];
-                  for (const link of els) {
+                  const datePattern = /\\b\\d{1,2}(?:st|nd|rd|th)\\s+[A-Z][a-z]{2,}\\b/;
+                  for (const link of links) {
                     let section = link;
-                    for (let i = 0; i < 6 && section; i++, section = section.parentElement) {
-                      if (section.querySelectorAll && section.querySelectorAll('.css-1ujz8y7').length) break;
-                    }
-                    if (!section) continue;
-                    for (const node of section.querySelectorAll('.css-1ujz8y7')) {
-                      const text = (node.innerText || node.textContent || '').trim();
-                      if (text) out.push(text);
+                    for (let depth = 0; depth < 9 && section; depth++) {
+                      section = section.parentElement;
+                      if (!section) break;
+                      const dateNodes = [...section.querySelectorAll('p')].filter(p => datePattern.test((p.innerText || p.textContent || '').trim()));
+                      if (dateNodes.length) {
+                        out.push(...dateNodes.map(p => (p.innerText || p.textContent || '').trim()));
+                        break;
+                      }
                     }
                   }
                   return [...new Set(out)];
