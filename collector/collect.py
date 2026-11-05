@@ -21,7 +21,6 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; CanberraRetroCinema/0.1)"}
 TIMEOUT = 25
 SOURCES = [
     ("Dendy Canberra", "https://canberra.dendy.com.au/now-showing/"),
-    ("Palace Electric", "https://www.palacecinemas.com.au/cinemas/palace-electric-cinema"),
     ("NFSA Arc Cinema", "https://www.nfsa.gov.au/whats-on/arc-cinema"),
 ]
 ANU_PROGRAMME = "https://www.anufg.org.au/programme"
@@ -329,6 +328,116 @@ def collect_dendy(url, today_year):
     print("Dendy film pages discovered:", len(movie_pages))
     return found
 
+
+def collect_palace(today):
+    """Collect Palace Electric Canberra repertory screenings from Palace's API and film pages."""
+    api = "https://prod-api.palace-cinemas.workers.dev"
+    cinema_id = "171"
+    cinema_name = "Palace Electric Cinema Canberra"
+    api_headers = {**HEADERS, "Origin": "https://www.palacecinemas.com.au"}
+    response = requests.get(api + "/movies?locality=canberra", headers=api_headers, timeout=TIMEOUT)
+    response.raise_for_status()
+    catalogue = response.json()
+    candidates = [
+        movie for movie in catalogue
+        if cinema_id in [str(value) for value in (movie.get("showingAtCinemaIds") or [])]
+        and movie.get("isRepertory") is True and movie.get("slug")
+    ]
+
+    # Palace's public catalogue does not consistently expose original release years.
+    known_years = {
+        "children of men": 2006, "boogie nights": 1997,
+        "strangers on a train": 1951, "ferngully: the last rainforest": 1992,
+        "black christmas": 1974, "it's a wonderful life": 1946,
+        "the nightmare before christmas": 1993,
+    }
+
+    def release_year(movie):
+        title = str(movie.get("title") or "").strip()
+        match = re.search(r"\\b(19\\d{2}|20\\d{2})\\b", title)
+        if match:
+            return int(match.group(1))
+        anniversary = re.search(r"\\b(\\d+)(?:st|nd|rd|th)\\s+anniversary\\b", title, re.I)
+        if anniversary:
+            return today.year - int(anniversary.group(1))
+        for key in ("originalReleaseYear", "releaseYear", "year"):
+            value = movie.get(key)
+            if value:
+                try:
+                    return int(str(value)[:4])
+                except (ValueError, TypeError):
+                    pass
+        return known_years.get(title.lower())
+
+    def session_date(label):
+        match = re.search(r"(\\d{1,2})(?:st|nd|rd|th)?\\s+([A-Za-z]{3,})", label, re.I)
+        if not match:
+            return None
+        day, month_text = int(match.group(1)), match.group(2)
+        for fmt in ("%d %b %Y", "%d %B %Y"):
+            for year in (today.year, today.year + 1):
+                try:
+                    parsed = datetime.strptime(f"{day} {month_text} {year}", fmt).date()
+                except ValueError:
+                    continue
+                if parsed >= today:
+                    return parsed
+        return None
+
+    found, errors = [], []
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True)
+        page = browser.new_page()
+        for movie in candidates:
+            title = str(movie.get("title") or "").strip()
+            year = release_year(movie)
+            if year is not None and today.year - year < 10:
+                continue
+            url = "https://www.palacecinemas.com.au/movies/" + str(movie["slug"]).strip("/")
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                try:
+                    page.wait_for_load_state("networkidle", timeout=10000)
+                except Exception:
+                    pass
+                page.wait_for_timeout(700)
+                # Only use the session block headed Palace Electric Cinema Canberra.
+                sessions = page.locator("h2 a[href='/cinemas/palace-electric-cinema']").evaluate_all("""els => {
+                  const out = [];
+                  for (const link of els) {
+                    let section = link;
+                    for (let i = 0; i < 6 && section; i++, section = section.parentElement) {
+                      if (section.querySelectorAll && section.querySelectorAll('.css-1ujz8y7').length) break;
+                    }
+                    if (!section) continue;
+                    for (const node of section.querySelectorAll('.css-1ujz8y7')) {
+                      const text = (node.innerText || node.textContent || '').trim();
+                      if (text) out.push(text);
+                    }
+                  }
+                  return [...new Set(out)];
+                }""")
+                film_id = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+                for label in sessions:
+                    parsed = session_date(label)
+                    if parsed is None:
+                        continue
+                    found.append({
+                        "film_id": film_id, "title": title, "year": year,
+                        "cinema": cinema_name, "start": parsed.isoformat() + "T00:00:00",
+                        "description": "", "ticket_url": "", "poster_url": "",
+                    })
+                print("Palace Electric sessions", title, "year", year, "dates", sessions)
+            except Exception as exc:
+                errors.append(f"{title}: {str(exc)[:180]}")
+                print("WARN Palace film page", title, str(exc)[:300])
+        browser.close()
+    print("Palace Canberra repertory candidates:", len(candidates))
+    print("Palace Electric sessions collected:", len(found))
+    if errors:
+        print("Palace page errors:", "; ".join(errors[:5]))
+    return found
+
 def collect_anu(today):
     """Read ANU programme links and parse every film on each screening page."""
     programme = get_soup(ANU_PROGRAMME)
@@ -452,6 +561,21 @@ def main():
                 "detail": str(exc)[:200],
             })
             print("WARN", cinema, exc)
+
+    try:
+        palace_rows = collect_palace(today)
+        rows.extend(palace_rows)
+        status.append({
+            "cinema": "Palace Electric Cinema Canberra",
+            "status": "ok" if palace_rows else "no supported sessions found",
+            "count": len(palace_rows),
+        })
+    except Exception as exc:
+        status.append({
+            "cinema": "Palace Electric Cinema Canberra",
+            "status": "fetch error", "count": 0, "detail": str(exc)[:200],
+        })
+        print("WARN Palace Electric Cinema Canberra", exc)
 
     try:
         anu_rows, anu_status = collect_anu(today)
