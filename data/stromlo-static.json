@@ -1,0 +1,38 @@
+{
+  "cinema": "Stromlo Outdoor Cinema",
+  "source": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026",
+  "retrieval_method": "One-off manual transcription from the ANU event page; no ongoing scraper",
+  "status": "FIXED PROGRAMME — intentionally not refreshed automatically",
+  "sessions": [
+    {
+      "title": "The Martian",
+      "year": 2015,
+      "start": "2026-11-13T19:30:00",
+      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026"
+    },
+    {
+      "title": "Arrival",
+      "year": 2016,
+      "start": "2026-12-04T19:30:00",
+      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026"
+    },
+    {
+      "title": "Hidden Figures",
+      "year": 2016,
+      "start": "2026-12-11T19:30:00",
+      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026"
+    },
+    {
+      "title": "WALL-E",
+      "year": 2008,
+      "start": "2027-01-08T19:30:00",
+      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026"
+    },
+    {
+      "title": "The Hitchhiker's Guide to the Galaxy",
+      "year": 2005,
+      "start": "2027-01-15T19:30:00",
+      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026"
+    }
+  ]
+}
