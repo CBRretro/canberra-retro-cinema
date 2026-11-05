@@ -48,7 +48,7 @@ function cinemaLabel(value){
 function render(){
   const query=search.value.trim().toLowerCase();
   const rows=groupedListings()
-    .filter(item=>(cinemaFilter.value==='all'||item.cinema===cinemaFilter.value))
+    .filter(item=>(cinemaFilter.value==='all'||cinemaLabel(item.cinema)===cinemaFilter.value))
     .filter(item=>!query||[item.title,item.year,item.cinema].join(' ').toLowerCase().includes(query))
     .sort((a,b)=>new Date(a.firstScreening)-new Date(b.firstScreening)||a.title.localeCompare(b.title));
   const screeningTotal=rows.reduce((total,item)=>total+item.screenings.length,0);
@@ -61,7 +61,7 @@ function render(){
   }
   body.innerHTML=rows.map(item=>{
     const dates=item.screenings.map(value=>'<div class="screening-date">'+esc(dateLabel(value))+'</div>').join('');
-    return '<tr><td>'+esc(item.title)+'</td><td>'+esc(item.year||'—')+'</td><td class="screening-dates">'+dates+'</td><td>'+esc(item.cinema)+'</td></tr>';
+    return '<tr><td>'+esc(item.title)+'</td><td>'+esc(item.year||'—')+'</td><td class="screening-dates">'+dates+'</td><td>'+esc(cinemaLabel(item.cinema))+'</td></tr>';
   }).join('');
 }
 search.addEventListener('input',render);
