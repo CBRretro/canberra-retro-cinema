@@ -1,6 +1,7 @@
 from playwright.sync_api import sync_playwright
 import json
 import re
+import requests
 
 BASE = "https://www.palacecinemas.com.au"
 PAGES = [
@@ -94,9 +95,14 @@ def direct_api_probe():
                     ensure_ascii=False
                 ), flush=True)
             elif isinstance(data, list):
+                matches = [x for x in data if "la la land" in json.dumps(x, ensure_ascii=False).lower()]
                 print("API_ITEMS", path, len(data), json.dumps(data[:40], ensure_ascii=False)[:12000], flush=True)
+                print("LA_LA_LAND_MATCHES", path, json.dumps(matches, ensure_ascii=False)[:12000], flush=True)
             else:
-                print("API_DATA", path, json.dumps(data, ensure_ascii=False)[:12000], flush=True)
+                encoded = json.dumps(data, ensure_ascii=False)
+                print("API_DATA", path, encoded[:12000], flush=True)
+                if "la la land" in encoded.lower():
+                    print("LA_LA_LAND_MATCHES", path, encoded[:12000], flush=True)
         except Exception as exc:
             print("API_ERROR", path, repr(exc), flush=True)
 
