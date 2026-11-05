@@ -412,13 +412,13 @@ def collect_palace(today):
                 if heading_pos >= 0:
                     section_text = body_text[heading_pos + len(heading):]
                     stop = re.search(
-                        r"\\n\\s*(?:SYNOPSIS|ABOUT THE FILM|MOVIE INFORMATION)\\b",
+                        r"\n\s*(?:SYNOPSIS|ABOUT THE FILM|MOVIE INFORMATION)\b",
                         section_text, re.IGNORECASE
                     )
                     if stop:
                         section_text = section_text[:stop.start()]
                     date_pattern = re.compile(
-                        r"\\b(\\d{1,2})(?:st|nd|rd|th)?\\s*([A-Za-z]{3,})\\b",
+                        r"\b(\d{1,2})(?:st|nd|rd|th)?\s*([A-Za-z]{3,})\b",
                         re.IGNORECASE
                     )
                     sessions = [
