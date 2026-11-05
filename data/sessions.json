@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-05T05:50:35.425838+00:00",
+  "updated_at": "2026-11-05T06:08:18.059016+00:00",
   "sessions": [
     {
       "film_id": "rocky",
@@ -12,6 +12,26 @@
       "poster_url": ""
     },
     {
+      "film_id": "punch-drunk-love",
+      "title": "Punch-Drunk Love",
+      "year": 2002,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-06T18:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
+    },
+    {
+      "film_id": "there-will-be-blood",
+      "title": "There Will Be Blood",
+      "year": 2007,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-06T20:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
+    },
+    {
       "film_id": "rocky",
       "title": "Rocky",
       "year": 1976,
@@ -19,6 +39,16 @@
       "start": "2026-11-07T00:00:00",
       "description": "",
       "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "deliverance",
+      "title": "Deliverance",
+      "year": 1972,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-07T19:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
       "poster_url": ""
     },
     {
@@ -72,6 +102,26 @@
       "poster_url": ""
     },
     {
+      "film_id": "dark-water",
+      "title": "Dark Water",
+      "year": 2002,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-12T19:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
+    },
+    {
+      "film_id": "death-becomes-her",
+      "title": "Death Becomes Her",
+      "year": 1992,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-13T20:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
+    },
+    {
       "film_id": "citizen-kane",
       "title": "Citizen Kane",
       "year": 1941,
@@ -79,6 +129,16 @@
       "start": "2026-11-14T00:00:00",
       "description": "",
       "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "howl-s-moving-castle",
+      "title": "Howl's Moving Castle",
+      "year": 2004,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-15T14:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
       "poster_url": ""
     },
     {
@@ -102,6 +162,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "minority-report",
+      "title": "Minority Report",
+      "year": 2002,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-18T18:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
+    },
+    {
       "film_id": "spirited-away",
       "title": "Spirited Away",
       "year": 2001,
@@ -109,6 +179,26 @@
       "start": "2026-11-19T00:00:00",
       "description": "",
       "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-life-aquatic-with-steve-zissou",
+      "title": "The Life Aquatic with Steve Zissou",
+      "year": 2004,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-19T19:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
+    },
+    {
+      "film_id": "hearts-of-darkness-a-filmmaker-s-apocalypse",
+      "title": "Hearts of Darkness: A Filmmaker's Apocalypse",
+      "year": 1991,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-20T19:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
       "poster_url": ""
     },
     {
@@ -130,6 +220,16 @@
       "description": "This thrilling documentary chronicles a group of determined long-distance cyclists from Guangzhou, China attempting an unprecedented physical feat: traversing the vast Tibetan Plateau entirely on pushbikes. Spanning more than 3,100 kilometres, this monumental Himalayan expedition encompasses five treacherous mountain passes, freezing sub-zero temperatures, and debilitating altitude sickness. Throughout their arduous journey, the riders confront extreme exhaustion and unpredictable weather that push their ageing bodies (the oldest cyclist is 66) and mental fortitude to the absolute limits. Mechanical breakdowns and isolation also test the interpersonal dynamics and camaraderie of the group as they battle to reach their goal. Co-directed by Zhang Zeming and Paul Liu, this inspiring Australian co-production won praise from critics for its intimate portrait of extraordinary human endurance a",
       "ticket_url": "https://www.anufg.org.au/filminfo/20261121.html",
       "poster_url": "https://www.anufg.org.au/uploads/film/poster/5678/6f22275c4c65a4b09868a144e76a0d94.jpg"
+    },
+    {
+      "film_id": "they-re-a-weird-mob",
+      "title": "They're a Weird Mob",
+      "year": 1966,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-22T14:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
     },
     {
       "film_id": "spirited-away",
@@ -182,6 +282,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "apocalypse-now-the-final-cut",
+      "title": "Apocalypse Now: The Final Cut",
+      "year": 1979,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-27T19:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
+    },
+    {
       "film_id": "the-maltese-falcon",
       "title": "The Maltese Falcon",
       "year": 1941,
@@ -202,6 +312,16 @@
       "poster_url": "https://www.anufg.org.au/uploads/film/poster/5683/9f9c34cda8aefa44129a7477bf184146.jpg"
     },
     {
+      "film_id": "koyaanisqatsi",
+      "title": "Koyaanisqatsi",
+      "year": 1982,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-28T19:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
+    },
+    {
       "film_id": "the-godfather-4k-re-release",
       "title": "The Godfather (4K Re-release)",
       "year": 1972,
@@ -219,6 +339,16 @@
       "start": "2026-11-29T00:00:00",
       "description": "",
       "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "sunrise-a-song-of-two-humans",
+      "title": "Sunrise: A Song of Two Humans",
+      "year": 1927,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-11-29T14:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
       "poster_url": ""
     },
     {
@@ -382,6 +512,16 @@
       "poster_url": "https://www.anufg.org.au/uploads/film/poster/5691/149844b42cf256a31aa0c7fe5bbf077f.jpg"
     },
     {
+      "film_id": "showgirls",
+      "title": "Showgirls",
+      "year": 1995,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-11T20:00:00",
+      "description": "",
+      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
+    },
+    {
       "film_id": "love-actually",
       "title": "Love Actually",
       "year": 2003,
@@ -515,6 +655,12 @@
       "programme_url": "https://www.anufg.org.au/programme",
       "film_pages_checked": 58,
       "detail": ""
+    },
+    {
+      "cinema": "NFSA Arc Cinema",
+      "status": "provisional intermediary import",
+      "count": 14,
+      "detail": "Static test import; not yet an automated NFSA feed"
     }
   ]
 }
