@@ -1,19 +1,36 @@
-const content=document.querySelector('#content'),search=document.querySelector('#search'),count=document.querySelector('#result-count'),heading=document.querySelector('#section-title'),updated=document.querySelector('#updated');let sessions=[],view='upcoming',cinemaFilter='all',watch=new Set(JSON.parse(localStorage.getItem('crc-watchlist')||'[]'));
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function filmKey(s){return s.film_id||((s.title||'').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+(s.year||''));}
-function groupFilms(rows){const groups=new Map();rows.forEach(s=>{const id=filmKey(s);if(!groups.has(id))groups.set(id,{id,title:s.title,year:s.year,description:s.description,poster_url:s.poster_url,sessions:[]});const f=groups.get(id);if(!f.description&&s.description)f.description=s.description;if(!f.poster_url&&s.poster_url)f.poster_url=s.poster_url;f.sessions.push(s);});return [...groups.values()].map(f=>({...f,sessions:f.sessions.sort((a,b)=>new Date(a.start)-new Date(b.start))})).sort((a,b)=>new Date(a.sessions[0].start)-new Date(b.sessions[0].start));}
-function render(){
- document.querySelector('#watch-count').textContent=watch.size;
- const q=search.value.toLowerCase().trim();
- const rows=sessions.filter(s=>(cinemaFilter==='all'||s.cinema===cinemaFilter)&&(!q||[s.title,s.cinema,s.description].join(' ').toLowerCase().includes(q)));
- const films=groupFilms(rows).filter(f=>view!=='watchlist'||watch.has(f.id));
- heading.textContent=view==='calendar'?'Screening calendar':view==='watchlist'?'Your watchlist':'Upcoming screenings';
- const screeningCount=films.reduce((n,f)=>n+f.sessions.length,0);
- count.textContent=films.length?films.length+' FILMS · '+screeningCount+' SCREENINGS':'';
- if(!films.length){content.innerHTML='<div class="empty"><b>✳</b><h3>'+(view==='watchlist'?'Your list is waiting':'No screenings to show yet')+'</h3><p>'+(sessions.length?'No screenings match your search.':'The listings collector is being connected and verified. Screenings will appear here once reliable data is available.')+'</p></div>';return;}
- content.innerHTML=films.map(f=>{const saved=watch.has(f.id);return '<article class="screening">'+(f.poster_url?'<img class="poster" src="'+esc(f.poster_url)+'" alt="Poster for '+esc(f.title)+'">':'<div class="poster-placeholder">POSTER<br>SOON</div>')+'<div class="film-info"><h3 class="film-title">'+esc(f.title)+'</h3><div class="meta">'+esc(f.year||'CLASSIC')+'</div>'+(f.description?'<p class="description">'+esc(f.description)+'</p>':'')+'<div class="screening-list"><div class="screening-label">SCREENINGS</div>'+f.sessions.map(s=>'<div class="screening-item"><span class="time">'+new Date(s.start).toLocaleString('en-AU',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})+'</span><span class="screening-venue">'+esc(s.cinema)+'</span>'+(s.ticket_url?'<a href="'+esc(s.ticket_url)+'" target="_blank" rel="noopener">TICKETS ↗</a>':'')+'</div>').join('')+'</div></div><div class="actions"><button class="'+(saved?'saved':'')+'" data-id="'+esc(f.id)+'">'+(saved?'SAVED ✓':'＋ WATCHLIST')+'</button></div></article>';}).join('');
- content.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id;watch.has(id)?watch.delete(id):watch.add(id);localStorage.setItem('crc-watchlist',JSON.stringify([...watch]));render();});
+const body=document.querySelector('#screenings-body');
+const search=document.querySelector('#search');
+const count=document.querySelector('#result-count');
+const updated=document.querySelector('#updated');
+const cinemaFilter=document.querySelector('#cinema-filter');
+let sessions=[];
+
+const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+function dateLabel(value){
+  const date=new Date(value);
+  if(Number.isNaN(date.getTime())) return 'Date to be confirmed';
+  return date.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 }
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{view=b.dataset.view;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render();});
-search.oninput=render;document.querySelector('#cinema-filter').onchange=e=>{cinemaFilter=e.target.value;render();};
-fetch('./data/sessions.json').then(r=>r.json()).then(d=>{sessions=d.sessions||[];if(d.updated_at)updated.textContent='Last checked: '+new Date(d.updated_at).toLocaleString('en-AU')+' · Confirm details with the cinema.';render();}).catch(render);
+function render(){
+  const query=search.value.trim().toLowerCase();
+  const rows=sessions
+    .filter(item=>(cinemaFilter.value==='all'||item.cinema===cinemaFilter.value))
+    .filter(item=>!query||[item.title,item.year,item.cinema].join(' ').toLowerCase().includes(query))
+    .sort((a,b)=>new Date(a.start)-new Date(b.start)||a.title.localeCompare(b.title));
+  count.textContent=rows.length?rows.length+' SCREENINGS':'0 SCREENINGS';
+  if(!rows.length){
+    body.innerHTML='<tr><td colspan="4" class="empty-cell">'+(sessions.length?'No screenings match your search.':'No screenings are currently available.')+'</td></tr>';
+    return;
+  }
+  body.innerHTML=rows.map(item=>'<tr><td>'+esc(item.title)+'</td><td>'+esc(item.year||'—')+'</td><td>'+esc(item.cinema)+'</td><td>'+esc(dateLabel(item.start))+'</td></tr>').join('');
+}
+search.addEventListener('input',render);
+cinemaFilter.addEventListener('change',render);
+fetch('./data/sessions.json',{cache:'no-store'})
+  .then(response=>{if(!response.ok)throw new Error('Could not load listings');return response.json();})
+  .then(data=>{
+    sessions=Array.isArray(data.sessions)?data.sessions:[];
+    if(data.updated_at)updated.textContent='Last checked: '+new Date(data.updated_at).toLocaleString('en-AU')+'. Screening dates may change; confirm with the cinema.';
+    render();
+  })
+  .catch(()=>{body.innerHTML='<tr><td colspan="4" class="empty-cell">The listings could not be loaded. Please try refreshing.</td></tr>';});
