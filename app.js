@@ -42,6 +42,9 @@ function groupedListings(){
     return group;
   });
 }
+function cinemaLabel(value){
+  return value==='Palace Electric Cinema Canberra'?'Palace Electric':value;
+}
 function render(){
   const query=search.value.trim().toLowerCase();
   const rows=groupedListings()
