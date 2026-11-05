@@ -1,0 +1,92 @@
+{
+  "cinema": "NFSA Arc Cinema",
+  "source": "https://tickets.nfsa.gov.au/events",
+  "retrieval_method": "ChatGPT-assisted search-index extraction",
+  "status": "PROVISIONAL TEST DATA — verify against the live NFSA event pages before treating as authoritative",
+  "sessions": [
+    {
+      "title": "Punch-Drunk Love",
+      "year": 2002,
+      "start": "2026-11-06T18:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "There Will Be Blood",
+      "year": 2007,
+      "start": "2026-11-06T20:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "Deliverance",
+      "year": 1972,
+      "start": "2026-11-07T19:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "Dark Water",
+      "year": 2002,
+      "start": "2026-11-12T19:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "Death Becomes Her",
+      "year": 1992,
+      "start": "2026-11-13T20:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "Howl's Moving Castle",
+      "year": 2004,
+      "start": "2026-11-15T14:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "Minority Report",
+      "year": 2002,
+      "start": "2026-11-18T18:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "The Life Aquatic with Steve Zissou",
+      "year": 2004,
+      "start": "2026-11-19T19:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "Hearts of Darkness: A Filmmaker's Apocalypse",
+      "year": 1991,
+      "start": "2026-11-20T19:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "They're a Weird Mob",
+      "year": 1966,
+      "start": "2026-11-22T14:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "Apocalypse Now: The Final Cut",
+      "year": 1979,
+      "start": "2026-11-27T19:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "Koyaanisqatsi",
+      "year": 1982,
+      "start": "2026-11-28T19:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "Sunrise: A Song of Two Humans",
+      "year": 1927,
+      "start": "2026-11-29T14:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    },
+    {
+      "title": "Showgirls",
+      "year": 1995,
+      "start": "2026-12-11T20:00:00",
+      "ticket_url": "https://tickets.nfsa.gov.au/events"
+    }
+  ]
+}
