@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-05T05:27:52.052994+00:00",
+  "updated_at": "2026-11-05T05:40:42.452698+00:00",
   "sessions": [
     {
       "film_id": "rocky",
@@ -500,8 +500,8 @@
     },
     {
       "cinema": "NFSA Arc Cinema",
-      "status": "fetch error",
-      "detail": "403 Client Error: Forbidden for url: https://www.nfsa.gov.au/whats-on/arc-cinema"
+      "status": "no supported events found",
+      "count": 0
     },
     {
       "cinema": "Palace Electric Cinema Canberra",
