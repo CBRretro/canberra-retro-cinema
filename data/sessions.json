@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-05T20:23:24.172845+00:00",
+  "updated_at": "2026-11-05T20:28:52.180022+00:00",
   "sessions": [
     {
       "film_id": "punch-drunk-love",
@@ -79,6 +79,16 @@
       "start": "2026-11-12T19:00:00",
       "description": "",
       "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-martian",
+      "title": "The Martian",
+      "year": 2015,
+      "cinema": "Stromlo Outdoor Cinema",
+      "start": "2026-11-13T19:30:00",
+      "description": "",
+      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026",
       "poster_url": ""
     },
     {
@@ -392,6 +402,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "arrival",
+      "title": "Arrival",
+      "year": 2016,
+      "cinema": "Stromlo Outdoor Cinema",
+      "start": "2026-12-04T19:30:00",
+      "description": "",
+      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026",
+      "poster_url": ""
+    },
+    {
       "film_id": "breakfast-at-tiffany-s",
       "title": "Breakfast at Tiffany's",
       "year": 1961,
@@ -480,6 +500,16 @@
       "description": "Returning home, college student Jeffrey Beaumont (Kyle MacLachlan) discovers a severed human ear discovered in an overgrown suburban field. He launches an amateur investigation alongside inquisitive teenager Sandy Williams (Laura Dern), which pulls them into a sinister criminal underworld. Their sleuthing leads them directly to troubled nightclub singer Dorothy Vallens (Isabella Rossellini), placing Jeffrey in the sights of Frank Booth (Dennis Hopper), a volatile, oxygen-inhaling psychopath who subjects Dorothy to horrific intimidation. Jeffrey soon discovers that disturbing perversions flourish beneath his quiet town's cheerful facade. Although it divided audiences upon release, this iconic psychological neo-noir by the late, great David Lynch has since come to be regarded as a masterpiece of American cult cinema as it celebrates its 40th anniversary. Never one to be outdone, Dennis Hop",
       "ticket_url": "https://www.anufg.org.au/filminfo/20261211.html",
       "poster_url": "https://www.anufg.org.au/uploads/film/poster/5691/149844b42cf256a31aa0c7fe5bbf077f.jpg"
+    },
+    {
+      "film_id": "hidden-figures",
+      "title": "Hidden Figures",
+      "year": 2016,
+      "cinema": "Stromlo Outdoor Cinema",
+      "start": "2026-12-11T19:30:00",
+      "description": "",
+      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026",
+      "poster_url": ""
     },
     {
       "film_id": "showgirls",
@@ -592,6 +622,26 @@
       "poster_url": ""
     },
     {
+      "film_id": "wall-e",
+      "title": "WALL-E",
+      "year": 2008,
+      "cinema": "Stromlo Outdoor Cinema",
+      "start": "2027-01-08T19:30:00",
+      "description": "",
+      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-hitchhiker-s-guide-to-the-galaxy",
+      "title": "The Hitchhiker's Guide to the Galaxy",
+      "year": 2005,
+      "cinema": "Stromlo Outdoor Cinema",
+      "start": "2027-01-15T19:30:00",
+      "description": "",
+      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026",
+      "poster_url": ""
+    },
+    {
       "film_id": "metropolis-reconstructed-restored",
       "title": "Metropolis: Reconstructed & Restored",
       "year": 1927,
@@ -631,6 +681,12 @@
       "status": "provisional intermediary import",
       "count": 14,
       "detail": "Static test import; not yet an automated NFSA feed"
+    },
+    {
+      "cinema": "Stromlo Outdoor Cinema",
+      "status": "fixed one-off import",
+      "count": 5,
+      "detail": "Static programme; deliberately not refreshed from the source website"
     }
   ]
 }
