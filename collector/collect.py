@@ -498,29 +498,33 @@ def collect_palace(today):
     return found
 
 
+
 def collect_arc(today):
-    """Temporary browser diagnostic for NFSA Arc's dynamically rendered programme."""
-    url = "https://www.nfsa.gov.au/whats-on/arc-cinema"
-    diagnostics = {}
+    """Diagnose the official NFSA ticketing calendar, which exposes dated Arc events."""
+    url = "https://tickets.nfsa.gov.au/events"
+    diagnostics = {"json_responses": []}
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True)
         page = browser.new_page()
+        page.on("response", lambda response: diagnostics["json_responses"].append({
+            "url": response.url, "status": response.status,
+            "content_type": response.headers.get("content-type", "")
+        }) if "json" in response.headers.get("content-type", "").lower() else None)
         response = page.goto(url, wait_until="domcontentloaded", timeout=60000)
         try:
-            page.wait_for_load_state("networkidle", timeout=20000)
+            page.wait_for_load_state("networkidle", timeout=15000)
         except Exception:
             pass
-        page.wait_for_timeout(5000)
+        page.wait_for_timeout(7000)
         diagnostics["status"] = response.status if response else None
         diagnostics["final_url"] = page.url
         diagnostics["title"] = page.title()
-        diagnostics["body"] = page.locator("body").inner_text()[:14000]
-        diagnostics["jsonld"] = page.locator('script[type="application/ld+json"]').all_text_contents()
+        diagnostics["body"] = page.locator("body").inner_text()[:20000]
         diagnostics["links"] = page.locator("a[href]").evaluate_all(
             """els => els.map(a => ({text:(a.innerText||a.getAttribute('aria-label')||'').trim(),
-            href:a.href})).filter(x => x.text || /event|screen|whats-on/i.test(x.href)).slice(0,180)"""
+            href:a.href})).filter(x => x.text || /event|screen/i.test(x.href)).slice(0,160)"""
         )
-        print("NFSA ARC DIAGNOSTIC", json.dumps(diagnostics, ensure_ascii=False)[:26000])
+        print("NFSA ARC TICKETS DIAGNOSTIC", json.dumps(diagnostics, ensure_ascii=False)[:30000])
         browser.close()
     return []
 
