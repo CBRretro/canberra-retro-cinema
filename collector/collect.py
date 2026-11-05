@@ -388,6 +388,39 @@ def collect_palace(today):
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True)
         page = browser.new_page()
+        # The successful Palace diagnostic first selected Canberra and Palace
+        # Electric on the movie listing page, then opened film detail pages in
+        # that same browser session. This selection is stored by the site and
+        # controls which cinema's sessions appear on each detail page.
+        page.goto("https://www.palacecinemas.com.au/movies",
+                  wait_until="domcontentloaded", timeout=60000)
+        try:
+            page.wait_for_load_state("networkidle", timeout=15000)
+        except Exception:
+            pass
+        page.wait_for_timeout(1500)
+        location_select = page.locator(
+            'select[aria-label="Choose your location"]:visible'
+        )
+        if not location_select.count():
+            raise RuntimeError("Palace location selector was not available")
+        location_select.first.select_option("canberra")
+        page.wait_for_timeout(2500)
+        cinema_select = page.locator("select:visible").filter(
+            has=page.locator('option[value="171"]')
+        )
+        if not cinema_select.count():
+            raise RuntimeError("Palace Electric cinema selector was not available")
+        cinema_select.first.select_option("171")
+        page.wait_for_timeout(3500)
+        try:
+            page.wait_for_load_state("networkidle", timeout=10000)
+        except Exception:
+            pass
+        print("Palace selected location/cinema:",
+              page.locator("select").evaluate_all(
+                  "els => els.map(e => ({label:e.getAttribute('aria-label'),value:e.value}))"
+              ))
         for movie in candidates:
             title = str(movie.get("title") or "").strip()
             year = release_year(movie)
