@@ -497,6 +497,33 @@ def collect_palace(today):
         print("Palace page errors:", "; ".join(errors[:5]))
     return found
 
+
+def collect_arc(today):
+    """Temporary browser diagnostic for NFSA Arc's dynamically rendered programme."""
+    url = "https://www.nfsa.gov.au/whats-on/arc-cinema"
+    diagnostics = {}
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True)
+        page = browser.new_page()
+        response = page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        try:
+            page.wait_for_load_state("networkidle", timeout=20000)
+        except Exception:
+            pass
+        page.wait_for_timeout(5000)
+        diagnostics["status"] = response.status if response else None
+        diagnostics["final_url"] = page.url
+        diagnostics["title"] = page.title()
+        diagnostics["body"] = page.locator("body").inner_text()[:14000]
+        diagnostics["jsonld"] = page.locator('script[type="application/ld+json"]').all_text_contents()
+        diagnostics["links"] = page.locator("a[href]").evaluate_all(
+            """els => els.map(a => ({text:(a.innerText||a.getAttribute('aria-label')||'').trim(),
+            href:a.href})).filter(x => x.text || /event|screen|whats-on/i.test(x.href)).slice(0,180)"""
+        )
+        print("NFSA ARC DIAGNOSTIC", json.dumps(diagnostics, ensure_ascii=False)[:26000])
+        browser.close()
+    return []
+
 def collect_anu(today):
     """Read ANU programme links and parse every film on each screening page."""
     programme = get_soup(ANU_PROGRAMME)
@@ -606,7 +633,7 @@ def main():
             if cinema == "Dendy Canberra":
                 found = collect_dendy(url, today.year)
             else:
-                found = collect_jsonld(cinema, url, today.year)
+                found = collect_arc(today) if cinema == "NFSA Arc Cinema" else collect_jsonld(cinema, url, today.year)
             rows.extend(found)
             status.append({
                 "cinema": cinema,
