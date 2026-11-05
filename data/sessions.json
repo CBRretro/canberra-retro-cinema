@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-05T19:03:02.444706+00:00",
+  "updated_at": "2026-11-05T20:23:24.172845+00:00",
   "sessions": [
     {
       "film_id": "punch-drunk-love",
@@ -22,16 +22,6 @@
       "poster_url": ""
     },
     {
-      "film_id": "rocky",
-      "title": "Rocky",
-      "year": 1976,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-07T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
-    {
       "film_id": "deliverance",
       "title": "Deliverance",
       "year": 1972,
@@ -47,16 +37,6 @@
       "year": 1976,
       "cinema": "Palace Electric Cinema Canberra",
       "start": "2026-11-08T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
-    {
-      "film_id": "rocky",
-      "title": "Rocky",
-      "year": 1976,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-09T00:00:00",
       "description": "",
       "ticket_url": "",
       "poster_url": ""
@@ -626,7 +606,7 @@
     {
       "cinema": "Dendy Canberra",
       "status": "ok",
-      "count": 34
+      "count": 32
     },
     {
       "cinema": "NFSA Arc Cinema",
