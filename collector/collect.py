@@ -719,6 +719,47 @@ def main():
     except (ValueError, TypeError, KeyError) as exc:
         print("WARN NFSA intermediary import:", str(exc)[:300])
 
+
+    # Fixed one-off import for Stromlo Outdoor Cinema. This programme is
+    # intentionally not scraped or refreshed; only future qualifying sessions
+    # from the checked static file are carried into the generated listings.
+    stromlo_path = ROOT / "data" / "stromlo-static.json"
+    try:
+        stromlo = json.loads(stromlo_path.read_text(encoding="utf-8"))
+        stromlo_rows = []
+        for item in stromlo.get("sessions", []):
+            year = item.get("year")
+            start = str(item.get("start") or "")
+            if not year or not start:
+                continue
+            if datetime.fromisoformat(start).date() < today:
+                continue
+            if today.year - int(year) < 10:
+                continue
+            title = str(item["title"])
+            stromlo_rows.append({
+                "film_id": re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"),
+                "title": title,
+                "year": int(year),
+                "cinema": "Stromlo Outdoor Cinema",
+                "start": start,
+                "description": "",
+                "ticket_url": item.get("ticket_url", ""),
+                "poster_url": "",
+            })
+        rows.extend(stromlo_rows)
+        status.append({
+            "cinema": "Stromlo Outdoor Cinema",
+            "status": "fixed one-off import",
+            "count": len(stromlo_rows),
+            "detail": "Static programme; deliberately not refreshed from the source website",
+        })
+        print("Stromlo static rows imported:", len(stromlo_rows))
+    except FileNotFoundError:
+        pass
+    except (ValueError, TypeError, KeyError) as exc:
+        print("WARN Stromlo static import:", str(exc)[:300])
+
     unique = {(row["film_id"], row["cinema"], row["start"]): row for row in rows}
     output = {
         "updated_at": datetime.now(timezone.utc).isoformat(),
