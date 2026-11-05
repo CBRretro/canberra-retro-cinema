@@ -12,8 +12,12 @@ def inspect_page(page, label, url):
     responses = []
     def capture(response):
         content_type = response.headers.get("content-type", "")
-        if "json" in content_type or "javascript" in content_type:
-            responses.append({"status": response.status, "type": content_type, "url": response.url})
+        if "json" in content_type:
+            try:
+                body = response.text()[:5000]
+            except Exception as exc:
+                body = "BODY_ERROR " + str(exc)
+            responses.append({"status": response.status, "type": content_type, "url": response.url, "body": body})
 
     page.on("response", capture)
     response = page.goto(url, wait_until="domcontentloaded", timeout=60000)
@@ -32,26 +36,18 @@ def inspect_page(page, label, url):
 
     # Palace renders duplicate responsive location selectors, including hidden copies.
     # Set every matching native select through the DOM so visibility does not block the test.
-    page.locator('select[aria-label="Choose your location"]').evaluate_all("""(els) => {
-      for (const el of els) {
-        const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
-        setter.call(el, 'canberra');
-        el.dispatchEvent(new Event('input', {bubbles:true}));
-        el.dispatchEvent(new Event('change', {bubbles:true}));
-      }
-    }""")
-    page.wait_for_timeout(2500)
+    visible_location = page.locator('select[aria-label="Choose your location"]:visible')
+    print("VISIBLE_LOCATION_SELECTS", visible_location.count(), flush=True)
+    if visible_location.count():
+        visible_location.first.select_option("canberra")
+    page.wait_for_timeout(3000)
 
-    # Once locality is Canberra, constrain the cinema selector to Palace Electric (ID 171).
-    cinema_select = page.locator("select").filter(has=page.locator('option[value="171"]'))
+    # Use Playwright's real select interaction so the page framework receives the change.
+    cinema_select = page.locator("select:visible").filter(has=page.locator('option[value="171"]'))
+    print("VISIBLE_CINEMA_SELECTS", cinema_select.count(), flush=True)
     if cinema_select.count():
-        cinema_select.first.evaluate("""(el) => {
-          const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
-          setter.call(el, '171');
-          el.dispatchEvent(new Event('input', {bubbles:true}));
-          el.dispatchEvent(new Event('change', {bubbles:true}));
-        }""")
-        page.wait_for_timeout(2500)
+        cinema_select.first.select_option("171")
+        page.wait_for_timeout(4000)
 
     try:
         page.wait_for_load_state("networkidle", timeout=8000)
