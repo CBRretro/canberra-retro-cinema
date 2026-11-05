@@ -401,24 +401,30 @@ def collect_palace(today):
                 except Exception:
                     pass
                 page.wait_for_timeout(700)
-                # Only use the session block headed Palace Electric Cinema Canberra.
-                sessions = page.locator("a[href='/cinemas/palace-electric-cinema']").evaluate_all("""links => {
-                  const out = [];
-                  const datePattern = /\\b\\d{1,2}(?:st|nd|rd|th)\\s+[A-Z][a-z]{2,}\\b/;
-                  for (const link of links) {
-                    let section = link;
-                    for (let depth = 0; depth < 9 && section; depth++) {
-                      section = section.parentElement;
-                      if (!section) break;
-                      const dateNodes = [...section.querySelectorAll('p')].filter(p => datePattern.test((p.innerText || p.textContent || '').trim()));
-                      if (dateNodes.length) {
-                        out.push(...dateNodes.map(p => (p.innerText || p.textContent || '').trim()));
-                        break;
-                      }
-                    }
-                  }
-                  return [...new Set(out)];
-                }""")
+                # Reproduce the proven diagnostic: read rendered page text, then
+                # isolate the block immediately under the Palace Electric Canberra
+                # heading. The cinema's session dates are rendered as text (not
+                # reliably as paragraph elements), e.g. "Monday23rd Nov".
+                body_text = page.locator("body").inner_text()
+                heading = "PALACE ELECTRIC CINEMA CANBERRA"
+                heading_pos = body_text.upper().rfind(heading)
+                sessions = []
+                if heading_pos >= 0:
+                    section_text = body_text[heading_pos + len(heading):]
+                    stop = re.search(
+                        r"\\n\\s*(?:SYNOPSIS|ABOUT THE FILM|MOVIE INFORMATION)\\b",
+                        section_text, re.IGNORECASE
+                    )
+                    if stop:
+                        section_text = section_text[:stop.start()]
+                    date_pattern = re.compile(
+                        r"\\b(\\d{1,2})(?:st|nd|rd|th)?\\s*([A-Za-z]{3,})\\b",
+                        re.IGNORECASE
+                    )
+                    sessions = [
+                        match.group(0).strip()
+                        for match in date_pattern.finditer(section_text)
+                    ]
                 film_id = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
                 for label in sessions:
                     parsed = session_date(label)
