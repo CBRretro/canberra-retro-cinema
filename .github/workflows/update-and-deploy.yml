@@ -22,6 +22,7 @@ jobs:
           python-version: '3.12'
       - run: pip install -r collector/requirements.txt
       - run: python -m playwright install --with-deps chromium
+      - run: python collector/test_palace.py
       - run: python collector/collect.py
       - name: Commit changed listings
         run: |
