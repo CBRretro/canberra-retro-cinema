@@ -224,7 +224,7 @@ def collect_dendy(url, today_year):
                       }
                     }
                 """,
-                "variables": {"urlSlug": slug, "siteIds": []},
+                "variables": {"urlSlug": slug, "siteIds": ["34"]},
                 "extensions": {
                     "clientLibrary": {
                         "name": "@apollo/client",
