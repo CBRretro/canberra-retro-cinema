@@ -417,8 +417,17 @@ def collect_palace(today):
                     )
                     if stop:
                         section_text = section_text[:stop.start()]
+                    # Keep only the compact screening block before the synopsis,
+                    # and require a real month name (not words such as "year" or
+                    # "century" which can follow anniversary numbers elsewhere).
+                    section_text = section_text[:600]
+                    month_names = (
+                        "Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|"
+                        "May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|"
+                        "Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?"
+                    )
                     date_pattern = re.compile(
-                        r"\b(\d{1,2})(?:st|nd|rd|th)?\s*([A-Za-z]{3,})\b",
+                        rf"\b(\d{{1,2}})(?:st|nd|rd|th)?\s*({month_names})\b",
                         re.IGNORECASE
                     )
                     sessions = [
