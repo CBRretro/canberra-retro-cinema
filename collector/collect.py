@@ -440,7 +440,19 @@ def collect_palace(today):
                 # reliably as paragraph elements), e.g. "Monday23rd Nov".
                 body_text = page.locator("body").inner_text()
                 heading = "PALACE ELECTRIC CINEMA CANBERRA"
+                if "la-la-land" in str(movie.get("slug", "")).lower():
+                    upper_text = body_text.upper()
+                    heading_positions = [m.start() for m in re.finditer(re.escape(heading), upper_text)]
+                    print("PALACE DEBUG La La Land URL:", page.url)
+                    print("PALACE DEBUG La La Land selectors:", page.locator("select").evaluate_all(
+                        "els => els.map(e => ({label:e.getAttribute('aria-label'),value:e.value,options:Array.from(e.options).filter(o=>o.selected).map(o=>o.text)}))"
+                    ))
+                    print("PALACE DEBUG La La Land heading positions:", heading_positions)
+                    print("PALACE DEBUG La La Land body text:", repr(body_text[:10000]))
                 heading_pos = body_text.upper().rfind(heading)
+                if "la-la-land" in str(movie.get("slug", "")).lower() and heading_pos >= 0:
+                    print("PALACE DEBUG La La Land section after heading:",
+                          repr(body_text[heading_pos + len(heading):heading_pos + len(heading) + 1800]))
                 sessions = []
                 if heading_pos >= 0:
                     section_text = body_text[heading_pos + len(heading):]
