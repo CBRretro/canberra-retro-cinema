@@ -1,39 +1,51 @@
 from playwright.sync_api import sync_playwright
 import json
 
-URL = "https://www.palacecinemas.com.au/cinemas/palace-electric-cinema"
+BASE = "https://www.palacecinemas.com.au"
+
+def inspect(page, path):
+    responses = []
+    def capture(response):
+        ct = response.headers.get("content-type", "")
+        if "json" in ct:
+            try:
+                body = response.text()
+            except Exception:
+                body = ""
+            if "palace-cinemas.workers.dev" in response.url or "/_next/data/" in response.url:
+                responses.append({"status": response.status, "url": response.url, "body": body[:5000]})
+    page.on("response", capture)
+    response = page.goto(BASE + path, wait_until="domcontentloaded", timeout=60000)
+    try:
+        page.wait_for_load_state("networkidle", timeout=12000)
+    except Exception:
+        pass
+    page.wait_for_timeout(2000)
+    print("BEFORE", path, response.status if response else None, page.title(), flush=True)
+    print("SELECTS_BEFORE", json.dumps(page.locator("select").evaluate_all("(els)=>els.map(e=>({label:e.getAttribute('aria-label'),value:e.value,html:e.outerHTML.slice(0,1500)}))")), flush=True)
+    for sel in page.locator('select[aria-label="Choose your location"]').all():
+        try:
+            sel.select_option("canberra")
+        except Exception as e:
+            print("SELECT_ERROR", str(e), flush=True)
+    page.wait_for_timeout(5000)
+    try:
+        page.wait_for_load_state("networkidle", timeout=10000)
+    except Exception:
+        pass
+    print("AFTER", page.url, flush=True)
+    print("SELECTS_AFTER", json.dumps(page.locator("select").evaluate_all("(els)=>els.map(e=>({label:e.getAttribute('aria-label'),value:e.value,html:e.outerHTML.slice(0,1500)}))")), flush=True)
+    print("JSON_API", json.dumps(responses, ensure_ascii=False)[:22000], flush=True)
+    print("BODY", page.locator("body").inner_text()[:6500].replace("\\n"," | "), flush=True)
+    print("MOVIE_HREFS", json.dumps(page.locator('a[href*="/movies/"]').evaluate_all("(els)=>els.map(e=>({text:e.innerText.trim(),href:e.href})).filter(x=>x.text).slice(0,80)"), ensure_ascii=False), flush=True)
+    page.remove_listener("response", capture)
 
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
-        responses = []
-        def capture(r):
-            ct = r.headers.get("content-type", "")
-            if "json" in ct or "javascript" in ct:
-                responses.append({"status": r.status, "type": ct, "url": r.url})
-        page.on("response", capture)
-        response = page.goto(URL, wait_until="domcontentloaded", timeout=60000)
-        try:
-            page.wait_for_load_state("networkidle", timeout=15000)
-        except Exception:
-            pass
-        page.wait_for_timeout(3000)
-        print("PAGE", response.status if response else None, page.title(), page.url, flush=True)
-        print("SELECTS", json.dumps(page.locator("select").evaluate_all(
-            "(els) => els.map(e => ({name:e.name,id:e.id,html:e.outerHTML.slice(0,5000)}))"
-        )), flush=True)
-        print("INPUTS", json.dumps(page.locator("input").evaluate_all(
-            "(els) => els.map(e => ({name:e.name,id:e.id,type:e.type,value:e.value,html:e.outerHTML.slice(0,1000)}))"
-        )), flush=True)
-        print("SCRIPTS", json.dumps(page.locator("script[src]").evaluate_all(
-            "(els) => els.map(e => e.src)"
-        )), flush=True)
-        print("JSON_RESPONSES", json.dumps(responses, ensure_ascii=False)[:18000], flush=True)
-        print("MOVIE_LINKS", json.dumps(page.locator("a").evaluate_all(
-            "(els) => els.filter(e => /movie|film/i.test(e.href+' '+e.innerText)).slice(0,50).map(e => ({text:e.innerText.trim().slice(0,100),href:e.href,html:e.parentElement?.outerHTML.slice(0,1200)}))"
-        ), ensure_ascii=False)[:16000], flush=True)
-        print("BODY_START", page.locator("body").inner_text()[:2500].replace("\\n"," | "), flush=True)
+        inspect(page, "/movies")
+        inspect(page, "/movies/coming-soon")
         browser.close()
 
 if __name__ == "__main__":
