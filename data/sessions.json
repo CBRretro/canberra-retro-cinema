@@ -1,26 +1,6 @@
 {
-  "updated_at": "2026-11-06T13:13:49.952685+00:00",
+  "updated_at": "2026-11-07T01:06:49.635337+00:00",
   "sessions": [
-    {
-      "film_id": "punch-drunk-love",
-      "title": "Punch-Drunk Love",
-      "year": 2002,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-06T18:00:00",
-      "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
-      "poster_url": ""
-    },
-    {
-      "film_id": "there-will-be-blood",
-      "title": "There Will Be Blood",
-      "year": 2007,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-06T20:00:00",
-      "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
-      "poster_url": ""
-    },
     {
       "film_id": "deliverance",
       "title": "Deliverance",
@@ -679,7 +659,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 14,
+      "count": 12,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
