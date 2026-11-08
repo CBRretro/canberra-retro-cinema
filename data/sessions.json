@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-07T18:53:15.801758+00:00",
+  "updated_at": "2026-11-08T01:13:26.868464+00:00",
   "sessions": [
-    {
-      "film_id": "deliverance",
-      "title": "Deliverance",
-      "year": 1972,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-07T19:00:00",
-      "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
-      "poster_url": ""
-    },
     {
       "film_id": "rocky-1976-50th-anniversary",
       "title": "Rocky (1976) - 50th Anniversary",
@@ -659,7 +649,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 12,
+      "count": 11,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
