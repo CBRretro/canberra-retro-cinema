@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-08T01:13:26.868464+00:00",
+  "updated_at": "2026-11-08T07:08:19.821411+00:00",
   "sessions": [
-    {
-      "film_id": "rocky-1976-50th-anniversary",
-      "title": "Rocky (1976) - 50th Anniversary",
-      "year": 1976,
-      "cinema": "Palace Electric Cinema Canberra",
-      "start": "2026-11-08T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
     {
       "film_id": "boogie-nights",
       "title": "Boogie Nights",
@@ -636,7 +626,7 @@
     {
       "cinema": "Palace Electric Cinema Canberra",
       "status": "ok",
-      "count": 10
+      "count": 9
     },
     {
       "cinema": "ANU Film Group",
