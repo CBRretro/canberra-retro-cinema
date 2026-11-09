@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-09T01:16:52.677252+00:00",
+  "updated_at": "2026-11-09T03:54:06.107541+00:00",
   "sessions": [
     {
       "film_id": "boogie-nights",
@@ -78,7 +78,7 @@
       "cinema": "NFSA Arc Cinema",
       "start": "2026-11-15T14:00:00",
       "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/book-club-howls-moving-castle-4502",
       "poster_url": ""
     },
     {
@@ -108,7 +108,7 @@
       "cinema": "NFSA Arc Cinema",
       "start": "2026-11-18T18:00:00",
       "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/science-art-film-minority-report-4653",
       "poster_url": ""
     },
     {
@@ -138,7 +138,7 @@
       "cinema": "NFSA Arc Cinema",
       "start": "2026-11-20T19:00:00",
       "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/hearts-of-darkness-a-filmmakers-apocalypse-4711",
       "poster_url": ""
     },
     {
@@ -228,7 +228,7 @@
       "cinema": "NFSA Arc Cinema",
       "start": "2026-11-27T19:00:00",
       "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/apocalypse-now-the-final-cut-4715",
       "poster_url": ""
     },
     {
@@ -258,7 +258,7 @@
       "cinema": "NFSA Arc Cinema",
       "start": "2026-11-28T19:00:00",
       "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/koyaanisqatsi-4716",
       "poster_url": ""
     },
     {
@@ -288,7 +288,7 @@
       "cinema": "NFSA Arc Cinema",
       "start": "2026-11-29T14:00:00",
       "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/sunrise-a-song-of-two-humans-4717",
       "poster_url": ""
     },
     {
@@ -478,7 +478,7 @@
       "cinema": "NFSA Arc Cinema",
       "start": "2026-12-11T20:00:00",
       "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/cult-classics-showgirls-4413",
       "poster_url": ""
     },
     {
@@ -610,6 +610,16 @@
       "description": "In the year 2026, wealthy industrialist's son Freder (Gustav Fröhlich) lives in luxury amidst a towering futuristic utopia until he discovers a subterranean world where impoverished labourers work to power the city. Inspired by the saintly Maria (Brigitte Helm) and her advocacy for equality and reform, Freder vows to help the workers, sparking a revolutionary chain of events that ultimately threatens the entire metropolis. Fritz Lang's landmark 1927 sci-fi masterpiece is perhaps the most influential silent film in history, having served as the inspiration for everything from Star Wars to The Matrix. And now, following the recent discovery in Argentina of crucial long-lost footage, Lang's complete dystopian epic can finally be experienced as originally intended when it first premiered 100 years ago. In addition to reinstating the 25 minutes of missing footage, this definitive version of t",
       "ticket_url": "https://www.anufg.org.au/filminfo/20270213.html",
       "poster_url": "https://www.anufg.org.au/uploads/film/poster/5713/c30f7d4d21343e434b583c9fde230426.jpg"
+    },
+    {
+      "film_id": "a-league-of-their-own",
+      "title": "A League of Their Own",
+      "year": 1992,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-03-13T10:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/a-day-at-the-movies-a-league-of-their-own-dementia-friendly-4820",
+      "poster_url": ""
     }
   ],
   "sources": [
@@ -639,7 +649,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 11,
+      "count": 12,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
