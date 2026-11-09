@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-09T07:35:24.880626+00:00",
+  "updated_at": "2026-11-09T13:22:03.271871+00:00",
   "sessions": [
-    {
-      "film_id": "boogie-nights",
-      "title": "Boogie Nights",
-      "year": 1997,
-      "cinema": "Palace Electric Cinema Canberra",
-      "start": "2026-11-09T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
     {
       "film_id": "citizen-kane",
       "title": "Citizen Kane",
@@ -636,7 +626,7 @@
     {
       "cinema": "Palace Electric Cinema Canberra",
       "status": "ok",
-      "count": 9
+      "count": 8
     },
     {
       "cinema": "ANU Film Group",
