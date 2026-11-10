@@ -688,6 +688,18 @@ def main():
         intermediary = json.loads(intermediary_path.read_text(encoding="utf-8"))
         arc_rows = []
         for item in intermediary.get("sessions", []):
+            # Exclude NFSA sessions explicitly designated as dementia-friendly.
+            # Check the title and descriptive/source metadata so future listings
+            # are caught even when the film title itself is ordinary.
+            exclusion_text = " ".join(
+                str(item.get(field) or "")
+                for field in ("title", "description", "event_type", "category",
+                              "ticket_url", "url", "tags")
+            )
+            if re.search(r"dementia[\s_-]*friendly", exclusion_text, re.IGNORECASE):
+                print("NFSA session excluded (dementia-friendly):", item.get("title", "untitled"))
+                continue
+
             year = item.get("year")
             start = str(item.get("start") or "")
             if not year or not start:
