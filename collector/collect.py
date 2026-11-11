@@ -674,6 +674,37 @@ def collect_limelight(today):
     return found
 
 
+
+def diagnose_hoyts():
+    """Temporary browser diagnostic for HOYTS cinema selection."""
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto("https://www.hoyts.com.au/session-times", wait_until="domcontentloaded", timeout=60000)
+        try:
+            page.wait_for_load_state("networkidle", timeout=15000)
+        except Exception:
+            pass
+        page.wait_for_timeout(1800)
+        print("HOYTS INITIAL", page.locator("body").inner_text()[:4500])
+        controls = page.locator("button,a,[role=button],input,label").evaluate_all(
+            "els => els.map(e => ({tag:e.tagName,text:(e.innerText||e.getAttribute('aria-label')||'').trim().slice(0,100),role:e.getAttribute('role'),type:e.getAttribute('type'),value:e.value||'',href:e.getAttribute('href'),aria:e.getAttribute('aria-label'),checked:e.checked})).filter(x=>x.text||x.value||x.href).slice(0,120)"
+        )
+        print("HOYTS CONTROLS", json.dumps(controls, ensure_ascii=False)[:14000])
+        try:
+            page.get_by_text("Add cinemas", exact=True).first.click(timeout=10000)
+            page.wait_for_timeout(900)
+            print("HOYTS MODAL BODY", page.locator("body").inner_text()[:7000])
+            modal_controls = page.locator("button,a,[role=button],input,label").evaluate_all(
+                "els => els.map(e => ({tag:e.tagName,text:(e.innerText||e.getAttribute('aria-label')||'').trim().slice(0,100),role:e.getAttribute('role'),type:e.getAttribute('type'),value:e.value||'',href:e.getAttribute('href'),aria:e.getAttribute('aria-label'),checked:e.checked})).filter(x=>x.text||x.value).slice(0,160)"
+            )
+            print("HOYTS MODAL CONTROLS", json.dumps(modal_controls, ensure_ascii=False)[:16000])
+        except Exception as exc:
+            print("HOYTS ADD CINEMAS ERROR", repr(exc))
+        browser.close()
+
+
+
 def collect_arc(today):
     """Probe NFSA's public event pages directly as an alternative to the blocked ticketing host."""
     urls = [
@@ -861,6 +892,11 @@ def main():
             "status": "fetch error", "count": 0, "detail": str(exc)[:200],
         })
         print("WARN Limelight Tuggeranong", exc)
+
+    try:
+        diagnose_hoyts()
+    except Exception as exc:
+        print("WARN HOYTS diagnostic", str(exc)[:300])
 
     try:
         anu_rows, anu_status = collect_anu(today)
