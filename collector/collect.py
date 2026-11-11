@@ -513,6 +513,11 @@ def collect_limelight(today):
     known_years = {"the polar express": 2004}
 
     def parse_year(page):
+        # This page's visible release date is the 2026 re-release, not the
+        # film's original release year. Keep this confirmed original year first.
+        title_text = page.locator("h1").first.inner_text().strip() if page.locator("h1").count() else ""
+        if title_text.casefold() in known_years:
+            return known_years[title_text.casefold()]
         # Prefer explicit original-year metadata over the current re-release date.
         for script in page.locator('script[type="application/ld+json"]').all():
             try:
@@ -540,8 +545,7 @@ def collect_limelight(today):
             match = re.search(pattern, body, re.IGNORECASE)
             if match:
                 return int(match.group(1))
-        title = page.locator("h1").first.inner_text().strip() if page.locator("h1").count() else ""
-        return known_years.get(title.casefold())
+        return None
 
     def parse_dates(section):
         month_names = (
