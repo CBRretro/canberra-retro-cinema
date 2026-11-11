@@ -512,12 +512,14 @@ def collect_limelight(today):
     # date is not its original release year.
     known_years = {"the polar express": 2004}
 
-    def parse_year(page):
-        # This page's visible release date is the 2026 re-release, not the
-        # film's original release year. Keep this confirmed original year first.
+    def parse_year(page, fallback_title=""):
+        # The Limelight film heading is rendered as body text, not an h1.
+        # Check both the page heading and the listing-card title against known
+        # original years before considering the current cinema release date.
         title_text = page.locator("h1").first.inner_text().strip() if page.locator("h1").count() else ""
-        if title_text.casefold() in known_years:
-            return known_years[title_text.casefold()]
+        for candidate in (title_text, fallback_title):
+            if candidate.strip().casefold() in known_years:
+                return known_years[candidate.strip().casefold()]
         # Prefer explicit original-year metadata over the current re-release date.
         for script in page.locator('script[type="application/ld+json"]').all():
             try:
@@ -647,7 +649,7 @@ def collect_limelight(today):
                 if stop:
                     section = section[:stop.start()]
                 title = page.locator("h1").first.inner_text().strip() if page.locator("h1").count() else listing_title
-                year = parse_year(page)
+                year = parse_year(page, title)
                 if year is None or today.year - year < 10:
                     continue
                 dates = parse_dates(section)
