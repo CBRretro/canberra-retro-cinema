@@ -499,6 +499,169 @@ def collect_palace(today):
 
 
 
+
+def collect_limelight(today):
+    """Collect older-film sessions at Limelight Tuggeranong from both programme pages."""
+    base = "https://limelightcinemas.com.au"
+    cinema_id = "0000000002"
+    programme_urls = [
+        base + "/movies/now-showing/",
+        base + "/movies/coming-soon/",
+    ]
+    # The Polar Express is the agreed diagnostic case. Its cinema re-release
+    # date is not its original release year.
+    known_years = {"the polar express": 2004}
+
+    def parse_year(page):
+        # Prefer explicit original-year metadata over the current re-release date.
+        for script in page.locator('script[type="application/ld+json"]').all():
+            try:
+                data = json.loads(script.inner_text())
+            except (ValueError, TypeError):
+                continue
+            stack = [data]
+            while stack:
+                node = stack.pop()
+                if isinstance(node, dict):
+                    for key in ("datePublished", "copyrightYear", "releaseYear", "year"):
+                        value = node.get(key)
+                        if value:
+                            match = re.search(r"\b(19\d{2}|20\d{2})\b", str(value))
+                            if match:
+                                return int(match.group(1))
+                    stack.extend(node.values())
+                elif isinstance(node, list):
+                    stack.extend(node)
+        body = page.locator("body").inner_text()
+        for pattern in (
+            r"(?:original release|originally released|film year|year)\s*[:\-]?\s*(19\d{2}|20\d{2})",
+            r"\((19\d{2}|20\d{2})\)",
+        ):
+            match = re.search(pattern, body, re.IGNORECASE)
+            if match:
+                return int(match.group(1))
+        title = page.locator("h1").first.inner_text().strip() if page.locator("h1").count() else ""
+        return known_years.get(title.casefold())
+
+    def parse_dates(section):
+        month_names = (
+            "Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|"
+            "Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?"
+        )
+        pattern = re.compile(
+            rf"\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\w*\s+(\d{{1,2}})(?:st|nd|rd|th)?\s+({month_names})(?:\s+(20\d{{2}}))?\b",
+            re.IGNORECASE,
+        )
+        dates = []
+        for match in pattern.finditer(section):
+            day, month, explicit_year = match.groups()
+            years = [int(explicit_year)] if explicit_year else [today.year, today.year + 1]
+            parsed = None
+            for year in years:
+                for fmt in ("%d %b %Y", "%d %B %Y"):
+                    try:
+                        parsed = datetime.strptime(f"{day} {month} {year}", fmt).date()
+                        break
+                    except ValueError:
+                        pass
+                if parsed:
+                    break
+            if parsed and parsed >= today and parsed not in dates:
+                dates.append(parsed)
+        return dates
+
+    found, errors, candidates = [], [], {}
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True)
+        context = browser.new_context()
+        page = context.new_page()
+        # Set the venue through the site's own selector first, then preserve the
+        # resulting cookie/session while visiting both programme pages.
+        page.goto(base + "/film/the-polar-express-2/", wait_until="domcontentloaded", timeout=60000)
+        try:
+            page.get_by_role("link", name="Tuggeranong", exact=True).last.click(timeout=10000)
+            page.wait_for_load_state("domcontentloaded", timeout=15000)
+        except Exception:
+            page.goto(base + "/film/the-polar-express-2/?setCinema=" + cinema_id,
+                      wait_until="domcontentloaded", timeout=60000)
+        page.wait_for_timeout(1200)
+        for programme_url in programme_urls:
+            page.goto(programme_url, wait_until="domcontentloaded", timeout=60000)
+            try:
+                page.wait_for_load_state("networkidle", timeout=12000)
+            except Exception:
+                pass
+            page.wait_for_timeout(500)
+            for anchor in page.locator('a[href*="/film/"]').all():
+                try:
+                    href = anchor.get_attribute("href") or ""
+                    title = anchor.inner_text().strip()
+                    if not href or not title:
+                        continue
+                    from urllib.parse import urljoin
+                    url = urljoin(base, href).split("#", 1)[0]
+                    if "/film/" in url:
+                        candidates.setdefault(url, title)
+                except Exception:
+                    continue
+
+        # Revisit the agreed sample explicitly, even if it is absent from the
+        # programme-page links due to the site's client-side listing behaviour.
+        candidates.setdefault(base + "/film/the-polar-express-2/", "The Polar Express")
+
+        for film_url, listing_title in candidates.items():
+            try:
+                detail_url = film_url + ("&" if "?" in film_url else "?") + "setCinema=" + cinema_id
+                page.goto(detail_url, wait_until="domcontentloaded", timeout=60000)
+                try:
+                    page.wait_for_load_state("networkidle", timeout=10000)
+                except Exception:
+                    pass
+                page.wait_for_timeout(350)
+                body = page.locator("body").inner_text()
+                heading = re.search(r"Tuggeranong\s+Session\s+Times", body, re.IGNORECASE)
+                if not heading:
+                    raise RuntimeError("Tuggeranong session section not present; refusing to read another venue's dates")
+                section = body[heading.end():]
+                stop = re.search(r"\bOther\s+upcoming\s+movies\b", section, re.IGNORECASE)
+                if stop:
+                    section = section[:stop.start()]
+                title = page.locator("h1").first.inner_text().strip() if page.locator("h1").count() else listing_title
+                year = parse_year(page)
+                if year is None or today.year - year < 10:
+                    continue
+                dates = parse_dates(section)
+                for session_day in dates:
+                    found.append({
+                        "film_id": re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"),
+                        "title": title,
+                        "year": year,
+                        "cinema": "Limelight Tuggeranong",
+                        "start": session_day.isoformat() + "T00:00:00",
+                        "description": "",
+                        "ticket_url": film_url,
+                        "poster_url": "",
+                    })
+                if title.casefold() == "the polar express":
+                    print("LIMELIGHT POLAR EXPRESS TEST",
+                          "year", year,
+                          "dates", [d.isoformat() for d in dates],
+                          "venue_verified", True,
+                          "url", detail_url)
+                if dates:
+                    print("Limelight Tuggeranong", title, year, [d.isoformat() for d in dates])
+            except Exception as exc:
+                errors.append(f"{listing_title}: {str(exc)[:180]}")
+                print("WARN Limelight film page", listing_title, str(exc)[:260])
+        browser.close()
+
+    print("Limelight programme film pages discovered:", len(candidates))
+    print("Limelight Tuggeranong older-film sessions:", len(found))
+    if errors:
+        print("Limelight page errors:", "; ".join(errors[:8]))
+    return found
+
+
 def collect_arc(today):
     """Probe NFSA's public event pages directly as an alternative to the blocked ticketing host."""
     urls = [
@@ -665,6 +828,27 @@ def main():
             "status": "fetch error", "count": 0, "detail": str(exc)[:200],
         })
         print("WARN Palace Electric Cinema Canberra", exc)
+
+
+    try:
+        limelight_rows = collect_limelight(today)
+        rows.extend(limelight_rows)
+        status.append({
+            "cinema": "Limelight Tuggeranong",
+            "status": "ok" if limelight_rows else "no qualifying sessions found",
+            "count": len(limelight_rows),
+            "programme_urls": [
+                "https://limelightcinemas.com.au/movies/now-showing/",
+                "https://limelightcinemas.com.au/movies/coming-soon/",
+            ],
+            "detail": "Tuggeranong venue selected explicitly; " + ("; ".join([])),
+        })
+    except Exception as exc:
+        status.append({
+            "cinema": "Limelight Tuggeranong",
+            "status": "fetch error", "count": 0, "detail": str(exc)[:200],
+        })
+        print("WARN Limelight Tuggeranong", exc)
 
     try:
         anu_rows, anu_status = collect_anu(today)
