@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-11T08:35:35.572482+00:00",
+  "updated_at": "2026-11-11T08:51:33.871255+00:00",
   "sessions": [
     {
       "film_id": "citizen-kane",
@@ -229,6 +229,16 @@
       "start": "2026-11-28T00:00:00",
       "description": "",
       "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-nightmare-before-christmas",
+      "title": "The Nightmare Before Christmas",
+      "year": 1993,
+      "cinema": "Limelight Tuggeranong",
+      "start": "2026-11-28T00:00:00",
+      "description": "",
+      "ticket_url": "https://limelightcinemas.com.au/film/the-nightmare-before-christmas-2/",
       "poster_url": ""
     },
     {
@@ -502,6 +512,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "elf",
+      "title": "Elf",
+      "year": 2003,
+      "cinema": "Limelight Tuggeranong",
+      "start": "2026-12-12T00:00:00",
+      "description": "",
+      "ticket_url": "https://limelightcinemas.com.au/film/elf-2/",
+      "poster_url": ""
+    },
+    {
       "film_id": "love-actually",
       "title": "Love Actually",
       "year": 2003,
@@ -549,6 +569,16 @@
       "start": "2026-12-19T00:00:00",
       "description": "",
       "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "home-alone",
+      "title": "Home Alone",
+      "year": 1990,
+      "cinema": "Limelight Tuggeranong",
+      "start": "2026-12-19T00:00:00",
+      "description": "",
+      "ticket_url": "https://limelightcinemas.com.au/film/home-alone-4/",
       "poster_url": ""
     },
     {
@@ -631,7 +661,7 @@
     {
       "cinema": "Limelight Tuggeranong",
       "status": "ok",
-      "count": 1,
+      "count": 4,
       "programme_urls": [
         "https://limelightcinemas.com.au/movies/now-showing/",
         "https://limelightcinemas.com.au/movies/coming-soon/"
