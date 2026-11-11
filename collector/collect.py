@@ -623,6 +623,22 @@ def collect_limelight(today):
                     pass
                 page.wait_for_timeout(350)
                 body = page.locator("body").inner_text()
+                if "polar-express" in film_url.casefold():
+                    h1_debug = page.locator("h1").first.inner_text().strip() if page.locator("h1").count() else "(no h1)"
+                    venue_debug = [
+                        {"text": (a.inner_text() or "").strip(),
+                         "href": a.get_attribute("href")}
+                        for a in page.locator("a").all()
+                        if "tuggeranong" in ((a.inner_text() or "") + " " + (a.get_attribute("href") or "")).casefold()
+                    ]
+                    session_lines = [line.strip() for line in body.splitlines()
+                                     if "session" in line.casefold() or "tuggeranong" in line.casefold()]
+                    print("LIMELIGHT POLAR DEBUG", {
+                        "url": page.url, "h1": h1_debug,
+                        "session_lines": session_lines[:30],
+                        "venue_links": venue_debug[:10],
+                        "body_excerpt": body[:1800],
+                    })
                 heading = re.search(r"Tuggeranong\s+Session\s+Times", body, re.IGNORECASE)
                 if not heading:
                     raise RuntimeError("Tuggeranong session section not present; refusing to read another venue's dates")
