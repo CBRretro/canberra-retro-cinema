@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-11T07:24:05.688363+00:00",
+  "updated_at": "2026-11-11T08:01:30.818195+00:00",
   "sessions": [
     {
       "film_id": "citizen-kane",
@@ -617,6 +617,16 @@
       "cinema": "Palace Electric Cinema Canberra",
       "status": "ok",
       "count": 8
+    },
+    {
+      "cinema": "Limelight Tuggeranong",
+      "status": "no qualifying sessions found",
+      "count": 0,
+      "programme_urls": [
+        "https://limelightcinemas.com.au/movies/now-showing/",
+        "https://limelightcinemas.com.au/movies/coming-soon/"
+      ],
+      "detail": "Tuggeranong venue selected explicitly; "
     },
     {
       "cinema": "ANU Film Group",
