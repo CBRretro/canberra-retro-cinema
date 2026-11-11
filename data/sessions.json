@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-11T08:12:52.356783+00:00",
+  "updated_at": "2026-11-11T08:35:35.572482+00:00",
   "sessions": [
     {
       "film_id": "citizen-kane",
@@ -382,6 +382,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "the-polar-express",
+      "title": "The Polar Express",
+      "year": 2004,
+      "cinema": "Limelight Tuggeranong",
+      "start": "2026-12-05T00:00:00",
+      "description": "",
+      "ticket_url": "https://limelightcinemas.com.au/film/the-polar-express-2/",
+      "poster_url": ""
+    },
+    {
       "film_id": "8",
       "title": "8½",
       "year": 1963,
@@ -620,8 +630,8 @@
     },
     {
       "cinema": "Limelight Tuggeranong",
-      "status": "no qualifying sessions found",
-      "count": 0,
+      "status": "ok",
+      "count": 1,
       "programme_urls": [
         "https://limelightcinemas.com.au/movies/now-showing/",
         "https://limelightcinemas.com.au/movies/coming-soon/"
