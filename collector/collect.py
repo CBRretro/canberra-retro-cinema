@@ -158,6 +158,15 @@ def collect_dendy(url, today_year):
     try:
         coming_soup = get_soup(coming_soon_url)
         add_movie_links(coming_soup, True)
+        # Dendy's live Coming Soon page lists Citizen Kane, but its link was
+        # intermittently absent from the HTML returned to the scheduled
+        # collector. Seed the known Canberra film page as a discovery fallback.
+        citizen_kane_url = "https://canberra.dendy.com.au/movie/citizen-kane/"
+        movie_pages.setdefault(citizen_kane_url, {
+            "label": "Citizen Kane",
+            "movie": {},
+            "coming_soon": True,
+        })
     except requests.RequestException as exc:
         print("WARN Dendy Coming Soon page", str(exc)[:180])
 
