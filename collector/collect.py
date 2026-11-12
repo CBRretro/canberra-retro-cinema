@@ -297,6 +297,11 @@ def collect_dendy(url, today_year):
             continue
 
         year, year_description = year_from_text(movie)
+        # Dendy's Citizen Kane page reports its 2026 re-release date as
+        # releaseDate; preserve the film's original release year for the
+        # retro-film eligibility check.
+        if title.casefold() == "citizen kane":
+            year = 1941
         if year is None and graphql_movie:
             year, _ = year_from_text({
                 "releaseDate": graphql_movie.get("releaseDate"),
