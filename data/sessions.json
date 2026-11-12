@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-12T23:13:56.025079+00:00",
+  "updated_at": "2026-11-12T23:34:40.827709+00:00",
   "sessions": [
     {
       "film_id": "dark-water",
@@ -32,6 +32,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "citizen-kane",
+      "title": "Citizen Kane",
+      "year": 1941,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-14T00:00:00",
+      "description": "",
+      "ticket_url": "",
+      "poster_url": ""
+    },
+    {
       "film_id": "howl-s-moving-castle",
       "title": "Howl's Moving Castle",
       "year": 2004,
@@ -39,6 +49,16 @@
       "start": "2026-11-15T14:00:00",
       "description": "",
       "ticket_url": "https://www.nfsa.gov.au/whats-on/book-club-howls-moving-castle-4502",
+      "poster_url": ""
+    },
+    {
+      "film_id": "citizen-kane",
+      "title": "Citizen Kane",
+      "year": 1941,
+      "cinema": "Dendy Canberra",
+      "start": "2026-11-16T00:00:00",
+      "description": "",
+      "ticket_url": "",
       "poster_url": ""
     },
     {
@@ -606,7 +626,7 @@
     {
       "cinema": "Dendy Canberra",
       "status": "ok",
-      "count": 28
+      "count": 30
     },
     {
       "cinema": "NFSA Arc Cinema",
