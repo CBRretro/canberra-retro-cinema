@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-12T23:34:40.827709+00:00",
+  "updated_at": "2026-11-13T01:23:15.698457+00:00",
   "sessions": [
-    {
-      "film_id": "dark-water",
-      "title": "Dark Water",
-      "year": 2002,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-12T19:00:00",
-      "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
-      "poster_url": ""
-    },
     {
       "film_id": "the-martian",
       "title": "The Martian",
@@ -659,7 +649,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 11,
+      "count": 10,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
