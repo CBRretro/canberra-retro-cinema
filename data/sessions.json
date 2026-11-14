@@ -1,26 +1,6 @@
 {
-  "updated_at": "2026-11-13T19:06:10.466448+00:00",
+  "updated_at": "2026-11-14T01:15:40.662946+00:00",
   "sessions": [
-    {
-      "film_id": "the-martian",
-      "title": "The Martian",
-      "year": 2015,
-      "cinema": "Stromlo Outdoor Cinema",
-      "start": "2026-11-13T19:30:00",
-      "description": "",
-      "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026",
-      "poster_url": ""
-    },
-    {
-      "film_id": "death-becomes-her",
-      "title": "Death Becomes Her",
-      "year": 1992,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-13T20:00:00",
-      "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
-      "poster_url": ""
-    },
     {
       "film_id": "citizen-kane",
       "title": "Citizen Kane",
@@ -649,13 +629,13 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 10,
+      "count": 9,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
       "cinema": "Stromlo Outdoor Cinema",
       "status": "fixed one-off import",
-      "count": 5,
+      "count": 4,
       "detail": "Static programme; deliberately not refreshed from the source website"
     }
   ]
