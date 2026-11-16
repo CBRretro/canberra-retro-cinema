@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-16T08:59:43.493083+00:00",
+  "updated_at": "2026-11-16T15:19:07.848311+00:00",
   "sessions": [
-    {
-      "film_id": "citizen-kane",
-      "title": "Citizen Kane",
-      "year": 1941,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-16T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
     {
       "film_id": "minority-report",
       "title": "Minority Report",
@@ -1026,7 +1016,7 @@
     {
       "cinema": "Dendy Canberra",
       "status": "ok",
-      "count": 29
+      "count": 28
     },
     {
       "cinema": "NFSA Arc Cinema",
