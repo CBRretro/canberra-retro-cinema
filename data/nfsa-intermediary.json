@@ -1,27 +1,9 @@
 {
   "cinema": "NFSA Arc Cinema",
   "source": "https://tickets.nfsa.gov.au/events",
-  "retrieval_method": "ChatGPT-assisted search-index extraction",
+  "retrieval_method": "ChatGPT-assisted search-index review with official individual event-page verification",
   "status": "PROVISIONAL TEST DATA — verify against the live NFSA event pages before treating as authoritative",
   "sessions": [
-    {
-      "title": "Dark Water",
-      "year": 2002,
-      "start": "2026-11-12T19:00:00",
-      "ticket_url": "https://tickets.nfsa.gov.au/events"
-    },
-    {
-      "title": "Death Becomes Her",
-      "year": 1992,
-      "start": "2026-11-13T20:00:00",
-      "ticket_url": "https://tickets.nfsa.gov.au/events"
-    },
-    {
-      "title": "Howl's Moving Castle",
-      "year": 2004,
-      "start": "2026-11-15T14:00:00",
-      "ticket_url": "https://www.nfsa.gov.au/whats-on/book-club-howls-moving-castle-4502"
-    },
     {
       "title": "Minority Report",
       "year": 2002,
@@ -65,16 +47,292 @@
       "ticket_url": "https://www.nfsa.gov.au/whats-on/sunrise-a-song-of-two-humans-4717"
     },
     {
+      "title": "The Adventures of Priscilla, Queen of the Desert",
+      "year": 1994,
+      "start": "2026-12-03T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-adventures-of-priscilla-queen-of-the-desert-4762"
+    },
+    {
+      "title": "Pretty in Pink",
+      "year": 1986,
+      "start": "2026-12-04T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/pretty-in-pink-4763"
+    },
+    {
+      "title": "The Color of Pomegranates",
+      "year": 1969,
+      "start": "2026-12-06T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-color-of-pomegranates-4765"
+    },
+    {
+      "title": "Blue Velvet",
+      "year": 1986,
+      "start": "2026-12-10T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/blue-velvet-4766"
+    },
+    {
       "title": "Showgirls",
       "year": 1995,
       "start": "2026-12-11T20:00:00",
       "ticket_url": "https://www.nfsa.gov.au/whats-on/cult-classics-showgirls-4413"
     },
     {
-      "title": "A League of Their Own",
+      "title": "Legally Blonde",
+      "year": 2001,
+      "start": "2026-12-12T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/legally-blonde-4767"
+    },
+    {
+      "title": "The Muppet Christmas Carol",
       "year": 1992,
-      "start": "2027-03-13T10:30:00",
-      "ticket_url": "https://www.nfsa.gov.au/whats-on/a-day-at-the-movies-a-league-of-their-own-dementia-friendly-4820"
+      "start": "2026-12-13T14:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/book-club-the-muppet-christmas-carol-4768"
+    },
+    {
+      "title": "Love Actually",
+      "year": 2003,
+      "start": "2026-12-17T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/love-actually-4769"
+    },
+    {
+      "title": "Die Hard",
+      "year": 1988,
+      "start": "2026-12-18T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/die-hard-4770"
+    },
+    {
+      "title": "Tokyo Godfathers",
+      "year": 2003,
+      "start": "2026-12-19T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/tokyo-godfathers-4771"
+    },
+    {
+      "title": "The Pink Panther",
+      "year": 1963,
+      "start": "2026-12-20T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-pink-panther-4772"
+    },
+    {
+      "title": "Red Dog",
+      "year": 2011,
+      "start": "2026-12-26T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/red-dog-4773"
+    },
+    {
+      "title": "Muriel's Wedding",
+      "year": 1994,
+      "start": "2026-12-27T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/nfsa-restores-muriels-wedding-4774"
+    },
+    {
+      "title": "Wrong Side of the Road",
+      "year": 1981,
+      "start": "2026-12-28T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/nfsa-restores-wrong-side-of-the-road-4775"
+    },
+    {
+      "title": "Floating Life",
+      "year": 1996,
+      "start": "2026-12-29T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/nfsa-restores-floating-life-4776"
+    },
+    {
+      "title": "Bran Nue Dae",
+      "year": 2009,
+      "start": "2026-12-30T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/bran-nue-dae-4777"
+    },
+    {
+      "title": "The Fall",
+      "year": 2006,
+      "start": "2027-01-02T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-fall-4778"
+    },
+    {
+      "title": "The Maltese Falcon",
+      "year": 1941,
+      "start": "2027-01-03T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-maltese-falcon-4779"
+    },
+    {
+      "title": "Exit Through the Gift Shop",
+      "year": 2010,
+      "start": "2027-01-07T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/exit-through-the-gift-shop-4780"
+    },
+    {
+      "title": "Purple Rain",
+      "year": 1984,
+      "start": "2027-01-08T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/purple-rain-endrey-4781"
+    },
+    {
+      "title": "Rear Window",
+      "year": 1954,
+      "start": "2027-01-09T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/rear-window-belco-jazz-band-4782"
+    },
+    {
+      "title": "Double Indemnity",
+      "year": 1944,
+      "start": "2027-01-10T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/double-indemnity-4783"
+    },
+    {
+      "title": "A Clockwork Orange",
+      "year": 1971,
+      "start": "2027-01-14T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/a-clockwork-orange-4784"
+    },
+    {
+      "title": "Swingers",
+      "year": 1996,
+      "start": "2027-01-15T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/swingers-rhythm-capital-4785"
+    },
+    {
+      "title": "Black Cat, White Cat",
+      "year": 1998,
+      "start": "2027-01-16T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/black-cat-white-cat-super-rats-4786"
+    },
+    {
+      "title": "The Big Sleep",
+      "year": 1946,
+      "start": "2027-01-17T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-big-sleep-4787"
+    },
+    {
+      "title": "Betty Blue",
+      "year": 1986,
+      "start": "2027-01-21T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/betty-blue-4788"
+    },
+    {
+      "title": "Lost in Translation",
+      "year": 2003,
+      "start": "2027-01-22T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/lost-in-translation-sebastian-field-4789"
+    },
+    {
+      "title": "The Blue Angel",
+      "year": 1930,
+      "start": "2027-01-23T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-blue-angel-blue-angel-and-dr-wiedemann-4790"
+    },
+    {
+      "title": "Out of the Past",
+      "year": 1947,
+      "start": "2027-01-24T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/out-of-the-past-4791"
+    },
+    {
+      "title": "Do the Right Thing",
+      "year": 1989,
+      "start": "2027-01-29T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/do-the-right-thing-saint-kwe-4793"
+    },
+    {
+      "title": "Buena Vista Social Club",
+      "year": 1999,
+      "start": "2027-01-30T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/buena-vista-social-club-mi-tierra-4794"
+    },
+    {
+      "title": "The Third Man",
+      "year": 1949,
+      "start": "2027-01-31T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-third-man-4795"
+    },
+    {
+      "title": "The Long Goodbye",
+      "year": 1973,
+      "start": "2027-02-04T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-long-goodbye-4796"
+    },
+    {
+      "title": "Rebel Without a Cause",
+      "year": 1955,
+      "start": "2027-02-05T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/rebel-without-a-cause-the-king-hits-4797"
+    },
+    {
+      "title": "In the Mood for Love",
+      "year": 2000,
+      "start": "2027-02-06T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/in-the-mood-for-love-mindy-meng-wang-and-tim-shiel-4798"
+    },
+    {
+      "title": "Taxi Driver",
+      "year": 1976,
+      "start": "2027-02-11T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/taxi-driver-4801"
+    },
+    {
+      "title": "O Brother, Where Art Thou?",
+      "year": 2000,
+      "start": "2027-02-12T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/o-brother-where-art-thou-the-lucky-stars-4802"
+    },
+    {
+      "title": "Sunset Boulevard",
+      "year": 1950,
+      "start": "2027-02-13T20:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/sunset-boulevard-miya-zawa-4803"
+    },
+    {
+      "title": "The Scent of Green Papaya",
+      "year": 1993,
+      "start": "2027-02-14T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-scent-of-green-papaya-4804"
+    },
+    {
+      "title": "A Scanner Darkly",
+      "year": 2006,
+      "start": "2027-02-18T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/a-scanner-darkly-4805"
+    },
+    {
+      "title": "The Thin Red Line",
+      "year": 1998,
+      "start": "2027-02-19T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-thin-red-line-4806"
+    },
+    {
+      "title": "Queen Kelly",
+      "year": 1929,
+      "start": "2027-02-20T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/queen-kelly-4807"
+    },
+    {
+      "title": "Raise the Red Lantern",
+      "year": 1991,
+      "start": "2027-02-21T13:30:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/raise-the-red-lantern-4808"
+    },
+    {
+      "title": "Enter the Void",
+      "year": 2009,
+      "start": "2027-02-25T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/enter-the-void-4809"
+    },
+    {
+      "title": "Three Colours: Blue",
+      "year": 1993,
+      "start": "2027-02-26T18:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/three-colors-blue-4810"
+    },
+    {
+      "title": "Three Colours: White",
+      "year": 1994,
+      "start": "2027-02-26T20:15:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/three-colors-white-4811"
+    },
+    {
+      "title": "Three Colours: Red",
+      "year": 1994,
+      "start": "2027-02-27T19:00:00",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/three-colors-red-4812"
     }
   ]
 }
