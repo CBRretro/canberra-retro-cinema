@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-15T18:58:52.827898+00:00",
+  "updated_at": "2026-11-16T01:37:47.660584+00:00",
   "sessions": [
-    {
-      "film_id": "howl-s-moving-castle",
-      "title": "Howl's Moving Castle",
-      "year": 2004,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-15T14:00:00",
-      "description": "",
-      "ticket_url": "https://www.nfsa.gov.au/whats-on/book-club-howls-moving-castle-4502",
-      "poster_url": ""
-    },
     {
       "film_id": "citizen-kane",
       "title": "Citizen Kane",
@@ -169,16 +159,6 @@
       "start": "2026-11-28T00:00:00",
       "description": "",
       "ticket_url": "",
-      "poster_url": ""
-    },
-    {
-      "film_id": "the-nightmare-before-christmas",
-      "title": "The Nightmare Before Christmas",
-      "year": 1993,
-      "cinema": "Limelight Tuggeranong",
-      "start": "2026-11-28T00:00:00",
-      "description": "",
-      "ticket_url": "https://limelightcinemas.com.au/film/the-nightmare-before-christmas-2/",
       "poster_url": ""
     },
     {
@@ -601,7 +581,7 @@
     {
       "cinema": "Limelight Tuggeranong",
       "status": "ok",
-      "count": 4,
+      "count": 3,
       "programme_urls": [
         "https://limelightcinemas.com.au/movies/now-showing/",
         "https://limelightcinemas.com.au/movies/coming-soon/"
@@ -619,7 +599,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 9,
+      "count": 8,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
