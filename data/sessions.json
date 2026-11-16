@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-16T01:37:47.660584+00:00",
+  "updated_at": "2026-11-16T03:10:00.776323+00:00",
   "sessions": [
     {
       "film_id": "citizen-kane",
@@ -272,6 +272,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "the-adventures-of-priscilla-queen-of-the-desert",
+      "title": "The Adventures of Priscilla, Queen of the Desert",
+      "year": 1994,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-03T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-adventures-of-priscilla-queen-of-the-desert-4762",
+      "poster_url": ""
+    },
+    {
       "film_id": "the-witch",
       "title": "The Witch",
       "year": 2015,
@@ -279,6 +289,16 @@
       "start": "2026-12-04T00:00:00",
       "description": "",
       "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "pretty-in-pink",
+      "title": "Pretty in Pink",
+      "year": 1986,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-04T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/pretty-in-pink-4763",
       "poster_url": ""
     },
     {
@@ -332,6 +352,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "the-color-of-pomegranates",
+      "title": "The Color of Pomegranates",
+      "year": 1969,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-06T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-color-of-pomegranates-4765",
+      "poster_url": ""
+    },
+    {
       "film_id": "breakfast-at-tiffany-s",
       "title": "Breakfast at Tiffany's",
       "year": 1961,
@@ -379,6 +409,16 @@
       "start": "2026-12-10T00:00:00",
       "description": "",
       "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "blue-velvet",
+      "title": "Blue Velvet",
+      "year": 1986,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-10T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/blue-velvet-4766",
       "poster_url": ""
     },
     {
@@ -442,6 +482,26 @@
       "poster_url": ""
     },
     {
+      "film_id": "legally-blonde",
+      "title": "Legally Blonde",
+      "year": 2001,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-12T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/legally-blonde-4767",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-muppet-christmas-carol",
+      "title": "The Muppet Christmas Carol",
+      "year": 1992,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-13T14:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/book-club-the-muppet-christmas-carol-4768",
+      "poster_url": ""
+    },
+    {
       "film_id": "love-actually",
       "title": "Love Actually",
       "year": 2003,
@@ -482,6 +542,26 @@
       "poster_url": ""
     },
     {
+      "film_id": "love-actually",
+      "title": "Love Actually",
+      "year": 2003,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-17T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/love-actually-4769",
+      "poster_url": ""
+    },
+    {
+      "film_id": "die-hard",
+      "title": "Die Hard",
+      "year": 1988,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-18T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/die-hard-4770",
+      "poster_url": ""
+    },
+    {
       "film_id": "it-s-a-wonderful-life",
       "title": "It's a Wonderful Life",
       "year": 1946,
@@ -502,6 +582,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "tokyo-godfathers",
+      "title": "Tokyo Godfathers",
+      "year": 2003,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-19T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/tokyo-godfathers-4771",
+      "poster_url": ""
+    },
+    {
       "film_id": "it-s-a-wonderful-life",
       "title": "It's A Wonderful Life",
       "year": 1946,
@@ -509,6 +599,16 @@
       "start": "2026-12-20T00:00:00",
       "description": "",
       "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-pink-panther",
+      "title": "The Pink Panther",
+      "year": 1963,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-20T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-pink-panther-4772",
       "poster_url": ""
     },
     {
@@ -532,6 +632,86 @@
       "poster_url": ""
     },
     {
+      "film_id": "red-dog",
+      "title": "Red Dog",
+      "year": 2011,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-26T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/red-dog-4773",
+      "poster_url": ""
+    },
+    {
+      "film_id": "muriel-s-wedding",
+      "title": "Muriel's Wedding",
+      "year": 1994,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-27T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/nfsa-restores-muriels-wedding-4774",
+      "poster_url": ""
+    },
+    {
+      "film_id": "wrong-side-of-the-road",
+      "title": "Wrong Side of the Road",
+      "year": 1981,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-28T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/nfsa-restores-wrong-side-of-the-road-4775",
+      "poster_url": ""
+    },
+    {
+      "film_id": "floating-life",
+      "title": "Floating Life",
+      "year": 1996,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-29T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/nfsa-restores-floating-life-4776",
+      "poster_url": ""
+    },
+    {
+      "film_id": "bran-nue-dae",
+      "title": "Bran Nue Dae",
+      "year": 2009,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2026-12-30T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/bran-nue-dae-4777",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-fall",
+      "title": "The Fall",
+      "year": 2006,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-02T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-fall-4778",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-maltese-falcon",
+      "title": "The Maltese Falcon",
+      "year": 1941,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-03T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-maltese-falcon-4779",
+      "poster_url": ""
+    },
+    {
+      "film_id": "exit-through-the-gift-shop",
+      "title": "Exit Through the Gift Shop",
+      "year": 2010,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-07T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/exit-through-the-gift-shop-4780",
+      "poster_url": ""
+    },
+    {
       "film_id": "wall-e",
       "title": "WALL-E",
       "year": 2008,
@@ -539,6 +719,46 @@
       "start": "2027-01-08T19:30:00",
       "description": "",
       "ticket_url": "https://rsaa.anu.edu.au/news-events/events/stromlo-outdoor-cinema-2026",
+      "poster_url": ""
+    },
+    {
+      "film_id": "purple-rain",
+      "title": "Purple Rain",
+      "year": 1984,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-08T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/purple-rain-endrey-4781",
+      "poster_url": ""
+    },
+    {
+      "film_id": "rear-window",
+      "title": "Rear Window",
+      "year": 1954,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-09T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/rear-window-belco-jazz-band-4782",
+      "poster_url": ""
+    },
+    {
+      "film_id": "double-indemnity",
+      "title": "Double Indemnity",
+      "year": 1944,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-10T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/double-indemnity-4783",
+      "poster_url": ""
+    },
+    {
+      "film_id": "a-clockwork-orange",
+      "title": "A Clockwork Orange",
+      "year": 1971,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-14T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/a-clockwork-orange-4784",
       "poster_url": ""
     },
     {
@@ -552,6 +772,156 @@
       "poster_url": ""
     },
     {
+      "film_id": "swingers",
+      "title": "Swingers",
+      "year": 1996,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-15T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/swingers-rhythm-capital-4785",
+      "poster_url": ""
+    },
+    {
+      "film_id": "black-cat-white-cat",
+      "title": "Black Cat, White Cat",
+      "year": 1998,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-16T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/black-cat-white-cat-super-rats-4786",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-big-sleep",
+      "title": "The Big Sleep",
+      "year": 1946,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-17T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-big-sleep-4787",
+      "poster_url": ""
+    },
+    {
+      "film_id": "betty-blue",
+      "title": "Betty Blue",
+      "year": 1986,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-21T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/betty-blue-4788",
+      "poster_url": ""
+    },
+    {
+      "film_id": "lost-in-translation",
+      "title": "Lost in Translation",
+      "year": 2003,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-22T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/lost-in-translation-sebastian-field-4789",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-blue-angel",
+      "title": "The Blue Angel",
+      "year": 1930,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-23T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-blue-angel-blue-angel-and-dr-wiedemann-4790",
+      "poster_url": ""
+    },
+    {
+      "film_id": "out-of-the-past",
+      "title": "Out of the Past",
+      "year": 1947,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-24T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/out-of-the-past-4791",
+      "poster_url": ""
+    },
+    {
+      "film_id": "do-the-right-thing",
+      "title": "Do the Right Thing",
+      "year": 1989,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-29T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/do-the-right-thing-saint-kwe-4793",
+      "poster_url": ""
+    },
+    {
+      "film_id": "buena-vista-social-club",
+      "title": "Buena Vista Social Club",
+      "year": 1999,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-30T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/buena-vista-social-club-mi-tierra-4794",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-third-man",
+      "title": "The Third Man",
+      "year": 1949,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-01-31T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-third-man-4795",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-long-goodbye",
+      "title": "The Long Goodbye",
+      "year": 1973,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-04T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-long-goodbye-4796",
+      "poster_url": ""
+    },
+    {
+      "film_id": "rebel-without-a-cause",
+      "title": "Rebel Without a Cause",
+      "year": 1955,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-05T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/rebel-without-a-cause-the-king-hits-4797",
+      "poster_url": ""
+    },
+    {
+      "film_id": "in-the-mood-for-love",
+      "title": "In the Mood for Love",
+      "year": 2000,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-06T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/in-the-mood-for-love-mindy-meng-wang-and-tim-shiel-4798",
+      "poster_url": ""
+    },
+    {
+      "film_id": "taxi-driver",
+      "title": "Taxi Driver",
+      "year": 1976,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-11T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/taxi-driver-4801",
+      "poster_url": ""
+    },
+    {
+      "film_id": "o-brother-where-art-thou",
+      "title": "O Brother, Where Art Thou?",
+      "year": 2000,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-12T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/o-brother-where-art-thou-the-lucky-stars-4802",
+      "poster_url": ""
+    },
+    {
       "film_id": "metropolis-reconstructed-restored",
       "title": "Metropolis: Reconstructed & Restored",
       "year": 1927,
@@ -560,6 +930,106 @@
       "description": "In the year 2026, wealthy industrialist's son Freder (Gustav Fröhlich) lives in luxury amidst a towering futuristic utopia until he discovers a subterranean world where impoverished labourers work to power the city. Inspired by the saintly Maria (Brigitte Helm) and her advocacy for equality and reform, Freder vows to help the workers, sparking a revolutionary chain of events that ultimately threatens the entire metropolis. Fritz Lang's landmark 1927 sci-fi masterpiece is perhaps the most influential silent film in history, having served as the inspiration for everything from Star Wars to The Matrix. And now, following the recent discovery in Argentina of crucial long-lost footage, Lang's complete dystopian epic can finally be experienced as originally intended when it first premiered 100 years ago. In addition to reinstating the 25 minutes of missing footage, this definitive version of t",
       "ticket_url": "https://www.anufg.org.au/filminfo/20270213.html",
       "poster_url": "https://www.anufg.org.au/uploads/film/poster/5713/c30f7d4d21343e434b583c9fde230426.jpg"
+    },
+    {
+      "film_id": "sunset-boulevard",
+      "title": "Sunset Boulevard",
+      "year": 1950,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-13T20:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/sunset-boulevard-miya-zawa-4803",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-scent-of-green-papaya",
+      "title": "The Scent of Green Papaya",
+      "year": 1993,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-14T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-scent-of-green-papaya-4804",
+      "poster_url": ""
+    },
+    {
+      "film_id": "a-scanner-darkly",
+      "title": "A Scanner Darkly",
+      "year": 2006,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-18T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/a-scanner-darkly-4805",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-thin-red-line",
+      "title": "The Thin Red Line",
+      "year": 1998,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-19T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-thin-red-line-4806",
+      "poster_url": ""
+    },
+    {
+      "film_id": "queen-kelly",
+      "title": "Queen Kelly",
+      "year": 1929,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-20T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/queen-kelly-4807",
+      "poster_url": ""
+    },
+    {
+      "film_id": "raise-the-red-lantern",
+      "title": "Raise the Red Lantern",
+      "year": 1991,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-21T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/raise-the-red-lantern-4808",
+      "poster_url": ""
+    },
+    {
+      "film_id": "enter-the-void",
+      "title": "Enter the Void",
+      "year": 2009,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-25T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/enter-the-void-4809",
+      "poster_url": ""
+    },
+    {
+      "film_id": "three-colours-blue",
+      "title": "Three Colours: Blue",
+      "year": 1993,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-26T18:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/three-colors-blue-4810",
+      "poster_url": ""
+    },
+    {
+      "film_id": "three-colours-white",
+      "title": "Three Colours: White",
+      "year": 1994,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-26T20:15:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/three-colors-white-4811",
+      "poster_url": ""
+    },
+    {
+      "film_id": "three-colours-red",
+      "title": "Three Colours: Red",
+      "year": 1994,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-27T19:00:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/three-colors-red-4812",
+      "poster_url": ""
     }
   ],
   "sources": [
@@ -599,7 +1069,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 8,
+      "count": 55,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
