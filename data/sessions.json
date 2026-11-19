@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-18T19:09:30.488617+00:00",
+  "updated_at": "2026-11-19T01:26:59.474901+00:00",
   "sessions": [
-    {
-      "film_id": "minority-report",
-      "title": "Minority Report",
-      "year": 2002,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-18T18:00:00",
-      "description": "",
-      "ticket_url": "https://www.nfsa.gov.au/whats-on/science-art-film-minority-report-4653",
-      "poster_url": ""
-    },
     {
       "film_id": "spirited-away",
       "title": "Spirited Away",
@@ -1049,7 +1039,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 55,
+      "count": 54,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
