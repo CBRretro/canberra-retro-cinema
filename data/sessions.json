@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-19T13:32:17.785600+00:00",
+  "updated_at": "2026-11-19T19:15:31.474127+00:00",
   "sessions": [
     {
       "film_id": "the-life-aquatic-with-steve-zissou",
@@ -22,16 +22,6 @@
       "poster_url": ""
     },
     {
-      "film_id": "spirited-away",
-      "title": "Spirited Away",
-      "year": 2001,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-21T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
-    {
       "film_id": "across-the-plateau",
       "title": "Across the Plateau",
       "year": 2007,
@@ -49,16 +39,6 @@
       "start": "2026-11-22T14:00:00",
       "description": "",
       "ticket_url": "https://tickets.nfsa.gov.au/events",
-      "poster_url": ""
-    },
-    {
-      "film_id": "spirited-away",
-      "title": "Spirited Away",
-      "year": 2001,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-23T00:00:00",
-      "description": "",
-      "ticket_url": "",
       "poster_url": ""
     },
     {
@@ -372,6 +352,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "the-holiday-20th-anniversary",
+      "title": "The Holiday - 20th Anniversary",
+      "year": 2006,
+      "cinema": "Dendy Canberra",
+      "start": "2026-12-10T00:00:00",
+      "description": "",
+      "ticket_url": "",
+      "poster_url": ""
+    },
+    {
       "film_id": "blue-velvet",
       "title": "Blue Velvet",
       "year": 1986,
@@ -379,6 +369,16 @@
       "start": "2026-12-10T19:00:00",
       "description": "",
       "ticket_url": "https://www.nfsa.gov.au/whats-on/blue-velvet-4766",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-holiday-20th-anniversary",
+      "title": "The Holiday - 20th Anniversary",
+      "year": 2006,
+      "cinema": "Dendy Canberra",
+      "start": "2026-12-11T00:00:00",
+      "description": "",
+      "ticket_url": "",
       "poster_url": ""
     },
     {
@@ -452,6 +452,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "the-holiday-20th-anniversary",
+      "title": "The Holiday - 20th Anniversary",
+      "year": 2006,
+      "cinema": "Dendy Canberra",
+      "start": "2026-12-13T00:00:00",
+      "description": "",
+      "ticket_url": "",
+      "poster_url": ""
+    },
+    {
       "film_id": "the-muppet-christmas-carol",
       "title": "The Muppet Christmas Carol",
       "year": 1992,
@@ -487,6 +497,16 @@
       "year": 1974,
       "cinema": "Palace Electric Cinema Canberra",
       "start": "2026-12-14T00:00:00",
+      "description": "",
+      "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-holiday-20th-anniversary",
+      "title": "The Holiday - 20th Anniversary",
+      "year": 2006,
+      "cinema": "Dendy Canberra",
+      "start": "2026-12-15T00:00:00",
       "description": "",
       "ticket_url": "",
       "poster_url": ""
@@ -996,7 +1016,7 @@
     {
       "cinema": "Dendy Canberra",
       "status": "ok",
-      "count": 27
+      "count": 29
     },
     {
       "cinema": "NFSA Arc Cinema",
