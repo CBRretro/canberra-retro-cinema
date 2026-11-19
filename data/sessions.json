@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-19T01:26:59.474901+00:00",
+  "updated_at": "2026-11-19T13:32:17.785600+00:00",
   "sessions": [
-    {
-      "film_id": "spirited-away",
-      "title": "Spirited Away",
-      "year": 2001,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-19T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
     {
       "film_id": "the-life-aquatic-with-steve-zissou",
       "title": "The Life Aquatic with Steve Zissou",
@@ -1006,7 +996,7 @@
     {
       "cinema": "Dendy Canberra",
       "status": "ok",
-      "count": 28
+      "count": 27
     },
     {
       "cinema": "NFSA Arc Cinema",
