@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-19T19:15:31.474127+00:00",
+  "updated_at": "2026-11-20T01:22:48.418568+00:00",
   "sessions": [
-    {
-      "film_id": "the-life-aquatic-with-steve-zissou",
-      "title": "The Life Aquatic with Steve Zissou",
-      "year": 2004,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-19T19:00:00",
-      "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
-      "poster_url": ""
-    },
     {
       "film_id": "hearts-of-darkness-a-filmmaker-s-apocalypse",
       "title": "Hearts of Darkness: A Filmmaker's Apocalypse",
@@ -99,6 +89,16 @@
       "start": "2026-11-28T00:00:00",
       "description": "",
       "ticket_url": "",
+      "poster_url": ""
+    },
+    {
+      "film_id": "the-nightmare-before-christmas",
+      "title": "The Nightmare Before Christmas",
+      "year": 1993,
+      "cinema": "Limelight Tuggeranong",
+      "start": "2026-11-28T00:00:00",
+      "description": "",
+      "ticket_url": "https://limelightcinemas.com.au/film/the-nightmare-before-christmas/",
       "poster_url": ""
     },
     {
@@ -1031,7 +1031,7 @@
     {
       "cinema": "Limelight Tuggeranong",
       "status": "ok",
-      "count": 3,
+      "count": 4,
       "programme_urls": [
         "https://limelightcinemas.com.au/movies/now-showing/",
         "https://limelightcinemas.com.au/movies/coming-soon/"
@@ -1049,7 +1049,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 54,
+      "count": 53,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
