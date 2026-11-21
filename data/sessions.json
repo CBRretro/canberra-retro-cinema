@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-20T19:13:39.003700+00:00",
+  "updated_at": "2026-11-21T01:24:42.610220+00:00",
   "sessions": [
-    {
-      "film_id": "hearts-of-darkness-a-filmmaker-s-apocalypse",
-      "title": "Hearts of Darkness: A Filmmaker's Apocalypse",
-      "year": 1991,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-20T19:00:00",
-      "description": "",
-      "ticket_url": "https://www.nfsa.gov.au/whats-on/hearts-of-darkness-a-filmmakers-apocalypse-4711",
-      "poster_url": ""
-    },
     {
       "film_id": "across-the-plateau",
       "title": "Across the Plateau",
@@ -1049,7 +1039,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 53,
+      "count": 52,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
