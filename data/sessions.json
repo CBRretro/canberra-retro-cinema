@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-21T19:02:00.754484+00:00",
+  "updated_at": "2026-11-22T01:20:58.167563+00:00",
   "sessions": [
-    {
-      "film_id": "across-the-plateau",
-      "title": "Across the Plateau",
-      "year": 2007,
-      "cinema": "ANU Film Group",
-      "start": "2026-11-21T17:00:00",
-      "description": "This thrilling documentary chronicles a group of determined long-distance cyclists from Guangzhou, China attempting an unprecedented physical feat: traversing the vast Tibetan Plateau entirely on pushbikes. Spanning more than 3,100 kilometres, this monumental Himalayan expedition encompasses five treacherous mountain passes, freezing sub-zero temperatures, and debilitating altitude sickness. Throughout their arduous journey, the riders confront extreme exhaustion and unpredictable weather that push their ageing bodies (the oldest cyclist is 66) and mental fortitude to the absolute limits. Mechanical breakdowns and isolation also test the interpersonal dynamics and camaraderie of the group as they battle to reach their goal. Co-directed by Zhang Zeming and Paul Liu, this inspiring Australian co-production won praise from critics for its intimate portrait of extraordinary human endurance a",
-      "ticket_url": "https://www.anufg.org.au/filminfo/20261121.html",
-      "poster_url": "https://www.anufg.org.au/uploads/film/poster/5678/6f22275c4c65a4b09868a144e76a0d94.jpg"
-    },
     {
       "film_id": "they-re-a-weird-mob",
       "title": "They're a Weird Mob",
@@ -1031,7 +1021,7 @@
     {
       "cinema": "ANU Film Group",
       "status": "ok",
-      "count": 4,
+      "count": 3,
       "programme_url": "https://www.anufg.org.au/programme",
       "film_pages_checked": 58,
       "detail": ""
