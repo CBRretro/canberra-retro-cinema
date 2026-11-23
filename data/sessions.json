@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-22T19:02:16.582899+00:00",
+  "updated_at": "2026-11-23T01:28:43.807644+00:00",
   "sessions": [
-    {
-      "film_id": "they-re-a-weird-mob",
-      "title": "They're a Weird Mob",
-      "year": 1966,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-22T14:00:00",
-      "description": "",
-      "ticket_url": "https://tickets.nfsa.gov.au/events",
-      "poster_url": ""
-    },
     {
       "film_id": "la-la-land-10th-anniversary",
       "title": "La La Land - 10th Anniversary",
@@ -1029,7 +1019,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 52,
+      "count": 51,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
