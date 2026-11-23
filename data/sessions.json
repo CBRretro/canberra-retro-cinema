@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-23T01:28:43.807644+00:00",
+  "updated_at": "2026-11-23T03:17:29.012221+00:00",
   "sessions": [
     {
       "film_id": "la-la-land-10th-anniversary",
@@ -852,6 +852,16 @@
       "poster_url": ""
     },
     {
+      "film_id": "the-red-shoes",
+      "title": "The Red Shoes",
+      "year": 1948,
+      "cinema": "NFSA Arc Cinema",
+      "start": "2027-02-07T13:30:00",
+      "description": "",
+      "ticket_url": "https://www.nfsa.gov.au/whats-on/the-red-shoes-4799",
+      "poster_url": ""
+    },
+    {
       "film_id": "taxi-driver",
       "title": "Taxi Driver",
       "year": 1976,
@@ -1019,7 +1029,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 51,
+      "count": 52,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
