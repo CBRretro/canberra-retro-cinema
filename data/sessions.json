@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-23T07:49:28.893216+00:00",
+  "updated_at": "2026-11-23T13:34:48.299878+00:00",
   "sessions": [
-    {
-      "film_id": "la-la-land-10th-anniversary",
-      "title": "La La Land - 10th Anniversary",
-      "year": 2016,
-      "cinema": "Palace Electric Cinema Canberra",
-      "start": "2026-11-23T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
     {
       "film_id": "the-godfather-4k-re-release",
       "title": "The Godfather (4K Re-release)",
@@ -1006,7 +996,7 @@
     {
       "cinema": "Palace Electric Cinema Canberra",
       "status": "ok",
-      "count": 7
+      "count": 6
     },
     {
       "cinema": "Limelight Tuggeranong",
