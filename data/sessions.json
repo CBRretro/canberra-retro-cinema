@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-25T07:36:32.877279+00:00",
+  "updated_at": "2026-11-25T13:37:09.767670+00:00",
   "sessions": [
-    {
-      "film_id": "the-godfather-4k-re-release",
-      "title": "The Godfather (4K Re-release)",
-      "year": 1972,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-25T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
     {
       "film_id": "jurassic-park",
       "title": "Jurassic Park",
@@ -986,7 +976,7 @@
     {
       "cinema": "Dendy Canberra",
       "status": "ok",
-      "count": 29
+      "count": 28
     },
     {
       "cinema": "NFSA Arc Cinema",
