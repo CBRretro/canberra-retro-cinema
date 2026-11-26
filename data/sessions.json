@@ -1,26 +1,6 @@
 {
-  "updated_at": "2026-11-26T07:35:39.475621+00:00",
+  "updated_at": "2026-11-26T13:35:09.337720+00:00",
   "sessions": [
-    {
-      "film_id": "jurassic-park",
-      "title": "Jurassic Park",
-      "year": 1993,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-26T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
-    {
-      "film_id": "the-maltese-falcon",
-      "title": "The Maltese Falcon",
-      "year": 1941,
-      "cinema": "Dendy Canberra",
-      "start": "2026-11-26T00:00:00",
-      "description": "",
-      "ticket_url": "",
-      "poster_url": ""
-    },
     {
       "film_id": "apocalypse-now-the-final-cut",
       "title": "Apocalypse Now: The Final Cut",
@@ -966,7 +946,7 @@
     {
       "cinema": "Dendy Canberra",
       "status": "ok",
-      "count": 27
+      "count": 25
     },
     {
       "cinema": "NFSA Arc Cinema",
