@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-27T19:12:13.045461+00:00",
+  "updated_at": "2026-11-28T01:29:55.371423+00:00",
   "sessions": [
-    {
-      "film_id": "apocalypse-now-the-final-cut",
-      "title": "Apocalypse Now: The Final Cut",
-      "year": 1979,
-      "cinema": "NFSA Arc Cinema",
-      "start": "2026-11-27T19:00:00",
-      "description": "",
-      "ticket_url": "https://www.nfsa.gov.au/whats-on/apocalypse-now-the-final-cut-4715",
-      "poster_url": ""
-    },
     {
       "film_id": "the-nightmare-before-christmas",
       "title": "THE NIGHTMARE BEFORE CHRISTMAS",
@@ -959,7 +949,7 @@
     {
       "cinema": "NFSA Arc Cinema",
       "status": "provisional intermediary import",
-      "count": 52,
+      "count": 51,
       "detail": "Static test import; not yet an automated NFSA feed"
     },
     {
