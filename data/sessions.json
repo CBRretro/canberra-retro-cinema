@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-28T01:29:55.371423+00:00",
+  "updated_at": "2026-11-28T07:29:23.358058+00:00",
   "sessions": [
-    {
-      "film_id": "the-nightmare-before-christmas",
-      "title": "THE NIGHTMARE BEFORE CHRISTMAS",
-      "year": 1993,
-      "cinema": "Limelight Tuggeranong",
-      "start": "2026-11-28T00:00:00",
-      "description": "",
-      "ticket_url": "https://limelightcinemas.com.au/film/the-nightmare-before-christmas/",
-      "poster_url": ""
-    },
     {
       "film_id": "fargo",
       "title": "Fargo",
@@ -931,7 +921,7 @@
     {
       "cinema": "Limelight Tuggeranong",
       "status": "ok",
-      "count": 4,
+      "count": 3,
       "programme_urls": [
         "https://limelightcinemas.com.au/movies/now-showing/",
         "https://limelightcinemas.com.au/movies/coming-soon/"
